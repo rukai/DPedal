@@ -377,11 +377,11 @@
   "pcbnew": {
     "last_paths": {
       "gencad": "",
-      "idf": "",
+      "idf": "dpedal.emn",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
-      "vrml": ""
+      "step": "dpedal.step",
+      "vrml": "dpedal.wrl"
     },
     "page_layout_descr_file": ""
   },
