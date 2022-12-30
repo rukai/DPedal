@@ -44,3 +44,7 @@ When prompted upload the `production/bom.csv` for the bom and the `production/po
 ## Build and flash firmware
 
 TODO - firmware doesnt exist yet
+
+## License
+
+Licensed under the MIT license ([LICENSE.txt](license.txt) or <http://opensource.org/licenses/MIT>)
