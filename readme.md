@@ -43,7 +43,10 @@ When prompted upload the `production/bom.csv` for the bom and the `production/po
 
 ## Build and flash firmware
 
-TODO - firmware doesnt exist yet
+```
+cargo install cargo-dfu
+cargo dfu --chip stm32 --release
+```
 
 ## License
 
