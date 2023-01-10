@@ -1,0 +1,73 @@
+name: Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Cancel already running jobs
+concurrency:
+  group: testing_${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # By default only linux has a release job.
+          # This is to keep within the 10GB cache limit as rust can use a lot of space!
+          # There are also more limits here but I don't think there is much risk of hitting them: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration#usage-limits
+          #
+          # If you don't use much of the cache feel free to add more release jobs.
+          # If you do hit the cache and there are jobs that are not important for your project remove them or disable caching for them.
+          - name: LinuxRelease
+            runner: ubuntu-latest
+            cargo_profile: --release
+          - name: LinuxDebug
+            runner: ubuntu-latest
+            cargo_profile:
+          - name: WindowsDebug
+            runner: windows-latest
+            cargo_profile:
+          - name: MacOSDebug
+            runner: macos-latest
+            cargo_profile:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v2
+      with:
+        # rust-cache already handles all the sane defaults for caching rust builds.
+        # However because we are running separate debug/release builds in parallel,
+        # we also need to add Debug or Release to the key so that a separate cache is used.
+        # Otherwise only the last build to finish would get saved to the cache.
+        key: ${{ matrix.name }}
+    - name: Install cargo-hack
+      run: cargo install cargo-hack --version 0.5.8
+    - name: Check `cargo fmt` was run
+      run: |
+        cd dpedal_firmware
+        cargo fmt --all -- --check
+    - name: Ensure that the crates and all examples compile and have no warnings under every possible combination of features
+      # some things to explicitly point out:
+      # * clippy also reports rustc warnings and errors
+      # * clippy --all-targets causes clippy to run against tests and examples which it doesn't do by default.
+      run: |
+        cd dpedal_firmware
+        cargo hack --feature-powerset clippy --locked ${{ matrix.cargo_profile }} -- -D warnings
+    - name: Ensure that tests did not create or modify any files that arent .gitignore'd
+      # This is important because we are checking in the Cargo.lock file.
+      # We want to fail CI if the Cargo.toml changed without including the corresponding Cargo.lock changes.
+      # Its also just generally nice to ensure your tests dont leave around unexpected files.
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          git status
+          exit 1
+        fi

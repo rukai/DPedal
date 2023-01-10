@@ -45,6 +45,7 @@ When prompted upload the `production/bom.csv` for the bom and the `production/po
 
 ```
 cargo install cargo-dfu
+cd dpedal_firmware
 cargo dfu --chip stm32 --release
 ```
 
