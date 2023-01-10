@@ -4,14 +4,14 @@
 // set the panic handler
 use panic_halt as _;
 
-use hal::gpio::{Input, Output, Pin, PullUp, PushPull};
+use hal::gpio::{Input, Pin, PullUp};
 use hal::prelude::*;
 use hal::usb;
 use hal::{stm32, timers};
 use keyberon::debounce::Debouncer;
 use keyberon::key_code::KbHidReport;
 use keyberon::layout::{Event, Layers, Layout};
-use keyberon::matrix::Matrix;
+use keyberon::matrix::DirectPinMatrix;
 use rtic::app;
 use stm32f0xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
@@ -41,8 +41,8 @@ mod app {
 
     #[local]
     struct Local {
-        matrix: Matrix<Pin<Input<PullUp>>, Pin<Output<PushPull>>, 4, 0>,
-        debouncer: Debouncer<[[bool; 4]; 0]>,
+        matrix: DirectPinMatrix<Pin<Input<PullUp>>, 4, 1>,
+        debouncer: Debouncer<[[bool; 4]; 1]>,
         timer: timers::Timer<stm32::TIM3>,
     }
 
@@ -75,15 +75,13 @@ mod app {
         timer.listen(timers::Event::TimeOut);
 
         let matrix = cortex_m::interrupt::free(move |cs| {
-            Matrix::new(
-                [
-                    gpioa.pa1.into_pull_up_input(cs).downgrade(),
-                    gpioa.pa3.into_pull_up_input(cs).downgrade(),
-                    gpioa.pa2.into_pull_up_input(cs).downgrade(),
-                    gpioa.pa4.into_pull_up_input(cs).downgrade(),
-                ],
-                [],
-            )
+            DirectPinMatrix::new([[
+                Some(gpioa.pa1.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa3.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa2.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa4.into_pull_up_input(cs).downgrade()),
+            ]])
+            .unwrap()
         });
 
         (
@@ -94,8 +92,8 @@ mod app {
             },
             Local {
                 timer,
-                debouncer: Debouncer::new([[false; 4]; 0], [[false; 4]; 0], 5),
-                matrix: matrix.unwrap(),
+                debouncer: Debouncer::new([[false; 4]; 1], [[false; 4]; 1], 5),
+                matrix,
             },
             init::Monotonics(),
         )
