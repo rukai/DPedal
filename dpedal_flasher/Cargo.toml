@@ -1,0 +1,15 @@
+[package]
+name = "dpedal_flasher"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.68"
+dfu-libusb = "0.3.1"
+goblin = "0.6.0"
+indicatif = "0.17.3"
+rusb = "0.9.1"
+
+# TODO: https://github.com/dfu-rs/dfu-libusb/blob/main/examples/download.rs
