@@ -3,8 +3,7 @@ use dfu_libusb::DfuLibusb;
 use goblin::elf::program_header::PT_LOAD;
 
 fn main() {
-    let elf =
-        include_bytes!("../../dpedal_firmware/target/thumbv6m-none-eabi/release/dpedal_firmware");
+    let elf = include_bytes!(env!("FIRMWARE_PATH"));
     let binary = elf_to_bin(elf).unwrap();
     flash(&binary).unwrap();
 

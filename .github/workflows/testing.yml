@@ -54,7 +54,6 @@ jobs:
       run: |
         cd dpedal_firmware
         cargo fmt --all -- --check
-        cargo build --release # TODO: remove this when the flasher handles building
         cd ../dpedal_flasher
         cargo fmt --all -- --check
     - name: Ensure that the crates and all examples compile and have no warnings under every possible combination of features
