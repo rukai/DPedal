@@ -2,7 +2,11 @@ use std::{env, process::Command};
 
 fn main() {
     let profile = env::var("PROFILE").unwrap();
-    println!("cargo:rustc-env=FIRMWARE_PATH=../../dpedal_firmware/target/thumbv6m-none-eabi/{}/dpedal_firmware", profile);
+    let firmware_path =
+        format!("../../dpedal_firmware/target/thumbv6m-none-eabi/{profile}/dpedal_firmware",);
+    println!("cargo:rustc-env=FIRMWARE_PATH={firmware_path}");
+    println!("cargo:rerun-if-changed={firmware_path}");
+
     let cargo_args = if profile == "release" {
         vec!["build", "--release"]
     } else {

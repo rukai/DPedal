@@ -71,6 +71,10 @@ mod app {
         let usb_class = keyberon::new_class(usb_bus, ());
         let usb_dev = keyberon::new_device(usb_bus);
 
+        // TODO: how??
+        // let config = unsafe { *(0x0808_0000 as *mut u8) };
+        // let config_byte1 = unsafe { core::ptr::read_volatile(&config) };
+
         let mut timer = timers::Timer::tim3(c.device.TIM3, 1.khz(), &mut rcc);
         timer.listen(timers::Event::TimeOut);
 
@@ -120,6 +124,7 @@ mod app {
             return;
         }
         let report: KbHidReport = c.shared.layout.keycodes().collect();
+
         if !c
             .shared
             .usb_class

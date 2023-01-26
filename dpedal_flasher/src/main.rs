@@ -2,12 +2,23 @@ use anyhow::{Context, Result};
 use dfu_libusb::DfuLibusb;
 use goblin::elf::program_header::PT_LOAD;
 
+const CONFIG_LOCATION: usize = 0x8000;
+
 fn main() {
     let elf = include_bytes!(env!("FIRMWARE_PATH"));
-    let binary = elf_to_bin(elf).unwrap();
+    let mut binary = elf_to_bin(elf).unwrap();
+    append_config_to_firmware(&mut binary);
     flash(&binary).unwrap();
 
     println!("Succesfully flashed")
+}
+
+pub fn append_config_to_firmware(binary: &mut Vec<u8>) {
+    if binary.len() > CONFIG_LOCATION {
+        panic!("firmware is > 32KB");
+    }
+    binary.resize(CONFIG_LOCATION, 0);
+    binary.extend(b"hello world");
 }
 
 pub fn flash(bytes: &[u8]) -> Result<()> {
