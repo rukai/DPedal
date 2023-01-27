@@ -71,9 +71,11 @@ mod app {
         let usb_class = keyberon::new_class(usb_bus, ());
         let usb_dev = keyberon::new_device(usb_bus);
 
-        // TODO: how??
-        // let config = unsafe { *(0x0808_0000 as *mut u8) };
-        // let config_byte1 = unsafe { core::ptr::read_volatile(&config) };
+        let config = unsafe { *(0x0800_8000 as *mut u8) };
+        let config_byte1 = unsafe { core::ptr::read_volatile(&config) };
+        if config_byte1 != b'h' {
+            panic!("avoiding this panic demonstrates that basic config loading is working");
+        }
 
         let mut timer = timers::Timer::tim3(c.device.TIM3, 1.khz(), &mut rcc);
         timer.listen(timers::Event::TimeOut);
