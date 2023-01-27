@@ -27,6 +27,13 @@ My configuration:
 * PLA
 * Prusa mini with prusa slicer
 
+For the footrest I deviated from this to keep the print time manageable:
+* 0.10mm layer height
+* 15% support cubic infill
+* height range modifiers (needs the advanced UI)
+    + layers: 0-10mm -> height: 0.15mm
+    + layers: 10-20mm -> height: 0.20mm
+
 ### PCB
 
 The PCB is designed to use parts that are available on JLCPCB's PCB assembly service.
