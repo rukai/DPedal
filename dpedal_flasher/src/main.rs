@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use dfu_libusb::DfuLibusb;
 use goblin::elf::program_header::PT_LOAD;
+use keyberon::key_code::KeyCode;
 
 const CONFIG_LOCATION: usize = 0x8000;
 
@@ -18,7 +19,10 @@ pub fn append_config_to_firmware(binary: &mut Vec<u8>) {
         panic!("firmware is > 32KB");
     }
     binary.resize(CONFIG_LOCATION, 0);
-    binary.extend(b"hello world");
+    binary.push(KeyCode::D as u8);
+    binary.push(KeyCode::P as u8);
+    binary.push(KeyCode::E as u8);
+    binary.push(KeyCode::D as u8);
 }
 
 pub fn flash(bytes: &[u8]) -> Result<()> {

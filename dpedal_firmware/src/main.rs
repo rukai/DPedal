@@ -1,6 +1,8 @@
 #![no_main]
 #![no_std]
 
+use keyberon::action::Action;
+use once_cell::sync::Lazy;
 // set the panic handler
 use panic_halt as _;
 
@@ -21,11 +23,20 @@ use usb_device::device::UsbDeviceState;
 type UsbClass = keyberon::Class<'static, usb::UsbBusType, ()>;
 type UsbDevice = usb_device::device::UsbDevice<'static, usb::UsbBusType>;
 
-pub static LAYERS: Layers<4, 1, 1> = keyberon::layout::layout! {
-    {
-        [ Up Down Left Right ]
-    }
-};
+static LAYERS: Lazy<Layers<4, 1, 1>> = Lazy::new(|| unsafe {
+    [[[
+        action_from_mem(0),
+        action_from_mem(1),
+        action_from_mem(2),
+        action_from_mem(3),
+    ]]]
+});
+
+unsafe fn action_from_mem(offset: usize) -> Action {
+    let config = (0x0800_8000 + offset) as *mut u8;
+    let config_byte1 = unsafe { core::ptr::read_volatile(config) };
+    Action::KeyCode(unsafe { core::mem::transmute(config_byte1) })
+}
 
 #[app(device = crate::hal::pac, peripherals = true, dispatchers = [CEC_CAN])]
 mod app {
@@ -70,12 +81,6 @@ mod app {
 
         let usb_class = keyberon::new_class(usb_bus, ());
         let usb_dev = keyberon::new_device(usb_bus);
-
-        let config = unsafe { *(0x0800_8000 as *mut u8) };
-        let config_byte1 = unsafe { core::ptr::read_volatile(&config) };
-        if config_byte1 != b'h' {
-            panic!("avoiding this panic demonstrates that basic config loading is working");
-        }
 
         let mut timer = timers::Timer::tim3(c.device.TIM3, 1.khz(), &mut rcc);
         timer.listen(timers::Event::TimeOut);
