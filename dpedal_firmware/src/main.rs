@@ -25,10 +25,10 @@ type UsbDevice = usb_device::device::UsbDevice<'static, usb::UsbBusType>;
 
 static LAYERS: Lazy<Layers<4, 1, 1>> = Lazy::new(|| unsafe {
     [[[
-        action_from_mem(0),
-        action_from_mem(1),
-        action_from_mem(2),
-        action_from_mem(3),
+        action_from_mem(0), // up
+        action_from_mem(1), // down
+        action_from_mem(2), // left
+        action_from_mem(3), // right
     ]]]
 });
 

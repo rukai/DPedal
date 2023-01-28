@@ -1,28 +1,22 @@
 use anyhow::{Context, Result};
+use clap::Parser;
 use dfu_libusb::DfuLibusb;
 use goblin::elf::program_header::PT_LOAD;
-use keyberon::key_code::KeyCode;
 
-const CONFIG_LOCATION: usize = 0x8000;
+mod cli;
+mod config;
 
-fn main() {
+fn main() -> miette::Result<()> {
     let elf = include_bytes!(env!("FIRMWARE_PATH"));
+
+    let cli = cli::Args::parse();
+
     let mut binary = elf_to_bin(elf).unwrap();
-    append_config_to_firmware(&mut binary);
+    config::append_config_to_firmware(&cli.path, &mut binary)?;
     flash(&binary).unwrap();
 
-    println!("Succesfully flashed")
-}
-
-pub fn append_config_to_firmware(binary: &mut Vec<u8>) {
-    if binary.len() > CONFIG_LOCATION {
-        panic!("firmware is > 32KB");
-    }
-    binary.resize(CONFIG_LOCATION, 0);
-    binary.push(KeyCode::D as u8);
-    binary.push(KeyCode::P as u8);
-    binary.push(KeyCode::E as u8);
-    binary.push(KeyCode::D as u8);
+    println!("Succesfully flashed");
+    Ok(())
 }
 
 pub fn flash(bytes: &[u8]) -> Result<()> {

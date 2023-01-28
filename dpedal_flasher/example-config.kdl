@@ -1,0 +1,21 @@
+// Configure the main dpad
+pad {
+    left "Left"
+    right "Right"
+    up "Up"
+    down "Down"
+}
+
+// Configure the buttons on the extension device plugged into the right hand side port
+right-extension {
+    button1 "BSpace"
+    button2 "enter"
+    button3 "n"
+    button4 "shift"
+}
+
+// TODO: list possible keycodes here
+// * A
+// * B
+// * C
+// ....

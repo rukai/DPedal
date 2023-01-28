@@ -1,13 +1,19 @@
 # DPedal
 
-## Build and flash firmware
+## Flash precompiled firmware
+
+1. Download firmware from TODO
+2. extract tar or zip file
+3. Modify example-config.kdl to specify your desired keymapping
+4. Run `./dpedal_flasher --path example-config.kdl`
+
+## Compile and flash firmware
 
 Install rust via rustup then:
 
 ```bash
-cargo install cargo-dfu
-cd dpedal_firmware
-cargo dfu --chip stm32 --release
+cd dpedal_flasher
+cargo run --release -- --path example-config.kdl
 ```
 
 ## Manufacturing
@@ -28,11 +34,12 @@ My configuration:
 * Prusa mini with prusa slicer
 
 For the footrest I deviated from this to keep the print time manageable:
+
 * 0.10mm layer height
 * 15% support cubic infill
 * height range modifiers (needs the advanced UI)
-    + layers: 0-10mm -> height: 0.15mm
-    + layers: 10-20mm -> height: 0.20mm
+  * layers: 0-10mm -> height: 0.15mm
+  * layers: 10-20mm -> height: 0.20mm
 
 ### PCB
 

@@ -7,11 +7,13 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.68"
+clap = { version = "4.1.4", features = ["derive"] }
 dfu-libusb = "0.3.1"
-#dfu-libusb = { path = "/home/rukai2/Projects/Crates/dfu-libusb"}
+enum-utils = "0.1.2"
 goblin = "0.6.0"
 indicatif = "0.17.3"
 keyberon = "0.1.1"
+#knuffel = "2.0.0"
+knuffel = { version = "2.0.0", git = "https://github.com/rnarkk/knuffel" }
+miette = { version = "5.5.0", features = ["fancy"] }
 rusb = "0.9.1"
-
-# TODO: https://github.com/dfu-rs/dfu-libusb/blob/main/examples/download.rs
