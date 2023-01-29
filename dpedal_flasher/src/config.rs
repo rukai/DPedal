@@ -1,4 +1,3 @@
-use anyhow::Result;
 use keyberon::key_code::KeyCode;
 use miette::IntoDiagnostic;
 use std::fs::read_to_string;

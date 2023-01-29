@@ -1,7 +1,7 @@
-use anyhow::{Context, Result};
 use clap::Parser;
 use dfu_libusb::DfuLibusb;
 use goblin::elf::program_header::PT_LOAD;
+use miette::{Context, IntoDiagnostic, Result};
 
 mod cli;
 mod config;
@@ -11,9 +11,9 @@ fn main() -> miette::Result<()> {
 
     let cli = cli::Args::parse();
 
-    let mut binary = elf_to_bin(elf).unwrap();
+    let mut binary = elf_to_bin(elf)?;
     config::append_config_to_firmware(&cli.path, &mut binary)?;
-    flash(&binary).unwrap();
+    flash(&binary)?;
 
     println!("Succesfully flashed");
     Ok(())
@@ -24,7 +24,7 @@ pub fn flash(bytes: &[u8]) -> Result<()> {
     let alt = 0;
     let vid = 0x0483;
     let pid = 0xdf11;
-    let context = rusb::Context::new()?;
+    let context = rusb::Context::new().into_diagnostic()?;
 
     let bar = indicatif::ProgressBar::new(bytes.len() as u64);
     bar.set_style(
@@ -32,12 +32,22 @@ pub fn flash(bytes: &[u8]) -> Result<()> {
             .template(
                 "{spinner:.green} [{elapsed_precise}] [{bar:27.cyan/blue}] \
                     {bytes}/{total_bytes} ({bytes_per_sec}) ({eta}) {msg:10}",
-            )?
+            )
+            .into_diagnostic()?
             .progress_chars("#>-"),
     );
 
-    let mut device =
-        DfuLibusb::open(&context, vid, pid, intf, alt).context("could not open device")?;
+    let mut device = DfuLibusb::open(&context, vid, pid, intf, alt).map_err(|e| match e {
+        dfu_libusb::Error::CouldNotOpenDevice => miette::miette!(
+            r#"Could not find a DPedal to flash.
+Ensure the device is plugged in and in flash mode.
+To set the DPedal to flash mode:
+  1. Hold down the flash button
+  2. Press and release the reset button
+  3. Release the flash button"#
+        ),
+        e => miette::miette!("Failed to open a device to flash: {}", e),
+    })?;
     device.with_progress({
         let bar = bar.clone();
         move |count| {
@@ -47,7 +57,8 @@ pub fn flash(bytes: &[u8]) -> Result<()> {
 
     device
         .download_from_slice(bytes)
-        .context("could not write firmware to the device")?;
+        .into_diagnostic()
+        .wrap_err("could not write firmware to the device")?;
 
     bar.finish();
 
@@ -55,7 +66,7 @@ pub fn flash(bytes: &[u8]) -> Result<()> {
 }
 
 pub fn elf_to_bin(bytes: &[u8]) -> Result<Vec<u8>> {
-    let binary = goblin::elf::Elf::parse(bytes)?;
+    let binary = goblin::elf::Elf::parse(bytes).into_diagnostic()?;
 
     let mut last_address: u64 = 0;
 
