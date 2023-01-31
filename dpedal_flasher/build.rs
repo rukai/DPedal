@@ -1,11 +1,15 @@
 use std::{env, process::Command};
 
 fn main() {
+    for file in std::fs::read_dir("../dpedal_firmware").unwrap() {
+        let path = file.unwrap().path();
+        if path.file_name().unwrap().to_str().unwrap() != "target" {
+            println!("cargo:rerun-if-changed={}", path.display());
+        }
+    }
+
     let profile = env::var("PROFILE").unwrap();
-    let firmware_path =
-        format!("../../dpedal_firmware/target/thumbv6m-none-eabi/{profile}/dpedal_firmware",);
-    println!("cargo:rustc-env=FIRMWARE_PATH={firmware_path}");
-    println!("cargo:rerun-if-changed={firmware_path}");
+    println!("cargo:rerun-if-env-changed=PROFILE");
 
     let cargo_args = if profile == "release" {
         vec!["build", "--release"]
@@ -24,4 +28,8 @@ fn main() {
     if !status.success() {
         panic!("cargo build failed");
     }
+
+    let firmware_path =
+        format!("../../dpedal_firmware/target/thumbv6m-none-eabi/{profile}/dpedal_firmware");
+    println!("cargo:rustc-env=FIRMWARE_PATH={firmware_path}");
 }
