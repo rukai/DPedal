@@ -31,7 +31,7 @@ cargo run --release -- --path example-config.kdl
 
 ### 3D Printing
 
-The 3D printed plastic parts are available [here](https://cad.onshape.com/documents/b3650977a607511c32026f52/w/79027c5ddd8ad99ee7db1e2a/e/7192077cb58abe7f31bd20c3?renderMode=0&uiState=63ad8d5084623c01cce27891).
+The 3D printed plastic parts are available [here](https://cad.onshape.com/documents/b3650977a607511c32026f52/v/6855b2b7fca0ef1b1534f2d6/e/ca0139fcd5ce755c9617b995).
 Convert each part to an STL by going through the `pad`, `base` and `switch plate` tabs at the bottom of the page.
 For each tab, right click the tab and select export.
 Set the format to STL and keep the rest as default.
