@@ -1,6 +1,6 @@
 # DPedal
 
-A large DPad you control with your feet.
+A large DPad you control with your foot.
 It connects to your PC over usb 2.0 on a usb C port and sends user configurable HID keyboard events.
 <!--It can be extended with a large array of buttons for your other foot.
 But it is only designed to supplement a keyboard and/or voice dictation, not to replace them.-->
@@ -10,6 +10,7 @@ But it is only designed to supplement a keyboard and/or voice dictation, not to 
 ## Project status
 
 An extension is being worked on to provide many additional buttons to the DPedal, but the basic dpad design is functional.
+The main branch is no longer functional as development occurs but you can refer back to the known good: https://github.com/rukai/DPedal/tree/V1
 
 ## Flash precompiled firmware
 
@@ -56,7 +57,7 @@ For the footrest I deviated from this to keep the print time manageable:
 ### PCB
 
 The PCB is designed to use parts that are available on JLCPCB's PCB assembly service.
-The one exception is keyboard switches which you must acquire and solder yourself.
+The one exception is [kailh switch hot swap sockets](https://www.aliexpress.com/item/32959301642.html) which you must acquire and solder yourself.
 
 To have JLCPCB assemble the PCB for you follow these steps:
 
@@ -93,6 +94,11 @@ The default options should all be fine but I specify:
 
 Select PCB Assembly.
 When prompted upload the `production/bom.csv` for the bom and the `production/positions.csv` for the positions file.
+
+### Cherry MX compatible switches
+
+You will need to obtain your own cherry MX switches.
+I use gateron green switches because foot activated inputs benefit from a lot of extra activation force but feel free to experiment yourself.
 
 ## License
 
