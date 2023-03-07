@@ -889,7 +889,12 @@
       (net 24 "SW3") (pinfunction "2") (pintype "passive") (tstamp e7ae78c2-0dfb-48ff-acdd-1ca66e45a50c))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 24 "SW3") (pinfunction "2") (pintype "passive") (tstamp aa0d8216-208a-4b66-aee6-7a113d42f241))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1042,7 +1047,12 @@
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 59747f45-74a0-4ebc-a093-bbbc0c1b89b0))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp ee82670b-85ee-47de-9c10-457a17960b84))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1195,7 +1205,12 @@
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 7dbfaa7a-f257-4321-a442-b0a0dbc4a6db))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp c2a4b84d-1d7f-491c-94a7-86eead9b6131))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1349,7 +1364,12 @@
       (net 27 "SW4") (pinfunction "2") (pintype "passive") (tstamp 3c8fbc4d-94df-4bed-848e-26929b7c1987))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 27 "SW4") (pinfunction "2") (pintype "passive") (tstamp 149a87b4-fcce-4342-aba2-cc45851b4685))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1612,7 +1632,12 @@
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 018de14d-3ab1-4390-a99d-8d7e33a7f7f8))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp cfd3b3db-7f5f-4fca-929d-1b6bd428676a))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1711,7 +1736,7 @@
       (net 2 "GND") (pinfunction "SHIELD") (pintype "passive") (tstamp 88226d3a-30f3-455b-9d4b-0cbb060fca8c))
     (pad "S1" thru_hole oval (at 4.32 1.05) (size 1 1.6) (drill oval 0.6 1.2) (layers "*.Cu" "*.Mask")
       (net 2 "GND") (pinfunction "SHIELD") (pintype "passive") (tstamp 53b8d1f2-fb49-49f2-b80a-c88c441b6f95))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_C_Receptacle_HRO_TYPE-C-31-M-12.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Connector_USB.3dshapes/USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2241,7 +2266,12 @@
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp adc766c8-5e5f-4974-a1f4-7bb482aa1c7e))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 9fdbf11a-6418-40cf-a00b-4e4d40488d0b))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2394,7 +2424,12 @@
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 7e758d53-4458-4bfb-97c0-3f8269b891e6))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 2 "GND") (pinfunction "2") (pintype "passive") (tstamp 1ac6d821-abc8-4e50-bf56-48f8c7b4e96d))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2871,7 +2906,12 @@
       (net 29 "SW8") (pinfunction "2") (pintype "passive") (tstamp bfbd844b-93c6-4101-b19d-2820998c9816))
     (pad "2" smd roundrect (at 5.32 -5.08 90) (size 3.55 2.5) (layers "B.Cu") (roundrect_rratio 0.1)
       (net 29 "SW8") (pinfunction "2") (pintype "passive") (tstamp 6c44da34-d6e2-420b-8475-ec233f9bd470))
-    (model "${KICAD6_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Hotswap_Kailh_MX.wrl"
+      (offset (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KICAD7_3RD_PARTY}/3dmodels/com_github_perigoso_keyswitch-kicad-library/3d-library.3dshapes/SW_Cherry_MX_Plate.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
