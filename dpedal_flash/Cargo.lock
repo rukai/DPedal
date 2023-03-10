@@ -210,7 +210,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dpedal_flasher"
+name = "dpedalflash"
 version = "0.1.0"
 dependencies = [
  "clap",

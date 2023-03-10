@@ -54,7 +54,7 @@ jobs:
       run: |
         cd dpedal_firmware
         cargo fmt --all -- --check
-        cd ../dpedal_flasher
+        cd ../dpedal_flash
         cargo fmt --all -- --check
     - name: Ensure that the crates and all examples compile and have no warnings under every possible combination of features
       # some things to explicitly point out:
@@ -63,7 +63,7 @@ jobs:
       run: |
         cd dpedal_firmware
         cargo hack --feature-powerset clippy --locked ${{ matrix.cargo_profile }} -- -D warnings
-        cd ../dpedal_flasher
+        cd ../dpedal_flash
         cargo hack --feature-powerset clippy --locked ${{ matrix.cargo_profile }} -- -D warnings
     - name: Ensure that tests did not create or modify any files that arent .gitignore'd
       # This is important because we are checking in the Cargo.lock file.
