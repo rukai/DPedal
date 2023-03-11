@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.1.4", features = ["derive"] }
-dfu-libusb = "0.3.1"
+dfu-libusb = "0.5.0"
 enum-utils = "0.1.2"
 goblin = "0.6.0"
 indicatif = "0.17.3"

@@ -10,22 +10,22 @@ But it is only designed to supplement a keyboard and/or voice dictation, not to 
 ## Project status
 
 An extension is being worked on to provide many additional buttons to the DPedal, but the basic dpad design is functional.
-The main branch is no longer functional as development occurs but you can refer back to the known good: https://github.com/rukai/DPedal/tree/V1
+The main branch is no longer functional as development occurs but you can refer back to the known good: <https://github.com/rukai/DPedal/tree/V1>
 
 ## Flash precompiled firmware
 
 1. Download firmware from TODO
 2. extract tar or zip file
 3. Modify example-config.kdl to specify your desired keymapping
-4. Run `./dpedal_flasher --path example-config.kdl`
+4. Run `./dpedalflash example-config.kdl`
 
 ## Compile and flash firmware
 
 Install rust via rustup then:
 
 ```bash
-cd dpedal_flasher
-cargo run --release -- --path example-config.kdl
+cd dpedal_flash
+cargo run --release -- example-config.kdl
 ```
 
 ## Manufacturing

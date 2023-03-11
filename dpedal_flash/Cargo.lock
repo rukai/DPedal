@@ -175,9 +175,9 @@ dependencies = [
 
 [[package]]
 name = "dfu-core"
-version = "0.4.2"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c3fb34e94bedc8bbd76dfc9f6774896fadbbedac6108fa8a3c46a0125bde188"
+checksum = "815c49442eddfc4a0d9ec4410fa1b3d0ef89d0392c792e4646ba4b9a4eaf59fa"
 dependencies = [
  "bytes",
  "displaydoc",
@@ -188,9 +188,9 @@ dependencies = [
 
 [[package]]
 name = "dfu-libusb"
-version = "0.3.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e20ae81db46fd54fede9e71d06c06a382926212831cfd2f758b888e00a321d1"
+checksum = "cd77f2e9faa1a8913d2da4ecd17acb22db86e34a870f69e111c3201dde27887e"
 dependencies = [
  "dfu-core",
  "libusb1-sys",
