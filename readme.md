@@ -64,7 +64,7 @@ To have JLCPCB assemble the PCB for you follow these steps:
 #### 1
 
 Install kicad and its full library.
-Known to work on Kicad 6.0.x
+Known to work on Kicad 7.0.x
 
 #### 2
 
@@ -92,8 +92,11 @@ The default options should all be fine but I specify:
 * PCB Color: Go wild!
 * Remove Order Number - Specify a location
 
-Select PCB Assembly.
-When prompted upload the `production/bom.csv` for the bom and the `production/positions.csv` for the positions file.
+Enable PCB Assembly and set:
+
+* "Confirm Parts Placement" to yes. (the assembly preview they show has a few parts in the wrong position so I believe this option is needed for jlcpcb to manually fix the part placement on their end)
+
+When prompted upload the `production/bom.csv` for the BOM file and the `production/positions.csv` for the CPL file.
 
 ### Cherry MX compatible switches
 
