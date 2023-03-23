@@ -13,10 +13,13 @@ An extension is being worked on to provide many additional buttons to the DPedal
 
 ## Flash precompiled firmware
 
-1. Download firmware from TODO
-2. extract tar or zip file
+Windows does not work yet.
+Macos is untested.
+
+1. Download the firmware flasher for your system from [the latest release](https://github.com/rukai/DPedal/releases/latest)
+2. Extract the tar or zip file
 3. Modify example-config.kdl to specify your desired keymapping
-4. Run `./dpedalflash example-config.kdl`
+4. Navigate your terminal to the extracted folder and run `./dpedalflash example-config.kdl`
 
 ## Compile and flash firmware
 
