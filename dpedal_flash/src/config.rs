@@ -17,6 +17,11 @@ pub fn append_config_to_firmware(path: &Path, binary: &mut Vec<u8>) -> miette::R
     binary.push(parse_mapping(&config.pad.left)?);
     binary.push(parse_mapping(&config.pad.right)?);
 
+    binary.push(parse_mapping(&config.side_buttons.top_left)?);
+    binary.push(parse_mapping(&config.side_buttons.top_right)?);
+    binary.push(parse_mapping(&config.side_buttons.bottom_left)?);
+    binary.push(parse_mapping(&config.side_buttons.bottom_right)?);
+
     Ok(())
 }
 
@@ -33,7 +38,9 @@ pub struct Config {
     #[knuffel(child)]
     pub pad: Pad,
     #[knuffel(child)]
-    pub right_extension: RightExtension,
+    pub side_buttons: SideButtons,
+    #[knuffel(child)]
+    pub back_extension: BackExtension,
 }
 
 #[derive(knuffel::Decode)]
@@ -49,7 +56,19 @@ pub struct Pad {
 }
 
 #[derive(knuffel::Decode)]
-pub struct RightExtension {
+pub struct SideButtons {
+    #[knuffel(child, unwrap(argument))]
+    pub top_left: String,
+    #[knuffel(child, unwrap(argument))]
+    pub top_right: String,
+    #[knuffel(child, unwrap(argument))]
+    pub bottom_left: String,
+    #[knuffel(child, unwrap(argument))]
+    pub bottom_right: String,
+}
+
+#[derive(knuffel::Decode)]
+pub struct BackExtension {
     #[knuffel(child, unwrap(argument))]
     pub button1: String,
     #[knuffel(child, unwrap(argument))]

@@ -23,12 +23,16 @@ use usb_device::device::UsbDeviceState;
 type UsbClass = keyberon::Class<'static, usb::UsbBusType, ()>;
 type UsbDevice = usb_device::device::UsbDevice<'static, usb::UsbBusType>;
 
-static LAYERS: Lazy<Layers<4, 1, 1>> = Lazy::new(|| unsafe {
+static LAYERS: Lazy<Layers<8, 1, 1>> = Lazy::new(|| unsafe {
     [[[
         action_from_mem(0), // up
         action_from_mem(1), // down
         action_from_mem(2), // left
         action_from_mem(3), // right
+        action_from_mem(4), // top-left
+        action_from_mem(5), // top-right
+        action_from_mem(6), // bottom-left
+        action_from_mem(7), // bottom-right
     ]]]
 });
 
@@ -47,13 +51,13 @@ mod app {
         usb_dev: UsbDevice,
         usb_class: UsbClass,
         #[lock_free]
-        layout: Layout<4, 1, 1>,
+        layout: Layout<8, 1, 1>,
     }
 
     #[local]
     struct Local {
-        matrix: DirectPinMatrix<Pin<Input<PullUp>>, 4, 1>,
-        debouncer: Debouncer<[[bool; 4]; 1]>,
+        matrix: DirectPinMatrix<Pin<Input<PullUp>>, 8, 1>,
+        debouncer: Debouncer<[[bool; 8]; 1]>,
         timer: timers::Timer<stm32::TIM3>,
     }
 
@@ -70,6 +74,8 @@ mod app {
             .freeze(&mut c.device.FLASH);
 
         let gpioa = c.device.GPIOA.split(&mut rcc);
+        let gpiob = c.device.GPIOB.split(&mut rcc);
+        let gpioc = c.device.GPIOC.split(&mut rcc);
 
         let usb = usb::Peripheral {
             usb: c.device.USB,
@@ -87,10 +93,14 @@ mod app {
 
         let matrix = cortex_m::interrupt::free(move |cs| {
             DirectPinMatrix::new([[
-                Some(gpioa.pa1.into_pull_up_input(cs).downgrade()),
-                Some(gpioa.pa3.into_pull_up_input(cs).downgrade()),
-                Some(gpioa.pa2.into_pull_up_input(cs).downgrade()),
-                Some(gpioa.pa4.into_pull_up_input(cs).downgrade()),
+                Some(gpioc.pc13.into_pull_up_input(cs).downgrade()),
+                Some(gpiob.pb3.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa10.into_pull_up_input(cs).downgrade()),
+                Some(gpiob.pb12.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa9.into_pull_up_input(cs).downgrade()),
+                Some(gpiob.pb9.into_pull_up_input(cs).downgrade()),
+                Some(gpioa.pa15.into_pull_up_input(cs).downgrade()),
+                Some(gpiob.pb8.into_pull_up_input(cs).downgrade()),
             ]])
             .unwrap()
         });
@@ -103,7 +113,7 @@ mod app {
             },
             Local {
                 timer,
-                debouncer: Debouncer::new([[false; 4]; 1], [[false; 4]; 1], 5),
+                debouncer: Debouncer::new([[false; 8]; 1], [[false; 8]; 1], 5),
                 matrix,
             },
             init::Monotonics(),

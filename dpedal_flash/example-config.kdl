@@ -1,4 +1,4 @@
-// Configure the main dpad
+// Configure the dpad in the middle of the dpedal
 pad {
     left "Left"
     right "Right"
@@ -6,8 +6,16 @@ pad {
     down "Down"
 }
 
-// Configure the buttons on the extension device plugged into the right hand side port
-right-extension {
+// Configure the buttons on the corners of the dpedal
+side-buttons {
+    top-left "BSpace"
+    top-right "Enter"
+    bottom-left "LShift"
+    bottom-right "Tab"
+}
+
+// Configure the buttons on the extension device plugged into 20-pin port on the back of the dpedal
+back-extension {
     button1 "BSpace"
     button2 "enter"
     button3 "n"

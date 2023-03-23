@@ -10,7 +10,6 @@ But it is only designed to supplement a keyboard and/or voice dictation, not to 
 ## Project status
 
 An extension is being worked on to provide many additional buttons to the DPedal, but the basic dpad design is functional.
-The main branch is no longer functional as development occurs but you can refer back to the known good: <https://github.com/rukai/DPedal/tree/V1>
 
 ## Flash precompiled firmware
 
@@ -97,6 +96,12 @@ Enable PCB Assembly and set:
 * "Confirm Parts Placement" to yes. (the assembly preview they show has a few parts in the wrong position so I believe this option is needed for jlcpcb to manually fix the part placement on their end)
 
 When prompted upload the `production/bom.csv` for the BOM file and the `production/positions.csv` for the CPL file.
+
+About a day after purchasing you will need to give confirmation that the parts are correctly placed on the PCB.
+Check your orders on the website and click on "DFM Analysis"
+There should be an "Original Part Placement" which is completely broken.
+And the "Corrected Part Placment" which should look like this:
+![correctedPartPlacement.png]()
 
 ### Cherry MX compatible switches
 
