@@ -13,20 +13,46 @@ An extension is being worked on to provide many additional buttons to the DPedal
 
 ## Flash precompiled firmware
 
-Windows does not work yet.
-Macos is untested.
+### Windows
+
+1. Connect the dpedal to your PC via USB
+2. Set the dpedal to flash mode by:
+    1. Press and hold the FLASH button
+    2. Press and release the RESET button
+    3. Release the FLASH button
+3. Download and run [zadig](https://zadig.akeo.ie)
+    1. Options -> tick `List All Devices`
+    2. In the dropdown choose `STM32 BOOTLOADER`
+    3. Press `Replace Driver`
+4. Download the `dpedalflash-v*-x86-64-pc-windows-msvc.zip` from [the latest release](https://github.com/rukai/DPedal/releases/latest)
+5. Unzip it and navigate to the folder containing `dpedalflash.exe` and `example-config.kdl` in file explorer
+6. Open `example-config.kdl` in a text editor and edit it to specify your desired keymapping (or leave it as default)
+7. In file explorer press `File` -> `Open Windows Powershell`
+8. In powershell write `./dpedalflash example-config.kdl` and press enter
+
+### Other OS's
 
 1. Download the firmware flasher for your system from [the latest release](https://github.com/rukai/DPedal/releases/latest)
 2. Extract the tar or zip file
-3. Modify example-config.kdl to specify your desired keymapping
-4. Navigate your terminal to the extracted folder and run `./dpedalflash example-config.kdl`
+3. Modify `example-config.kdl` to specify your desired keymapping
+4. Set the dpedal to flash mode by:
+    1. Press and hold the FLASH button
+    2. Press and release the RESET button
+    3. Release the FLASH button
+5. Navigate your terminal to the extracted folder and run `./dpedalflash example-config.kdl`
 
 ## Compile and flash firmware
 
-Install rust via rustup then:
+1. Set the dpedal to flash mode by:
+    1. Press and hold the FLASH button
+    2. Press and release the RESET button
+    3. Release the FLASH button
+2. If you are on windows you will now need to follow the zadig instructions from the precompiled firmware section
+3. Install rust via rustup then:
 
 ```bash
-cd dpedal_flash
+git clone https://github.com/rukai/DPedal
+cd dpedal/dpedal_flash
 cargo run --release -- example-config.kdl
 ```
 
