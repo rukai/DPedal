@@ -74,13 +74,22 @@ My configuration:
 * PLA
 * Prusa mini with prusa slicer
 
-For the footrest I deviated from this to keep the print time manageable:
+For some prints I change the layer height for faster print times, but feel free to ignore these and stick with 0.10mm everywhere:
 
-* 0.10mm layer height
-* 15% support cubic infill
-* height range modifiers (needs the advanced UI)
-  * layers: 0-10mm -> height: 0.15mm
-  * layers: 10-20mm -> height: 0.20mm
+* Footrest:
+  * 0.10mm layer height
+  * 15% support cubic infill
+  * height range modifiers (needs the advanced UI)
+    * layers: 0-10mm -> height: 0.15mm
+    * layers: 10-20mm -> height: 0.20mm
+* angled joiner:
+  * 0.15mm layer height (QUALITY profile)
+* switch plate:
+  * 0.20mm layer height (QUALITY profile)
+* base:
+  * 0.10mm layer height (QUALITY profile)
+  * height range modifiers (needs the advanced UI)
+    * layers: 0-3mm -> height: 0.20mm
 
 ### PCB
 
