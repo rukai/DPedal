@@ -10,18 +10,18 @@ pad {
 
 // Configure the buttons on the corners of the dpedal
 side-buttons {
-    top-left "BSpace"
+    top-left "Backspace"
     top-right "Enter"
-    bottom-left "LShift"
+    bottom-left "LeftShift"
     bottom-right "Tab"
 }
 
 // Configure the buttons on the extension device plugged into 20-pin port on the back of the dpedal
 back-extension {
-    button1 "BSpace"
-    button2 "enter"
-    button3 "n"
-    button4 "shift"
+    button1 "Nothing"
+    button2 "Nothing"
+    button3 "Nothing"
+    button4 "Nothing"
 }
 
 // Full list of available keycodes:
