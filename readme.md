@@ -5,7 +5,7 @@ It connects to your PC over usb 2.0 on a usb C port and sends user configurable 
 <!--It can be extended with a large array of buttons for your other foot.
 But it is only designed to supplement a keyboard and/or voice dictation, not to replace them.-->
 
-<img width="600px" alt="Image of the DPedal" src="https://media.hachyderm.io/media_attachments/files/109/760/254/454/933/863/original/559a289ef2537da9.jpeg">
+<img width="600px" alt="Image of the DPedal" src="https://media.hachyderm.io/media_attachments/files/110/121/392/692/482/282/original/38572f992225a104.jpeg">
 
 ## Project status
 
