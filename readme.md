@@ -9,7 +9,21 @@ But it is only designed to supplement a keyboard and/or voice dictation, not to 
 
 ## Project status
 
-An extension is being worked on to provide many additional buttons to the DPedal, but the basic dpad design is functional.
+The dpad design is functional and can be built following the instructions in this repo.
+The dpad has an extension port that I would like to take advantage of one day by providing a secondary unit for use by the other foot with many additional buttons.
+
+## Usability
+
+I use the dpedal daily, I find it most useful for simple navigation tasks:
+
+* scrolling through large documents or pages
+* tab navigation (I always use it when crossword solving)
+* doom scrolling
+
+Now that I have built two dpedal's I'll experiment with what sort of use cases dual-wielding enables and report back.
+
+It can be quite easy to bump the left and right buttons on the dpad which can be quite disruptive for some applications, so the default configuration has the left and right buttons disabled.
+They can be easily enabled when you want to try introducing them.
 
 ## Flash precompiled firmware
 

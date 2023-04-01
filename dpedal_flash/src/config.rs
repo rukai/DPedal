@@ -81,6 +81,7 @@ pub struct BackExtension {
 
 #[derive(enum_utils::FromStr)]
 pub enum KeyMap {
+    Nothing,
     A,
     B,
     C,
@@ -108,28 +109,28 @@ pub enum KeyMap {
     Y,
     Z,
     /// `1` and `!`.
-    Kb1,
+    Keyboard1,
     /// `2` and `@`.
-    Kb2,
+    Keyboard2,
     /// `3` and `#`.
-    Kb3, // 0x20
+    Keyboard3, // 0x20
     /// `4` and `$`.
-    Kb4,
+    Keyboard4,
     /// `5` and `%`.
-    Kb5,
+    Keyboard5,
     /// `6` and `^`.
-    Kb6,
+    Keyboard6,
     /// `7` and `&`.
-    Kb7,
+    Keyboard7,
     /// `8` and `*`.
-    Kb8,
+    Keyboard8,
     /// `9` and `(`.
-    Kb9,
+    Keyboard9,
     /// `0` and `)`.
-    Kb0,
+    Keyboard0,
     Enter,
     Escape,
-    BSpace,
+    Backspace,
     Tab,
     Space,
     /// `-` and `_`.
@@ -137,15 +138,15 @@ pub enum KeyMap {
     /// `=` and `+`.
     Equal,
     /// `[` and `{`.
-    LBracket,
+    LeftBracket,
     /// `]` and `}`.
-    RBracket, // 0x30
+    RightBracket, // 0x30
     /// `\` and `|`.
-    Bslash,
+    Backslash,
     /// Non-US `#` and `~` (Typically near the Enter key).
     NonUsHash,
     /// `;` and `:`.
-    SColon,
+    Semicolon,
     /// `'` and `"`.
     Quote,
     // How to have ` as code?
@@ -170,7 +171,7 @@ pub enum KeyMap {
     F10,
     F11,
     F12,
-    PScreen,
+    PrintScreen,
     ScrollLock,
     Pause,
     Insert,
@@ -185,34 +186,34 @@ pub enum KeyMap {
     Up,
     NumLock,
     /// Keypad `/`
-    KpSlash,
+    KeypadSlash,
     /// Keypad `*`
-    KpAsterisk,
+    KeypadAsterisk,
     /// Keypad `-`.
-    KpMinus,
+    KeypadMinus,
     /// Keypad `+`.
-    KpPlus,
+    KeypadPlus,
     /// Keypad enter.
-    KpEnter,
+    KeypadEnter,
     /// Keypad 1.
-    Kp1,
-    Kp2,
-    Kp3,
-    Kp4,
-    Kp5,
-    Kp6,
-    Kp7,
-    Kp8, // 0x60
-    Kp9,
-    Kp0,
-    KpDot,
+    Keypad1,
+    Keypad2,
+    Keypad3,
+    Keypad4,
+    Keypad5,
+    Keypad6,
+    Keypad7,
+    Keypad8, // 0x60
+    Keypad9,
+    Keypad0,
+    KeypadDot,
     /// Non-US `\` and `|` (Typically near the Left-Shift key)
-    NonUsBslash,
+    NonUsBackslash,
     Application, // 0x65
     /// not a key, used for errors
     Power,
     /// Keypad `=`.
-    KpEqual,
+    KeypadEqual,
     F13,
     F14,
     F15,
@@ -246,9 +247,9 @@ pub enum KeyMap {
     /// Deprecated.
     LockingScrollLock,
     /// Keypad `,`, also used for the brazilian keypad period (.) key.
-    KpComma,
+    KeypadComma,
     /// Used on AS/400 keyboard
-    KpEqualSign,
+    KeypadEqualSign,
     Intl1,
     Intl2,
     Intl3,
@@ -284,21 +285,21 @@ pub enum KeyMap {
 
     // Modifiers
     /// Left Control.
-    LCtrl = 0xE0,
+    LeftCtrl = 0xE0,
     /// Left Shift.
-    LShift,
+    LeftShift,
     /// Left Alt.
-    LAlt,
+    LeftAlt,
     /// Left GUI (the Windows key).
-    LGui,
+    LeftWindows,
     /// Right Control.
-    RCtrl,
+    RightCtrl,
     /// Right Shift.
-    RShift,
+    RightShift,
     /// Right Alt (or Alt Gr).
-    RAlt,
+    RightAlt,
     /// Right GUI (the Windows key).
-    RGui, // 0xE7
+    RightWindows, // 0xE7
 
     // Unofficial
     MediaPlayPause = 0xE8,
@@ -326,6 +327,7 @@ pub enum KeyMap {
 impl KeyMap {
     fn into_keycode(self) -> KeyCode {
         match self {
+            KeyMap::Nothing => KeyCode::No,
             KeyMap::A => KeyCode::A,
             KeyMap::B => KeyCode::B,
             KeyMap::C => KeyCode::C,
@@ -352,28 +354,28 @@ impl KeyMap {
             KeyMap::X => KeyCode::X,
             KeyMap::Y => KeyCode::Y,
             KeyMap::Z => KeyCode::Z,
-            KeyMap::Kb1 => KeyCode::Kb1,
-            KeyMap::Kb2 => KeyCode::Kb2,
-            KeyMap::Kb3 => KeyCode::Kb3,
-            KeyMap::Kb4 => KeyCode::Kb4,
-            KeyMap::Kb5 => KeyCode::Kb5,
-            KeyMap::Kb6 => KeyCode::Kb6,
-            KeyMap::Kb7 => KeyCode::Kb7,
-            KeyMap::Kb8 => KeyCode::Kb8,
-            KeyMap::Kb9 => KeyCode::Kb9,
-            KeyMap::Kb0 => KeyCode::Kb0,
+            KeyMap::Keyboard1 => KeyCode::Kb1,
+            KeyMap::Keyboard2 => KeyCode::Kb2,
+            KeyMap::Keyboard3 => KeyCode::Kb3,
+            KeyMap::Keyboard4 => KeyCode::Kb4,
+            KeyMap::Keyboard5 => KeyCode::Kb5,
+            KeyMap::Keyboard6 => KeyCode::Kb6,
+            KeyMap::Keyboard7 => KeyCode::Kb7,
+            KeyMap::Keyboard8 => KeyCode::Kb8,
+            KeyMap::Keyboard9 => KeyCode::Kb9,
+            KeyMap::Keyboard0 => KeyCode::Kb0,
             KeyMap::Enter => KeyCode::Enter,
             KeyMap::Escape => KeyCode::Escape,
-            KeyMap::BSpace => KeyCode::BSpace,
+            KeyMap::Backspace => KeyCode::BSpace,
             KeyMap::Tab => KeyCode::Tab,
             KeyMap::Space => KeyCode::Space,
             KeyMap::Minus => KeyCode::Minus,
             KeyMap::Equal => KeyCode::Equal,
-            KeyMap::LBracket => KeyCode::LBracket,
-            KeyMap::RBracket => KeyCode::RBracket,
-            KeyMap::Bslash => KeyCode::Bslash,
+            KeyMap::LeftBracket => KeyCode::LBracket,
+            KeyMap::RightBracket => KeyCode::RBracket,
+            KeyMap::Backslash => KeyCode::Bslash,
             KeyMap::NonUsHash => KeyCode::NonUsHash,
-            KeyMap::SColon => KeyCode::SColon,
+            KeyMap::Semicolon => KeyCode::SColon,
             KeyMap::Quote => KeyCode::Quote,
             KeyMap::Grave => KeyCode::Grave,
             KeyMap::Comma => KeyCode::Comma,
@@ -392,7 +394,7 @@ impl KeyMap {
             KeyMap::F10 => KeyCode::F10,
             KeyMap::F11 => KeyCode::F12,
             KeyMap::F12 => KeyCode::F12,
-            KeyMap::PScreen => KeyCode::PScreen,
+            KeyMap::PrintScreen => KeyCode::PScreen,
             KeyMap::ScrollLock => KeyCode::ScrollLock,
             KeyMap::Pause => KeyCode::Pause,
             KeyMap::Insert => KeyCode::Insert,
@@ -406,26 +408,26 @@ impl KeyMap {
             KeyMap::Down => KeyCode::Down,
             KeyMap::Up => KeyCode::Up,
             KeyMap::NumLock => KeyCode::NumLock,
-            KeyMap::KpSlash => KeyCode::KpSlash,
-            KeyMap::KpAsterisk => KeyCode::KpAsterisk,
-            KeyMap::KpMinus => KeyCode::KpMinus,
-            KeyMap::KpPlus => KeyCode::KpPlus,
-            KeyMap::KpEnter => KeyCode::KpEnter,
-            KeyMap::Kp1 => KeyCode::Kp1,
-            KeyMap::Kp2 => KeyCode::Kp2,
-            KeyMap::Kp3 => KeyCode::Kp3,
-            KeyMap::Kp4 => KeyCode::Kp4,
-            KeyMap::Kp5 => KeyCode::Kp5,
-            KeyMap::Kp6 => KeyCode::Kp6,
-            KeyMap::Kp7 => KeyCode::Kp7,
-            KeyMap::Kp8 => KeyCode::Kp8,
-            KeyMap::Kp9 => KeyCode::Kp9,
-            KeyMap::Kp0 => KeyCode::Kp0,
-            KeyMap::KpDot => KeyCode::KpDot,
-            KeyMap::NonUsBslash => KeyCode::NonUsBslash,
+            KeyMap::KeypadSlash => KeyCode::KpSlash,
+            KeyMap::KeypadAsterisk => KeyCode::KpAsterisk,
+            KeyMap::KeypadMinus => KeyCode::KpMinus,
+            KeyMap::KeypadPlus => KeyCode::KpPlus,
+            KeyMap::KeypadEnter => KeyCode::KpEnter,
+            KeyMap::Keypad1 => KeyCode::Kp1,
+            KeyMap::Keypad2 => KeyCode::Kp2,
+            KeyMap::Keypad3 => KeyCode::Kp3,
+            KeyMap::Keypad4 => KeyCode::Kp4,
+            KeyMap::Keypad5 => KeyCode::Kp5,
+            KeyMap::Keypad6 => KeyCode::Kp6,
+            KeyMap::Keypad7 => KeyCode::Kp7,
+            KeyMap::Keypad8 => KeyCode::Kp8,
+            KeyMap::Keypad9 => KeyCode::Kp9,
+            KeyMap::Keypad0 => KeyCode::Kp0,
+            KeyMap::KeypadDot => KeyCode::KpDot,
+            KeyMap::NonUsBackslash => KeyCode::NonUsBslash,
             KeyMap::Application => KeyCode::Application,
             KeyMap::Power => KeyCode::Power,
-            KeyMap::KpEqual => KeyCode::KpEqual,
+            KeyMap::KeypadEqual => KeyCode::KpEqual,
             KeyMap::F13 => KeyCode::F13,
             KeyMap::F14 => KeyCode::F14,
             KeyMap::F15 => KeyCode::F15,
@@ -455,8 +457,8 @@ impl KeyMap {
             KeyMap::LockingCapsLock => KeyCode::LockingCapsLock,
             KeyMap::LockingNumLock => KeyCode::LockingNumLock,
             KeyMap::LockingScrollLock => KeyCode::LockingScrollLock,
-            KeyMap::KpComma => KeyCode::KpComma,
-            KeyMap::KpEqualSign => KeyCode::KpEqualSign,
+            KeyMap::KeypadComma => KeyCode::KpComma,
+            KeyMap::KeypadEqualSign => KeyCode::KpEqualSign,
             KeyMap::Intl1 => KeyCode::Intl1,
             KeyMap::Intl2 => KeyCode::Intl2,
             KeyMap::Intl3 => KeyCode::Intl3,
@@ -487,14 +489,14 @@ impl KeyMap {
             KeyMap::ClearAgain => KeyCode::ClearAgain,
             KeyMap::CrSel => KeyCode::CrSel,
             KeyMap::ExSel => KeyCode::ExSel,
-            KeyMap::LCtrl => KeyCode::LCtrl,
-            KeyMap::LShift => KeyCode::LShift,
-            KeyMap::LAlt => KeyCode::LAlt,
-            KeyMap::LGui => KeyCode::LGui,
-            KeyMap::RCtrl => KeyCode::RCtrl,
-            KeyMap::RShift => KeyCode::RShift,
-            KeyMap::RAlt => KeyCode::RAlt,
-            KeyMap::RGui => KeyCode::RGui,
+            KeyMap::LeftCtrl => KeyCode::LCtrl,
+            KeyMap::LeftShift => KeyCode::LShift,
+            KeyMap::LeftAlt => KeyCode::LAlt,
+            KeyMap::LeftWindows => KeyCode::LGui,
+            KeyMap::RightCtrl => KeyCode::RCtrl,
+            KeyMap::RightShift => KeyCode::RShift,
+            KeyMap::RightAlt => KeyCode::RAlt,
+            KeyMap::RightWindows => KeyCode::RGui,
             KeyMap::MediaPlayPause => KeyCode::MediaPlayPause,
             KeyMap::MediaStopCD => KeyCode::MediaStopCD,
             KeyMap::MediaPreviousSong => KeyCode::MediaPreviousSong,
