@@ -2,10 +2,14 @@
 
 A large DPad you control with your foot.
 It connects to your PC over usb 2.0 on a usb C port and sends user configurable HID keyboard events.
+
+It consists entirely of 3d printed parts except for the PCB.
+You can build your own from this design if you are comfortable with 3d printing, ordering assembled PCB's from a manufacturer and a tiny bit of soldering.
+
 <!--It can be extended with a large array of buttons for your other foot.
 But it is only designed to supplement a keyboard and/or voice dictation, not to replace them.-->
 
-<img width="600px" alt="Image of the DPedal" src="https://media.hachyderm.io/media_attachments/files/110/121/392/692/482/282/original/38572f992225a104.jpeg">
+[![Image of the DPedal](images/labelled.jpg)](https://hachyderm.io/@rukai/110121489127236981)
 
 ## Project status
 
@@ -153,7 +157,8 @@ About a day after purchasing you will need to give confirmation that the parts a
 Check your orders on the website and click on "DFM Analysis"
 There should be an "Original Part Placement" which is completely broken.
 And the "Corrected Part Placment" which should look like this:
-![correctedPartPlacement.png]()
+
+![Corrected part placement](images/correctedPartPlacement.png)
 
 ### Cherry MX compatible switches
 
