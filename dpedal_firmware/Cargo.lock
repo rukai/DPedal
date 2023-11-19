@@ -154,7 +154,7 @@ checksum = "7059fff8937831a9ae6f0fe4d658ffabf58f2ca96aa9dec1c889f936f705f216"
 
 [[package]]
 name = "dpedal_firmware"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",

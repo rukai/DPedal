@@ -36,3 +36,4 @@ include = ["example-config.kdl"]
 installers = []
 # Publish jobs to run in CI
 pr-run-mode = "plan"
+allow-dirty = ["ci"]
