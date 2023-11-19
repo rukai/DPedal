@@ -84,6 +84,8 @@ pub struct BackExtension {
 #[derive(enum_utils::FromStr)]
 pub enum KeyMap {
     Nothing,
+    MouseScrollUp,
+    MouseScrollDown,
     A,
     B,
     C,
@@ -330,6 +332,8 @@ impl KeyMap {
     fn into_keycode(self) -> KeyCode {
         match self {
             KeyMap::Nothing => KeyCode::No,
+            KeyMap::MouseScrollUp => KeyCode::MediaScrollUp,
+            KeyMap::MouseScrollDown => KeyCode::MediaScrollDown,
             KeyMap::A => KeyCode::A,
             KeyMap::B => KeyCode::B,
             KeyMap::C => KeyCode::C,
