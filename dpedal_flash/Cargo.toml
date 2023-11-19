@@ -2,6 +2,7 @@
 name = "dpedalflash"
 version = "0.1.1"
 edition = "2021"
+repository = "https://github.com/rukai/DPedal"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -24,11 +25,14 @@ lto = "thin"
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.0.5"
-# The preferred Rust toolchain to use in CI (rustup toolchain syntax)
-rust-toolchain-version = "1.67.1"
-# CI backends to support (see 'cargo dist generate-ci')
+cargo-dist-version = "0.4.3"
+# CI backends to support
 ci = ["github"]
 # Target platforms to build apps for (Rust target-triple syntax)
-targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "aarch64-apple-darwin"]
+targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-pc-windows-msvc"]
+# Extra static files to include in each App (path relative to this Cargo.toml's dir)
 include = ["example-config.kdl"]
+# The installers to generate for each app
+installers = []
+# Publish jobs to run in CI
+pr-run-mode = "plan"
