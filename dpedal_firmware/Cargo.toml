@@ -4,6 +4,8 @@ version = "0.1.1"
 edition = "2021"
 repository = "https://github.com/rukai/DPedal"
 
+# TODO: use bindeps to remove "cargo calling cargo" hacks https://rust-lang.github.io/rfcs/3176-cargo-multi-dep-artifacts.html
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -17,9 +19,14 @@ embedded-hal = "0.2"
 usb-device = "0.2.0"
 nb = "1.0.0"
 once_cell = { version = "1.17.0", default-features = false, features = ["critical-section"] }
+usbd-human-interface-device = "0.4.4"
+frunk = { version = "0.4.2", default-features = false }
 
 [profile.release]
 lto = true
 incremental = false
 opt-level = "z"
 debug = true
+
+[profile.dev]
+opt-level = "z"

@@ -1,8 +1,6 @@
 #![no_main]
 #![no_std]
 
-use keyberon::action::Action;
-use once_cell::sync::Lazy;
 // set the panic handler
 use panic_halt as _;
 
@@ -10,20 +8,29 @@ use hal::gpio::{Input, Pin, PullUp};
 use hal::prelude::*;
 use hal::usb;
 use hal::{stm32, timers};
+use keyberon::action::Action;
 use keyberon::debounce::Debouncer;
-use keyberon::key_code::KbHidReport;
+use keyberon::key_code::KeyCode;
+use keyberon::layout::CustomEvent;
 use keyberon::layout::{Event, Layers, Layout};
 use keyberon::matrix::DirectPinMatrix;
+use once_cell::sync::Lazy;
 use rtic::app;
 use stm32f0xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
-use usb_device::class::UsbClass as _;
-use usb_device::device::UsbDeviceState;
+use usbd_human_interface_device::device::keyboard::{NKROBootKeyboard, NKROBootKeyboardConfig};
+use usbd_human_interface_device::device::mouse::{WheelMouse, WheelMouseConfig, WheelMouseReport};
+use usbd_human_interface_device::page::Keyboard;
+use usbd_human_interface_device::prelude::*;
 
-type UsbClass = keyberon::Class<'static, usb::UsbBusType, ()>;
 type UsbDevice = usb_device::device::UsbDevice<'static, usb::UsbBusType>;
+type MultiDevice = frunk::HList!(
+    WheelMouse<'static, hal::usb::UsbBusType>,
+    NKROBootKeyboard<'static, hal::usb::UsbBusType>,
+);
 
-static LAYERS: Lazy<Layers<8, 1, 1>> = Lazy::new(|| unsafe {
+// TODO: We'll probably need to vendor the keyberon bits we need so we can make layers runtime configurable
+static LAYERS: Lazy<Layers<8, 1, 1, MouseEvent>> = Lazy::new(|| unsafe {
     [[[
         action_from_mem(0), // up
         action_from_mem(1), // down
@@ -36,10 +43,27 @@ static LAYERS: Lazy<Layers<8, 1, 1>> = Lazy::new(|| unsafe {
     ]]]
 });
 
-unsafe fn action_from_mem(offset: usize) -> Action {
+#[derive(Clone, Copy)]
+enum MouseEvent {
+    ScrollUp,
+    ScrollDown,
+}
+
+#[derive(Clone, Copy, Default)]
+struct MouseState {
+    ticks_since_last_change: u32,
+    event: Option<MouseEvent>,
+}
+
+unsafe fn action_from_mem(offset: usize) -> Action<MouseEvent> {
     let config = (0x0800_8000 + offset) as *mut u8;
     let config_byte1 = unsafe { core::ptr::read_volatile(config) };
-    Action::KeyCode(unsafe { core::mem::transmute(config_byte1) })
+    let keycode: KeyCode = unsafe { core::mem::transmute(config_byte1) };
+    match keycode {
+        KeyCode::MediaScrollUp => Action::Custom(MouseEvent::ScrollUp),
+        KeyCode::MediaScrollDown => Action::Custom(MouseEvent::ScrollDown),
+        _ => Action::KeyCode(keycode),
+    }
 }
 
 #[app(device = crate::hal::pac, peripherals = true, dispatchers = [CEC_CAN])]
@@ -48,10 +72,10 @@ mod app {
 
     #[shared]
     struct Shared {
-        usb_dev: UsbDevice,
-        usb_class: UsbClass,
+        multi_device: UsbHidClass<'static, hal::usb::UsbBusType, MultiDevice>,
+        usb_device: UsbDevice,
         #[lock_free]
-        layout: Layout<8, 1, 1>,
+        layout: Layout<8, 1, 1, MouseEvent>,
     }
 
     #[local]
@@ -59,6 +83,7 @@ mod app {
         matrix: DirectPinMatrix<Pin<Input<PullUp>>, 8, 1>,
         debouncer: Debouncer<[[bool; 8]; 1]>,
         timer: timers::Timer<stm32::TIM3>,
+        mouse_state: MouseState,
     }
 
     #[init(local = [bus: Option<UsbBusAllocator<usb::UsbBusType>> = None])]
@@ -84,9 +109,20 @@ mod app {
         };
         *c.local.bus = Some(usb::UsbBusType::new(usb));
         let usb_bus = c.local.bus.as_ref().unwrap();
+        let multi_device = UsbHidClassBuilder::new()
+            .add_device(NKROBootKeyboardConfig::default())
+            .add_device(WheelMouseConfig::default())
+            .build(usb_bus);
 
-        let usb_class = keyberon::new_class(usb_bus, ());
-        let usb_dev = keyberon::new_device(usb_bus);
+        // https://pid.codes
+        let usb_device = usb_device::device::UsbDeviceBuilder::new(
+            usb_bus,
+            usb_device::device::UsbVidPid(0x1209, 0x0001),
+        )
+        .manufacturer("rukai")
+        .product("dpedal")
+        .serial_number("TEST")
+        .build();
 
         let mut timer = timers::Timer::tim3(c.device.TIM3, 1.khz(), &mut rcc);
         timer.listen(timers::Event::TimeOut);
@@ -107,26 +143,32 @@ mod app {
 
         (
             Shared {
-                usb_dev,
-                usb_class,
+                multi_device,
+                usb_device,
                 layout: Layout::new(&LAYERS),
             },
             Local {
                 timer,
                 debouncer: Debouncer::new([[false; 8]; 1], [[false; 8]; 1], 5),
                 matrix,
+                mouse_state: MouseState::default(),
             },
             init::Monotonics(),
         )
     }
 
-    #[task(binds = USB, priority = 3, shared = [usb_dev, usb_class])]
+    #[task(binds = USB, priority = 3, shared = [multi_device, usb_device])]
     fn usb_rx(c: usb_rx::Context) {
-        (c.shared.usb_dev, c.shared.usb_class).lock(|usb_dev, usb_class| {
-            if usb_dev.poll(&mut [usb_class]) {
-                usb_class.poll();
+        (c.shared.multi_device, c.shared.usb_device).lock(|multi_device, usb_device| {
+            if usb_device.poll(&mut [multi_device]) {
+                let interface = multi_device.device::<NKROBootKeyboard<'_, _>, _>();
+                match interface.read_report() {
+                    Err(usb_device::UsbError::WouldBlock) => {}
+                    Err(e) => core::panic!("Failed to read keyboard report: {:?}", e),
+                    Ok(_) => {}
+                }
             }
-        });
+        })
     }
 
     #[task(priority = 2, capacity = 8, shared = [layout])]
@@ -134,22 +176,65 @@ mod app {
         c.shared.layout.event(event)
     }
 
-    #[task(priority = 2, shared = [usb_dev, usb_class, layout])]
+    #[task(priority = 2, shared = [layout, multi_device], local = [mouse_state])]
     fn tick_keyberon(mut c: tick_keyberon::Context) {
-        c.shared.layout.tick();
-        if c.shared.usb_dev.lock(|d| d.state()) != UsbDeviceState::Configured {
-            return;
+        match c.shared.layout.tick() {
+            CustomEvent::Press(e) => {
+                c.local.mouse_state.event = Some(*e);
+                c.local.mouse_state.ticks_since_last_change = 0;
+            }
+            CustomEvent::Release(_) => {
+                c.local.mouse_state.event = None;
+                c.local.mouse_state.ticks_since_last_change = 0;
+            }
+            CustomEvent::NoEvent => {}
         }
-        let report: KbHidReport = c.shared.layout.keycodes().collect();
 
-        if !c
-            .shared
-            .usb_class
-            .lock(|k| k.device_mut().set_keyboard_report(report.clone()))
-        {
-            return;
+        let t = c.local.mouse_state.ticks_since_last_change;
+        let mut mouse_report = WheelMouseReport::default();
+        match c.local.mouse_state.event {
+            Some(MouseEvent::ScrollDown) => {
+                mouse_report.vertical_wheel = -if t % 100 == 0 { 1 } else { 0 }
+            }
+            Some(MouseEvent::ScrollUp) => {
+                mouse_report.vertical_wheel = if t % 100 == 0 { 1 } else { 0 }
+            }
+            None => {}
         }
-        while let Ok(0) = c.shared.usb_class.lock(|k| k.write(report.as_bytes())) {}
+
+        // Run this after generating mouse_report to ensure the first tick is at 0
+        c.local.mouse_state.ticks_since_last_change += 1;
+
+        let keyboard_report = c.shared.layout.keycodes().map(|x| Keyboard::from(x as u8));
+
+        c.shared.multi_device.lock(|multi_device| {
+            match multi_device
+                .device::<NKROBootKeyboard<'_, _>, _>()
+                .write_report(keyboard_report)
+            {
+                Err(UsbHidError::WouldBlock) => {}
+                Err(UsbHidError::Duplicate) => {}
+                Ok(_) => {}
+                Err(e) => core::panic!("Failed to write keyboard report: {:?}", e),
+            }
+
+            // Sending empty mouse reports achieves nothing and appears to cause issues by sending too many reports
+            // So we check for empty reports and skip
+            if mouse_report != WheelMouseReport::default() {
+                let mouse = multi_device.device::<WheelMouse<'_, _>, _>();
+                match mouse.write_report(&mouse_report) {
+                    Err(UsbHidError::WouldBlock) => {}
+                    Ok(_) => {}
+                    Err(e) => core::panic!("Failed to write mouse report: {:?}", e),
+                };
+            }
+        });
+
+        c.shared.multi_device.lock(|k| match k.tick() {
+            Err(UsbHidError::WouldBlock) => {}
+            Ok(_) => {}
+            Err(e) => core::panic!("Failed to process keyboard tick: {:?}", e),
+        });
     }
 
     #[task(
@@ -163,6 +248,13 @@ mod app {
         for event in c.local.debouncer.events(c.local.matrix.get().unwrap()) {
             handle_event::spawn(event).unwrap();
         }
+
         tick_keyberon::spawn().unwrap();
     }
 }
+
+// Implemented by reference to these examples:
+// https://github.com/dlkj/usbd-human-interface-device/blob/main/examples/src/bin/keyboard_rtic.rs
+// https://github.com/dlkj/usbd-human-interface-device/blob/main/examples/src/bin/multi_device.rs
+// https://github.com/dlkj/usbd-human-interface-device/blob/main/examples/src/bin/keyboard_nkro.rs
+// https://github.com/dlkj/usbd-human-interface-device/blob/main/examples/src/bin/mouse_wheel.rs
