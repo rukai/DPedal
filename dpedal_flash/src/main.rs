@@ -7,7 +7,7 @@ mod cli;
 mod config;
 
 fn main() -> miette::Result<()> {
-    let elf = include_bytes!(env!("FIRMWARE_PATH"));
+    let elf = include_bytes!(env!("CARGO_BIN_FILE_DPEDAL_FIRMWARE_dpedal_firmware"));
 
     let cli = cli::Args::parse();
 

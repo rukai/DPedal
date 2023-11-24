@@ -61,20 +61,15 @@ jobs:
         run: "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.4.3/cargo-dist-installer.sh | sh"
       - id: plan
         run: |
-          # Added: We dont use a cargo workspace so need to manually cd into our crate directory
-          cd dpedal_flash
-
           cargo dist plan ${{ !github.event.pull_request && format('--tag={0}', github.ref_name) || '' }} --output-format=json > dist-manifest.json
           echo "cargo dist plan ran successfully"
           cat dist-manifest.json
           echo "manifest=$(jq -c "." dist-manifest.json)" >> "$GITHUB_OUTPUT"
-
       - name: "Upload dist-manifest.json"
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          # Added: `dpedal_flash/` as its written to a different path now
-          path: dpedal_flash/dist-manifest.json
+          path: dist-manifest.json
 
   # Build and packages all the platform-specific things
   upload-local-artifacts:
@@ -110,14 +105,6 @@ jobs:
           ${{ matrix.packages_install }}
       - name: Build artifacts
         run: |
-          # Added: Work around a bug in dpedalflash where the rust-toolchain.toml of dpedal_firmware is ignored... 😬
-          cd dpedal_firmware
-          cargo # Manually trigger the `rust-toolchain.toml` of dpedal_firmware
-          cd ..
-
-          # Added: We dont use a cargo workspace so need to manually cd into our crate directory
-          cd dpedal_flash
-
           # Actually do builds and make zips and whatnot
           cargo dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --output-format=json ${{ matrix.dist_args }} > dist-manifest.json
           echo "cargo dist ran successfully"
@@ -128,9 +115,6 @@ jobs:
         # inconsistent syntax between shell and powershell.
         shell: bash
         run: |
-          # Added: We dont use a cargo workspace so need to manually cd into our crate directory
-          cd dpedal_flash
-
           # Parse out what we just built and upload it to the Github Release™
           echo "paths<<EOF" >> "$GITHUB_OUTPUT"
           jq --raw-output ".artifacts[]?.path | select( . != null )" dist-manifest.json >> "$GITHUB_OUTPUT"
@@ -141,10 +125,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          # Added: `dpedal_flash/` as its written to a different path now
           path: |
             ${{ steps.cargo-dist.outputs.paths }}
-            dpedal_flash/${{ env.BUILD_MANIFEST_NAME }}
+            ${{ env.BUILD_MANIFEST_NAME }}
 
   should-publish:
     needs:
