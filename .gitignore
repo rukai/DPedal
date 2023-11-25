@@ -1,6 +1,6 @@
-PCB/production
-PCB/dpedal.step
-PCB/dpedal-backups
-PCB/fp-info-cache
-dpedal_firmware/target
-dpedal_flash/target
+/PCB/production
+/PCB/dpedal.step
+/PCB/dpedal-backups
+/PCB/fp-info-cache
+/target
+/dpedal_firmware/target
