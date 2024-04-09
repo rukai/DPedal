@@ -40,6 +40,7 @@ pub struct Config {
     #[knuffel(child)]
     pub side_buttons: SideButtons,
     #[knuffel(child)]
+    #[allow(unused)]
     pub back_extension: BackExtension,
 }
 
@@ -67,6 +68,7 @@ pub struct SideButtons {
     pub bottom_right: String,
 }
 
+#[allow(unused)]
 #[derive(knuffel::Decode)]
 pub struct BackExtension {
     #[knuffel(child, unwrap(argument))]
