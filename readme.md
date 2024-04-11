@@ -105,7 +105,7 @@ For some prints I change the layer height for faster print times, but feel free 
 * switch plate:
   * 0.20mm layer height (QUALITY profile)
 * base:
-  * 0.10mm layer height (QUALITY profile)
+  * 0.10mm layer height
   * height range modifiers (needs the advanced UI)
     * layers: 0-3mm -> height: 0.20mm
 
