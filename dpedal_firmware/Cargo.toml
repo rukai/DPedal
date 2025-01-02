@@ -11,10 +11,9 @@ publish = false
 stm32f0xx-hal = { version = "0.18.0", features = ["rt", "stm32f072", "stm32-usbd"] }
 cortex-m = { version = "0.7.0", features = ["critical-section-single-core"]}
 cortex-m-rt = { version = "0.7.1", features = ["device"] }
-panic-halt = "0.2.0"
+panic-halt = "1.0.0"
 keyberon = { git = "https://github.com/TeXitoi/keyberon", rev = "285f01fadc70b2809190d7fde34acb16499e0a4c" }
 cortex-m-rtic = "1.0.0"
-embedded-hal = "0.2"
 usb-device = "0.2.0"
 nb = "1.0.0"
 once_cell = { version = "1.17.0", default-features = false, features = ["critical-section"] }

@@ -11,7 +11,7 @@ default-run = "dpedalflash"
 clap = { version = "4.1.4", features = ["derive"] }
 dfu-libusb = "0.5.0"
 enum-utils = "0.1.2"
-goblin = "0.7.0"
+goblin = "0.9.0"
 indicatif = "0.17.3"
 keyberon = "0.1.1"
 knuffel = "3.0.0"

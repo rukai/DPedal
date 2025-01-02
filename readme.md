@@ -1,9 +1,9 @@
 # DPedal
 
-A large DPad you control with your foot.
+A large foot controlled DPad.
 It connects to your PC over usb 2.0 on a usb C port and sends user configurable HID keyboard events.
 
-It consists entirely of 3d printed parts except for the PCB.
+It consists entirely of 3d printed parts except for the PCB and keyboard switches.
 You can build your own from this design if you are comfortable with 3d printing, ordering assembled PCB's from a manufacturer and a tiny bit of soldering.
 
 <!--It can be extended with a large array of buttons for your other foot.
