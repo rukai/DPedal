@@ -194,10 +194,10 @@ mod app {
         let mut mouse_report = WheelMouseReport::default();
         match c.local.mouse_state.event {
             Some(MouseEvent::ScrollDown) => {
-                mouse_report.vertical_wheel = -if t % 100 == 0 { 1 } else { 0 }
+                mouse_report.vertical_wheel = -if t.is_multiple_of(100) { 1 } else { 0 }
             }
             Some(MouseEvent::ScrollUp) => {
-                mouse_report.vertical_wheel = if t % 100 == 0 { 1 } else { 0 }
+                mouse_report.vertical_wheel = if t.is_multiple_of(100) { 1 } else { 0 }
             }
             None => {}
         }
