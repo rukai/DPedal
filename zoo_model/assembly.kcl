@@ -1,0 +1,18 @@
+@settings(defaultLengthUnit = mm)
+
+import "pad.kcl" as pad
+import "base.kcl" as base
+import "top_panel.kcl" as topPanel
+import "footrest.kcl" as footrest
+// import "pcb.step" as pcb
+
+
+pad
+  |> translate(x = 10)
+  |> rotate(roll = 180)
+base
+  |> translate(x = 100)
+topPanel
+  |> translate(z = 7.5, x = 100)
+footrest
+  |> translate(y = -120, x = 100)

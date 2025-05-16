@@ -1,0 +1,9 @@
+export fn sketchRect(sketchOn, width, length) {
+    return startSketchOn(sketchOn, face = END)
+        |> startProfile(at = [-width / 2, -length / 2])
+        |> xLine(length = width, tag = $frontSegment)
+        |> yLine(length = length, tag = $rightSegment)
+        |> xLine(length = -width, tag = $backSegment)
+        |> yLine(length = -length, tag = $leftSegment)
+        |> close()
+}

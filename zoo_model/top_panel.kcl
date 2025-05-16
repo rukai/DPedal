@@ -1,0 +1,82 @@
+@settings(defaultLengthUnit = mm)
+
+import sketchRect from "rect.kcl"
+
+width = 150
+length = 80
+baseHeight = 2.5
+upperHeight = 5
+height = baseHeight + upperHeight
+
+baseOutline = sketchRect(sketchOn = XY, width, length)
+base = baseOutline
+  |> subtract2d(tool = circle(center = [0, 0], radius = 6.9))
+  |> extrude(length = baseHeight)
+  |> fillet(
+       radius = 1,
+       tags = [
+         // vertical edges
+         getNextAdjacentEdge(baseOutline.tags.frontSegment),
+         getNextAdjacentEdge(baseOutline.tags.backSegment),
+         getNextAdjacentEdge(baseOutline.tags.leftSegment),
+         getNextAdjacentEdge(baseOutline.tags.rightSegment)
+       ],
+     )
+
+upperOutline = sketchRect(sketchOn = base, width, length)
+upper = upperOutline
+  |> subtract2d(tool = circle(center = [0, 0], radius = 35))
+  |> extrude(length = upperHeight, tagEnd = $end0)
+  |> fillet(
+       radius = 1,
+       tags = [
+         // TODO: cant apply both vertical and horizontal fillet anymore :/
+         //
+         // vertical edges
+         getNextAdjacentEdge(upperOutline.tags.frontSegment),
+         getNextAdjacentEdge(upperOutline.tags.backSegment),
+         getNextAdjacentEdge(upperOutline.tags.leftSegment),
+         getNextAdjacentEdge(upperOutline.tags.rightSegment),
+         // top horizontal edges
+         // getOppositeEdge(upperOutline.tags.frontSegment),
+         // getOppositeEdge(upperOutline.tags.backSegment),
+         // getOppositeEdge(upperOutline.tags.leftSegment),
+         // getOppositeEdge(upperOutline.tags.rightSegment)
+       ],
+     )
+
+screwHead3M = startSketchOn(XY, face = END)
+  |> circle(center = [0, 0], radius = 2.7)
+  |> extrude(length = 3)
+  |> translate(z = -3)
+  |> appearance(color = "#b41414")
+
+  // TODO: reenable once zoo fix this
+  // screwShaft3M = startSketchOn(screwHead3M, face = START)
+  // |> circle(center = [0, 0], radius = 1.5)
+// |> extrude(length = 13.5)
+
+screwHole1 = clone(screwHead3M)
+  |> translate(x = 65, y = 30, z = height)
+
+screwHole2 = screwHead3M
+  |> translate(x = -65, y = 30, z = height)
+
+topPanel = subtract([base], tools = [screwHole1, screwHole2])
+
+fn buttonHole(@target, x, y) {
+  capHole = startSketchOn(XY, face = END)
+    |> circle(center = [x, y], radius = 12.5)
+    |> extrude(length = 3)
+    |> translate(z = height - 3)
+
+  switchHole = sketchRect(sketchOn = XY, width = 15.8, length = 13.9)
+    |> extrude(length = 3)
+    // TODO: zoo wont let this create a hole through the target
+    |> translate(x = x, y = y, z = 2.5)
+  return subtract([target], tools = [capHole, switchHole])
+}
+
+buttonHole(topPanel, x = 55, y = 0)
+  |> buttonHole(x = -55, y = 0)
+  |> appearance(color = "#1477b4")

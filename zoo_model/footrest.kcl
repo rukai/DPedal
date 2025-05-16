@@ -1,0 +1,27 @@
+@settings(defaultLengthUnit = mm)
+
+import sketchRect from "rect.kcl"
+
+width = 80
+length = 150
+height = 20
+
+baseOutline = sketchRect(sketchOn = XY, width, length)
+base = baseOutline
+    |> extrude(length = height)
+    |> fillet(
+           radius = 3,
+           tags = [
+               // vertical edges
+               getNextAdjacentEdge(baseOutline.tags.frontSegment),
+               getNextAdjacentEdge(baseOutline.tags.backSegment),
+               getNextAdjacentEdge(baseOutline.tags.leftSegment),
+               getNextAdjacentEdge(baseOutline.tags.rightSegment),
+               // top horizontal edges
+               getOppositeEdge(baseOutline.tags.frontSegment),
+               getOppositeEdge(baseOutline.tags.backSegment),
+               getOppositeEdge(baseOutline.tags.leftSegment),
+               getOppositeEdge(baseOutline.tags.rightSegment)
+           ],
+       )
+    |> appearance(color = "#050505")

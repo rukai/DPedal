@@ -1,0 +1,62 @@
+@settings(defaultLengthUnit = mm)
+
+import sketchRect from "rect.kcl"
+
+width = 150
+length = 80
+baseHeight = 2.5
+wallWidth = 3
+wallHeight = 5
+stemHeight = 14.1
+stemRadius = 6.5
+
+baseOutline = sketchRect(sketchOn = XY, width, length)
+base = baseOutline
+  |> extrude(length = baseHeight)
+  |> fillet(
+       radius = 1,
+       tags = [
+         // vertical edges
+         getNextAdjacentEdge(baseOutline.tags.frontSegment),
+         getNextAdjacentEdge(baseOutline.tags.backSegment),
+         getNextAdjacentEdge(baseOutline.tags.leftSegment),
+         getNextAdjacentEdge(baseOutline.tags.rightSegment)
+       ],
+     )
+
+outerWallSketch = sketchRect(sketchOn = base, width, length)
+innerWallSketch = sketchRect(sketchOn = base, width = width - wallWidth, length = length - wallWidth)
+walls = outerWallSketch
+  |> subtract2d(tool = innerWallSketch)
+  |> extrude(length = wallHeight)
+  |> fillet(
+       radius = 1,
+       tags = [
+         // vertical edges
+         getNextAdjacentEdge(outerWallSketch.tags.frontSegment),
+         getNextAdjacentEdge(outerWallSketch.tags.backSegment),
+         getNextAdjacentEdge(outerWallSketch.tags.leftSegment),
+         getNextAdjacentEdge(outerWallSketch.tags.rightSegment)
+       ],
+     )
+
+stem = startSketchOn(base, face = END)
+  |> startProfile(at = [0, 0])
+  |> circle(center = [0, 0], radius = stemRadius)
+  |> extrude(length = stemHeight)
+
+base
+  |> appearance(%, color = "#1477b4")
+
+  orbHole = startSketchOn(XY, face = END)
+  |> startProfile(at = [0, 0])
+  |> line(end = [-5.5, 0])
+  |> arc(angleEnd = 0, angleStart = 180, radius = 5.5)
+  |> close()
+  |> revolve(axis = X)
+  |> translate(z = 14.5)
+  |> appearance(color = "#FF1111")
+
+//subtract([base], tools = [orbHole])
+
+base
