@@ -11,6 +11,12 @@ But it is only designed to supplement a keyboard and/or voice dictation, not to 
 
 [![Image of the DPedal](images/labelled.jpg)](https://hachyderm.io/@rukai/110121489127236981)
 
+## Development
+
+Video of the development process behind dpedal:
+
+[![youtube video](https://img.youtube.com/vi/9YmU7DN4t2M/0.jpg)](https://youtu.be/9YmU7DN4t2M)
+
 ## Project status
 
 The dpad design is functional and can be built following the instructions in this repo.
