@@ -29,16 +29,16 @@ innerWallSketch = sketchRect(sketchOn = base, width = width - wallWidth, length 
 walls = outerWallSketch
   |> subtract2d(tool = innerWallSketch)
   |> extrude(length = wallHeight)
-  |> fillet(
-       radius = 1,
-       tags = [
-         // vertical edges
-         getNextAdjacentEdge(outerWallSketch.tags.frontSegment),
-         getNextAdjacentEdge(outerWallSketch.tags.backSegment),
-         getNextAdjacentEdge(outerWallSketch.tags.leftSegment),
-         getNextAdjacentEdge(outerWallSketch.tags.rightSegment)
-       ],
-     )
+  // |> fillet(
+  //      radius = 1,
+  //      tags = [
+  //        // vertical edges
+  //        getNextAdjacentEdge(outerWallSketch.tags.frontSegment),
+  //        getNextAdjacentEdge(outerWallSketch.tags.backSegment),
+  //        getNextAdjacentEdge(outerWallSketch.tags.leftSegment),
+  //        getNextAdjacentEdge(outerWallSketch.tags.rightSegment)
+  //      ],
+  //    )
 
 stem = startSketchOn(base, face = END)
   |> startProfile(at = [0, 0])
