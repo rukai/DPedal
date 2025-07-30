@@ -14,8 +14,6 @@ ballSketch = startSketchOn(stemExtrude, face = END)
   |> arc(angleEnd = 0, angleStart = 180, radius = 5.35)
   |> close()
 ballRevolve = revolve(ballSketch, axis = X)
-  |> appearance(color = "#FF1111")
 
-// TODO: union([padExtrude, stemExtrude, ballRevolve])
-
-ballRevolve
+union([padExtrude, ballRevolve])
+  |> appearance(color = "#050505")

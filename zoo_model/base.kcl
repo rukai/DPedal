@@ -45,10 +45,7 @@ stem = startSketchOn(base, face = END)
   |> circle(center = [0, 0], radius = stemRadius)
   |> extrude(length = stemHeight)
 
-base
-  |> appearance(%, color = "#1477b4")
-
-  orbHole = startSketchOn(XY, face = END)
+orbHole = startSketchOn(XY, face = END)
   |> startProfile(at = [0, 0])
   |> line(end = [-5.5, 0])
   |> arc(angleEnd = 0, angleStart = 180, radius = 5.5)
@@ -57,6 +54,5 @@ base
   |> translate(z = 14.5)
   |> appearance(color = "#FF1111")
 
-//subtract([base], tools = [orbHole])
-
-base
+subtract([base], tools = [orbHole])
+  |> appearance(%, color = "#1477b4")

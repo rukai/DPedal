@@ -8,7 +8,7 @@ import "footrest.kcl" as footrest
 
 
 pad
-  |> translate(x = 10)
+  |> translate(z = 25, x = 100) // TODO: calculate correct z offset
   |> rotate(roll = 180)
 base
   |> translate(x = 100)
