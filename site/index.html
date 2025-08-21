@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DPedal</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #DDDDDD;
+            color: black;
+        }
+
+        section {
+            display: flex;
+            margin: 9%;
+            margin-top: 7%;
+            margin-bottom: 3%;
+        }
+
+        .main-box {
+            padding-top: 3cqw;
+            padding-left: 3cqw;
+            padding-bottom: 8cqw;
+            margin: -2cqw;
+            width: 100%;
+            background: #167dd1;
+            font-size: min(3vw, 50pt);
+            color: white
+        }
+
+        .arrow-right {
+            z-index: 1;
+            opacity: 0.9;
+            width: 20cqw;
+            background-color: #222222;
+            clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+        }
+
+        .document {
+            container-type: inline-size;
+            width: min(96vw, 1500pt);
+            display: block;
+            margin: auto;
+        }
+
+        #description {
+            font-size: 1.2em;
+            width: min(96vw, 45em);
+            display: block;
+            margin: auto;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222222;
+                color: white;
+            }
+
+            .arrow-right {
+                background-color: #DDDDDD;
+            }
+
+            a {
+                color: white
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="document">
+        <section>
+            <a class="main-box" href="https://github.com/rukai/dpedal">
+                1. Build
+            </a>
+            <div class="arrow-right"></div>
+            <a class="main-box" href="https://github.com/rukai/dpedal">
+                2. Configure
+            </a>
+            <div class="arrow-right"></div>
+            <a class="main-box" href="https://github.com/rukai/dpedal">
+                3. Use
+            </a>
+        </section>
+        <img src="dpedal.png" style="display: block; margin:auto;" />
+        <div id="description">
+            <p>The dpedal is a directional foot pedal, meaning it has intuitive controls for up, down, left and right
+                plus some extra buttons.
+                You can <a href="/build">build</a> the dpedal yourself from commodity parts and a 3d printer and then
+                use the web-based <a href="/configure">configurator</a> to map the dpedal to any keyboard keys or
+                mouse scroll inputs.</p>
+        </div>
+    </div>
+</body>
+
+</html>
