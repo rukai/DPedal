@@ -47,6 +47,9 @@ static LAYERS: Lazy<Layers<8, 1, 1, MouseEvent>> = Lazy::new(|| unsafe {
 enum MouseEvent {
     ScrollUp,
     ScrollDown,
+    ClickLeft,
+    ClickMiddle,
+    ClickRight,
 }
 
 #[derive(Clone, Copy, Default)]
@@ -62,6 +65,9 @@ unsafe fn action_from_mem(offset: usize) -> Action<MouseEvent> {
     match keycode {
         KeyCode::MediaScrollUp => Action::Custom(MouseEvent::ScrollUp),
         KeyCode::MediaScrollDown => Action::Custom(MouseEvent::ScrollDown),
+        KeyCode::MediaEdit => Action::Custom(MouseEvent::ClickLeft),
+        KeyCode::MediaSleep => Action::Custom(MouseEvent::ClickMiddle),
+        KeyCode::MediaCoffee => Action::Custom(MouseEvent::ClickRight),
         _ => Action::KeyCode(keycode),
     }
 }
@@ -178,20 +184,34 @@ mod app {
 
     #[task(priority = 2, shared = [layout, multi_device], local = [mouse_state])]
     fn tick_keyberon(mut c: tick_keyberon::Context) {
+        let mut mouse_report = WheelMouseReport::default();
+        let mut force_report = false;
         match c.shared.layout.tick() {
             CustomEvent::Press(e) => {
                 c.local.mouse_state.event = Some(*e);
                 c.local.mouse_state.ticks_since_last_change = 0;
+                // TODO: doesnt allow pressing multiple mouse clicks at once
+                match e {
+                    MouseEvent::ClickLeft => mouse_report.buttons = 1,
+                    MouseEvent::ClickMiddle => mouse_report.buttons = 2,
+                    MouseEvent::ClickRight => mouse_report.buttons = 4,
+                    _ => (),
+                }
             }
-            CustomEvent::Release(_) => {
+            CustomEvent::Release(e) => {
                 c.local.mouse_state.event = None;
                 c.local.mouse_state.ticks_since_last_change = 0;
+                match e {
+                    MouseEvent::ClickLeft => force_report = true,
+                    MouseEvent::ClickMiddle => force_report = true,
+                    MouseEvent::ClickRight => force_report = true,
+                    _ => (),
+                }
             }
             CustomEvent::NoEvent => {}
         }
 
         let t = c.local.mouse_state.ticks_since_last_change;
-        let mut mouse_report = WheelMouseReport::default();
         match c.local.mouse_state.event {
             Some(MouseEvent::ScrollDown) => {
                 mouse_report.vertical_wheel = -if t.is_multiple_of(100) { 1 } else { 0 }
@@ -199,6 +219,7 @@ mod app {
             Some(MouseEvent::ScrollUp) => {
                 mouse_report.vertical_wheel = if t.is_multiple_of(100) { 1 } else { 0 }
             }
+            Some(_) => {}
             None => {}
         }
 
@@ -220,7 +241,7 @@ mod app {
 
             // Sending empty mouse reports achieves nothing and appears to cause issues by sending too many reports
             // So we check for empty reports and skip
-            if mouse_report != WheelMouseReport::default() {
+            if mouse_report != WheelMouseReport::default() || force_report {
                 let mouse = multi_device.device::<WheelMouse<'_, _>, _>();
                 match mouse.write_report(&mouse_report) {
                     Err(UsbHidError::WouldBlock) => {}

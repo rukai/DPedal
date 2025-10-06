@@ -25,6 +25,13 @@ back-extension {
 }
 
 // Full list of available keycodes:
+//
+// MouseScrollUp
+// MouseScrollDown
+// MouseClickLeft
+// MouseClickMiddle
+// MouseClickRight
+
 // A
 // B
 // C

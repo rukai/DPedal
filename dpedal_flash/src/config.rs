@@ -84,6 +84,8 @@ pub struct BackExtension {
 #[derive(enum_utils::FromStr)]
 pub enum KeyMap {
     Nothing,
+    MouseScrollUp,
+    MouseScrollDown,
     A,
     B,
     C,
@@ -319,9 +321,9 @@ pub enum KeyMap {
     MediaFind,
     MediaScrollUp,
     MediaScrollDown,
-    MediaEdit,
-    MediaSleep,
-    MeidaCoffee,
+    MouseClickLeft,
+    MouseClickMiddle,
+    MouseClickRight,
     MediaRefresh,
     MediaCalc, // 0xFB
 }
@@ -330,6 +332,11 @@ impl KeyMap {
     fn into_keycode(self) -> KeyCode {
         match self {
             KeyMap::Nothing => KeyCode::No,
+            KeyMap::MouseScrollUp => KeyCode::MediaScrollUp,
+            KeyMap::MouseScrollDown => KeyCode::MediaScrollDown,
+            KeyMap::MouseClickLeft => KeyCode::MediaEdit,
+            KeyMap::MouseClickMiddle => KeyCode::MediaSleep,
+            KeyMap::MouseClickRight => KeyCode::MeidaCoffee,
             KeyMap::A => KeyCode::A,
             KeyMap::B => KeyCode::B,
             KeyMap::C => KeyCode::C,
@@ -514,9 +521,6 @@ impl KeyMap {
             KeyMap::MediaFind => KeyCode::MediaFind,
             KeyMap::MediaScrollUp => KeyCode::MediaScrollUp,
             KeyMap::MediaScrollDown => KeyCode::MediaScrollDown,
-            KeyMap::MediaEdit => KeyCode::MediaEdit,
-            KeyMap::MediaSleep => KeyCode::MediaSleep,
-            KeyMap::MeidaCoffee => KeyCode::MeidaCoffee,
             KeyMap::MediaRefresh => KeyCode::MediaRefresh,
             KeyMap::MediaCalc => KeyCode::MediaCalc,
         }
