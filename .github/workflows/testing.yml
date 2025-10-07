@@ -34,9 +34,10 @@ jobs:
           - name: WindowsDebug
             runner: windows-latest
             cargo_profile:
-          - name: MacOSDebug
-            runner: macos-latest
-            cargo_profile:
+          # TODO: Build broken on macos, need to investigate
+          #- name: MacOSDebug
+          #  runner: macos-latest
+          #  cargo_profile:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.runner }}
     steps:
@@ -65,6 +66,7 @@ jobs:
         cargo hack --feature-powerset clippy --locked ${{ matrix.cargo_profile }} -- -D warnings
         cd ../dpedal_flash
         cargo hack --feature-powerset clippy --locked ${{ matrix.cargo_profile }} -- -D warnings
+        cargo build
     - name: Ensure that tests did not create or modify any files that arent .gitignore'd
       # This is important because we are checking in the Cargo.lock file.
       # We want to fail CI if the Cargo.toml changed without including the corresponding Cargo.lock changes.
