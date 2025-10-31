@@ -1,0 +1,47 @@
+[package]
+name = "dpedal_firmware"
+version = "0.1.1"
+edition = "2024"
+repository = "https://github.com/rukai/DPedal"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+embedded-hal = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+pio = "0.2.1"
+rp-pico = "0.9.0"
+rp2040-hal = { version = "0.10.0", features = ["critical-section-impl"] }
+defmt = "1"
+defmt-rtt = "1"
+
+keyberon = { git = "https://github.com/TeXitoi/keyberon", rev = "a51bec76edd6bb2deee6a90ed026e8f72ffb9aca" }
+cortex-m-rtic = "1.0.0"
+usb-device = "0.3.0"
+nb = "1.0.0"
+once_cell = { version = "1.17.0", default-features = false, features = ["critical-section"] }
+usbd-human-interface-device = "0.6.0"
+frunk = { version = "0.4.2", default-features = false }
+fugit = "0.3.7"
+rkyv = { version = "0.8.10", default-features = false }
+dpedal_config = { path = "../dpedal_config"}
+
+[profile.release]
+codegen-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 3
+overflow-checks = false
+
+[profile.dev]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true

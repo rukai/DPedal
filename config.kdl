@@ -1,0 +1,40 @@
+version 0
+
+// The name shows up in the web configurator to help tell the pedals apart
+//name "My DPedal"
+
+// The color of the pedal in the web configurator
+color 0xFF0000
+
+// A maximum of 50 profiles can be defined.
+// On startup, dpedal will use the first the first defined profile.
+profiles {
+    // Standard profile
+    - {
+        dpad-up mouse-scroll-up
+        dpad-down mouse-scroll-down
+        dpad-left mouse-scroll-left
+        dpad-right mouse-scroll-right
+
+        button-left keyboard-page-up
+        button-right keyboard-page-down
+
+        // TODO:
+        // button-left+button_right+dpad_down enter-flash-mode
+        // button-left+button_right go-to-profile 2
+    }
+    // Alternate profile
+    - {
+        dpad-up mouse-scroll-up
+        dpad-down mouse-scroll-down
+        dpad-left mouse-scroll-left
+        dpad-right mouse-scroll-right
+
+        button-left keyboard-page-up
+        button-right keyboard-page-down
+
+        // TODO:
+        // button-left+button_right+dpad_down enter-flash-mode
+        // button-left+button_right go-to-profile 1
+    }
+}
