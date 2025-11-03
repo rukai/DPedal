@@ -33,10 +33,10 @@ walls = outerWallSketch
   //      radius = 1,
   //      tags = [
   //        // vertical edges
-  //        getNextAdjacentEdge(outerWallSketch.tags.frontSegment),
-  //        getNextAdjacentEdge(outerWallSketch.tags.backSegment),
-  //        getNextAdjacentEdge(outerWallSketch.tags.leftSegment),
-  //        getNextAdjacentEdge(outerWallSketch.tags.rightSegment)
+         // getNextAdjacentEdge(outerWallSketch.tags.frontSegment),
+         // getNextAdjacentEdge(outerWallSketch.tags.backSegment),
+         // getNextAdjacentEdge(outerWallSketch.tags.leftSegment),
+         // getNextAdjacentEdge(outerWallSketch.tags.rightSegment)
   //      ],
   //    )
 

@@ -70,11 +70,11 @@ fn buttonHole(@target, x, y) {
     |> extrude(length = 3)
     |> translate(z = height - 3)
 
-  switchHole = sketchRect(sketchOn = XY, width = 15.8, length = 13.9)
-    |> extrude(length = 3)
-    // TODO: zoo wont let this create a hole through the target
-    |> translate(x = x, y = y, z = 2.5)
-  return subtract([target], tools = [capHole, switchHole])
+  // switchHole = sketchRect(sketchOn = XY, width = 15.8, length = 13.9)
+  //   |> extrude(length = 3)
+  //   // TODO: zoo wont let this create a hole through the target
+  //   |> translate(x = x, y = y, z = 2.5)
+  return subtract([target], tools = [capHole])
 }
 
 buttonHole(topPanel, x = 55, y = 0)
