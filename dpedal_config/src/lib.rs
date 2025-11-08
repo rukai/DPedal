@@ -11,6 +11,7 @@ pub const CONFIG_SIZE: usize = 256; // 10 KiB
 
 use arrayvec::ArrayVec;
 use rkyv::{Archive, Deserialize, Serialize};
+use usbd_hid::descriptor::KeyboardUsage;
 
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
 #[rkyv(derive(Debug))]
@@ -32,6 +33,7 @@ pub struct Profile {
     pub button_right: ComputerInput,
 }
 
+// TODO: split into ComputerInput::Keyboard(_) and ComputerInput::Mouse(_)
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
 #[rkyv(derive(Debug))]
 pub enum ComputerInput {
@@ -41,6 +43,47 @@ pub enum ComputerInput {
     MouseScrollDown,
     MouseScrollLeft,
     MouseScrollRight,
+    KeyboardA,
+    KeyboardB,
     KeyboardPageUp,
     KeyboardPageDown,
+}
+
+impl ComputerInput {
+    pub fn split(&self) -> InputSplit {
+        match self {
+            ComputerInput::None => InputSplit::None,
+            ComputerInput::MouseScrollUp => InputSplit::Mouse(MouseInput::Scroll { x: 0, y: 1 }),
+            ComputerInput::MouseScrollDown => InputSplit::Mouse(MouseInput::Scroll { x: 0, y: -1 }),
+            ComputerInput::MouseScrollLeft => InputSplit::Mouse(MouseInput::Scroll { x: -1, y: 0 }),
+            ComputerInput::MouseScrollRight => InputSplit::Mouse(MouseInput::Scroll { x: 1, y: 0 }),
+            ComputerInput::KeyboardA => InputSplit::Keyboard(KeyboardUsage::KeyboardAa),
+            ComputerInput::KeyboardB => InputSplit::Keyboard(KeyboardUsage::KeyboardBb),
+            ComputerInput::KeyboardPageUp => InputSplit::Keyboard(KeyboardUsage::KeyboardPageUp),
+            ComputerInput::KeyboardPageDown => {
+                InputSplit::Keyboard(KeyboardUsage::KeyboardPageDown)
+            }
+        }
+    }
+}
+
+pub enum InputSplit {
+    None,
+    Keyboard(KeyboardUsage),
+    Mouse(MouseInput),
+}
+
+#[allow(unused)]
+#[derive(Clone, Copy)]
+pub enum MouseInput {
+    Scroll { x: i8, y: i8 },
+    Move { x: i8, y: i8 },
+    Click(MouseClick),
+}
+
+#[derive(Clone, Copy)]
+pub enum MouseClick {
+    Left,
+    Middle,
+    Right,
 }

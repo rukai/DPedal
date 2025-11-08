@@ -1,0 +1,105 @@
+use defmt::*;
+use dpedal_config::MouseClick;
+use embassy_futures::join::join;
+use embassy_rp::{peripherals::USB, usb::Driver};
+use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
+use embassy_usb::{
+    Builder,
+    class::hid::{HidReader, HidReaderWriter, HidWriter, State},
+};
+use static_cell::StaticCell;
+use usbd_hid::descriptor::{MouseReport, SerializedDescriptor};
+
+use crate::usb::MyRequestHandler;
+
+pub struct Mouse {
+    reader: Option<HidReader<'static, Driver<'static, USB>, 1>>,
+    writer: HidWriter<'static, Driver<'static, USB>, 8>,
+}
+
+pub static MOUSE_CHANNEL: Channel<ThreadModeRawMutex, MouseEvent, 64> = Channel::new();
+
+impl Mouse {
+    pub fn new(builder: &mut Builder<'static, Driver<'static, USB>>) -> Self {
+        let config = embassy_usb::class::hid::Config {
+            report_descriptor: MouseReport::desc(),
+            request_handler: None,
+            poll_ms: 1,
+            max_packet_size: 64,
+        };
+        static STATE: StaticCell<State> = StaticCell::new();
+        let hid =
+            HidReaderWriter::<'static, _, 1, 8>::new(builder, STATE.init(State::new()), config);
+        let (reader, writer) = hid.split();
+
+        Self {
+            reader: Some(reader),
+            writer,
+        }
+    }
+
+    pub async fn process(&mut self) {
+        let reader = self.reader.take().unwrap();
+
+        join(
+            self.process_write(),
+            reader.run(false, &mut MyRequestHandler {}),
+        )
+        .await;
+    }
+
+    pub async fn process_write(&mut self) {
+        let mut report = MouseReport {
+            buttons: 0,
+            x: 0,
+            y: 0,
+            wheel: 0,
+            pan: 0,
+        };
+
+        let mut ticks = 0u32;
+
+        loop {
+            ticks = ticks.wrapping_add(1);
+            // Delay processing events until we are able to actually send the report to ensure the report contains the most up to date information.
+            // TODO: Actually check behaviour of this await and write_serialize await, do they actually block until host has polled us?
+            self.writer.ready().await;
+
+            while let Ok(event) = MOUSE_CHANNEL.try_receive() {
+                match event {
+                    MouseEvent::Scroll { x, y } => {
+                        if ticks.is_multiple_of(100) {
+                            report.pan += x;
+                            report.wheel += y;
+                        }
+                    }
+                    MouseEvent::Move { x, y } => {
+                        if ticks.is_multiple_of(100) {
+                            report.x += x;
+                            report.y += y;
+                        }
+                    }
+                    MouseEvent::Pressed(_) => defmt::todo!(),
+                    MouseEvent::Released(_) => defmt::todo!(),
+                }
+            }
+
+            // Send the report.
+            match self.writer.write_serialize(&report).await {
+                Ok(()) => {}
+                Err(e) => warn!("Failed to send report: {:?}", e),
+            };
+
+            report.wheel = 0;
+        }
+    }
+}
+
+#[allow(unused)]
+#[derive(Clone, Copy)]
+pub enum MouseEvent {
+    Scroll { x: i8, y: i8 },
+    Move { x: i8, y: i8 },
+    Pressed(MouseClick),
+    Released(MouseClick),
+}
