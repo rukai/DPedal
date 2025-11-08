@@ -53,7 +53,7 @@ fn flash_bytes_at_offset(conn: &mut PicobootConnection<Context>, data: &[u8], of
     // erase space on flash
     for (i, _) in fw_pages.iter().enumerate() {
         let addr = offset as u32 + (i as u32) * PICO_PAGE_SIZE + PICO_FLASH_START;
-        if (addr % PICO_SECTOR_SIZE) == 0 {
+        if addr.is_multiple_of(PICO_SECTOR_SIZE) {
             conn.flash_erase(addr, PICO_SECTOR_SIZE)
                 .expect("failed to erase flash");
         }

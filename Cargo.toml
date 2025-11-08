@@ -1,8 +1,7 @@
 [workspace]
 members = [
     "dpedal_flash",
-    "kdl_config_derive",
-    "kdl_config"
+    "dpedal_config"
 ]
 exclude = [
     "dpedal_firmware",

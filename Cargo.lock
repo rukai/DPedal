@@ -632,6 +632,7 @@ dependencies = [
 [[package]]
 name = "kdl_config"
 version = "0.1.0"
+source = "git+https://github.com/rukai/kdl_config#9659b3f546354d691a4096753ba0a434c7235a9f"
 dependencies = [
  "arrayvec",
  "kdl",
@@ -642,6 +643,7 @@ dependencies = [
 [[package]]
 name = "kdl_config_derive"
 version = "0.1.0"
+source = "git+https://github.com/rukai/kdl_config#9659b3f546354d691a4096753ba0a434c7235a9f"
 dependencies = [
  "proc-macro2",
  "quote",
