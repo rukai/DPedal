@@ -33,7 +33,6 @@ pub struct Profile {
     pub button_right: ComputerInput,
 }
 
-// TODO: split into ComputerInput::Keyboard(_) and ComputerInput::Mouse(_)
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
 #[rkyv(derive(Debug))]
 pub enum ComputerInput {

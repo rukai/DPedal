@@ -24,6 +24,7 @@ pub fn flash_device(firmware: &[u8], config: &[u8]) -> Result<()> {
 
     let ctx = Context::new().map_err(|e| miette!(e).context("could not initialize libusb"))?;
     // create connection object
+    println!("Connecting to device");
     let mut conn =
         PicobootConnection::new(ctx, None).expect("failed to connect to PICOBOOT interface");
 
@@ -32,7 +33,9 @@ pub fn flash_device(firmware: &[u8], config: &[u8]) -> Result<()> {
         .expect("failed to claim access");
     conn.exit_xip().expect("failed to exit from xip mode");
 
+    println!("writing {} KB of firmware", firmware.len() as f32 / 1000.0);
     flash_bytes_at_offset(&mut conn, firmware, FIRMWARE_OFFSET);
+    println!("writing {} KB of config", config.len() as f32 / 1000.0);
     flash_bytes_at_offset(&mut conn, config, CONFIG_OFFSET);
 
     // reboot device to start firmware
@@ -52,6 +55,9 @@ fn flash_bytes_at_offset(conn: &mut PicobootConnection<Context>, data: &[u8], of
     let fw_pages = bin_pages(data);
     // erase space on flash
     for (i, _) in fw_pages.iter().enumerate() {
+        if i.is_multiple_of(10) {
+            print!("-");
+        }
         let addr = offset as u32 + (i as u32) * PICO_PAGE_SIZE + PICO_FLASH_START;
         if addr.is_multiple_of(PICO_SECTOR_SIZE) {
             conn.flash_erase(addr, PICO_SECTOR_SIZE)
@@ -60,6 +66,9 @@ fn flash_bytes_at_offset(conn: &mut PicobootConnection<Context>, data: &[u8], of
     }
 
     for (i, page) in fw_pages.iter().enumerate() {
+        if i.is_multiple_of(10) {
+            print!(".");
+        }
         let addr = offset as u32 + (i as u32) * PICO_PAGE_SIZE + PICO_FLASH_START;
 
         // write page to flash
@@ -72,6 +81,7 @@ fn flash_bytes_at_offset(conn: &mut PicobootConnection<Context>, data: &[u8], of
         let matching = page.iter().zip(&read).all(|(&a, &b)| a == b);
         assert!(matching, "page does not match flash");
     }
+    println!("");
 }
 
 fn bin_pages(fw: &[u8]) -> Vec<Vec<u8>> {

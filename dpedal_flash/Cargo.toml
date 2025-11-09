@@ -8,7 +8,8 @@ repository = "https://github.com/rukai/dpedal"
 picoboot-rs = "0.2.0"
 rusb = "0.9.4"
 uf2-decode = "0.2.0"
-dpedal_firmware = { path = "../dpedal_firmware", artifact = "bin", target = "thumbv6m-none-eabi" }
+# Use once bindeps is stabilized
+#dpedal_firmware = { path = "../dpedal_firmware", artifact = "bin", target = "thumbv6m-none-eabi" }
 goblin = "0.9.3"
 miette = { version = "7.4.0", features = ["fancy"] }
 dpedal_config = { path = "../dpedal_config" }
@@ -17,3 +18,7 @@ kdl_config = { git = "https://github.com/rukai/kdl_config" }
 kdl_config_derive = { git = "https://github.com/rukai/kdl_config" }
 arrayvec = "0.7.6"
 rkyv = "0.8.10"
+
+# workaround https://gitlab.com/robigalia/ssmarshal/-/merge_requests/2
+# TODO: lets just eradicate this unmaintained thing from the dep tree entirely
+ssmarshal = { version = "1", features = ["std"]}

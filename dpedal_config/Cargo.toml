@@ -2,7 +2,7 @@
 name = "dpedal_config"
 version = "0.0.2"
 edition = "2024"
-repository = "https://github.com/rukai/rukaibox_firmware"
+repository = "https://github.com/rukai/dpedal"
 
 [dependencies]
 rkyv = { version = "0.8.10", default-features = false, features = ["arrayvec-0_7", "bytecheck"] }

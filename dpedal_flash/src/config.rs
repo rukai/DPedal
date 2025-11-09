@@ -82,6 +82,8 @@ pub enum ComputerInputKdl {
     MouseScrollDown,
     MouseScrollLeft,
     MouseScrollRight,
+    KeyboardA,
+    KeyboardB,
     KeyboardPageUp,
     KeyboardPageDown,
 }
