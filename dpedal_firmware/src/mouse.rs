@@ -68,13 +68,13 @@ impl Mouse {
             while let Ok(event) = MOUSE_CHANNEL.try_receive() {
                 match event {
                     MouseEvent::Scroll { x, y } => {
-                        if ticks.is_multiple_of(100) {
+                        if ticks.is_multiple_of(50) {
                             report.pan += x;
                             report.wheel += y;
                         }
                     }
                     MouseEvent::Move { x, y } => {
-                        if ticks.is_multiple_of(100) {
+                        if ticks.is_multiple_of(50) {
                             report.x += x;
                             report.y += y;
                         }
@@ -90,7 +90,11 @@ impl Mouse {
                 Err(e) => warn!("Failed to send report: {:?}", e),
             };
 
+            // reset non-button inputs
             report.wheel = 0;
+            report.x = 0;
+            report.y = 0;
+            report.pan = 0;
         }
     }
 }
