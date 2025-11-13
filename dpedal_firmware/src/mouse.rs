@@ -68,13 +68,13 @@ impl Mouse {
             while let Ok(event) = MOUSE_CHANNEL.try_receive() {
                 match event {
                     MouseEvent::Scroll { x, y } => {
-                        if ticks.is_multiple_of(50) {
+                        if ticks.is_multiple_of(80) {
                             report.pan += x;
                             report.wheel += y;
                         }
                     }
                     MouseEvent::Move { x, y } => {
-                        if ticks.is_multiple_of(50) {
+                        if ticks.is_multiple_of(80) {
                             report.x += x;
                             report.y += y;
                         }
