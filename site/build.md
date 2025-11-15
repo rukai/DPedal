@@ -4,7 +4,7 @@
 * micro USB cable (for standard pico)
 * USB C cable (if using USB C pico)
 * 3D printed parts
-* 8 x M3 x 10m (9.5mm shaft)
+* 8 x M3 x 8mm
 * 8 x M3 square nuts
 * 2 x choc buttons
 * wire lengths (including stripped ends):

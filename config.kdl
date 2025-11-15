@@ -13,8 +13,10 @@ profiles {
     - {
         dpad-up mouse-scroll-up
         dpad-down mouse-scroll-down
-        dpad-left none
-        dpad-right none
+        //dpad-left keyboard-a
+        //dpad-right keyboard-b
+        dpad-left mouse-scroll-left
+        dpad-right mouse-scroll-right
 
         button-left keyboard-page-up
         button-right keyboard-page-down

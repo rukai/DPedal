@@ -464,7 +464,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "pcb.kicad_pro",
+    "filename": "dpedal_pcb.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -503,7 +503,7 @@
       "plot": "output",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "pcb.step",
+      "step": "dpedal_pcb.step",
       "svg": "",
       "vrml": "pcb.wrl"
     },
