@@ -1,8 +1,8 @@
 /thumbnail.png
 /target
 /dpedal_firmware/target
-/pcb/output
 /pcb/dpedal_pcb-backups
 /pcb/dpedal_pcb.step
 /pcb/fp-info-cache
 /dpedal_gerber_files.zip
+/dpedal_pcb.step
