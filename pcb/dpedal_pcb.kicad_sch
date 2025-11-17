@@ -1351,10 +1351,6 @@
 		(uuid "28b26d28-6082-4136-abe8-c820aec9eeaf")
 	)
 	(no_connect
-		(at 180.34 92.71)
-		(uuid "29bc77bb-a8f8-4557-bca1-777278d595e4")
-	)
-	(no_connect
 		(at 203.2 36.83)
 		(uuid "2f475e50-cf53-4eef-af46-2908b96b8f8d")
 	)
@@ -1433,6 +1429,10 @@
 	(no_connect
 		(at 226.06 92.71)
 		(uuid "c10443d0-d756-45ac-9139-de67ca3bb8da")
+	)
+	(no_connect
+		(at 180.34 95.25)
+		(uuid "c936b626-c8a5-4606-8457-b641de04814f")
 	)
 	(no_connect
 		(at 180.34 44.45)
@@ -1684,7 +1684,7 @@
 	)
 	(global_label "button_left"
 		(shape input)
-		(at 180.34 95.25 180)
+		(at 180.34 92.71 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1694,7 +1694,7 @@
 		)
 		(uuid "a3531bf9-4f1f-4a89-8055-76c499a6eb4a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 167.1346 95.25 0)
+			(at 167.1346 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
