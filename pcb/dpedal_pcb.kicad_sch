@@ -1342,6 +1342,128 @@
 		)
 		(uuid 37f5659e-4e62-4dc4-b8e6-9d615f2175b0)
 	)
+	(no_connect
+		(at 180.34 69.85)
+		(uuid "2583f50d-0caf-4544-b7a1-e1a22b6af870")
+	)
+	(no_connect
+		(at 226.06 74.93)
+		(uuid "28b26d28-6082-4136-abe8-c820aec9eeaf")
+	)
+	(no_connect
+		(at 180.34 92.71)
+		(uuid "29bc77bb-a8f8-4557-bca1-777278d595e4")
+	)
+	(no_connect
+		(at 203.2 36.83)
+		(uuid "2f475e50-cf53-4eef-af46-2908b96b8f8d")
+	)
+	(no_connect
+		(at 226.06 67.31)
+		(uuid "2f70e11b-03f8-425c-b394-0527bfcd8657")
+	)
+	(no_connect
+		(at 180.34 62.23)
+		(uuid "3638fcd8-c2aa-4d9b-b4b9-068259efea89")
+	)
+	(no_connect
+		(at 180.34 74.93)
+		(uuid "4f1eaed4-ac98-4a58-8d68-cb5f0a0490d3")
+	)
+	(no_connect
+		(at 226.06 82.55)
+		(uuid "7e2fa4a4-217e-4510-8896-986fb5a0819d")
+	)
+	(no_connect
+		(at 208.28 36.83)
+		(uuid "7ec1c0f6-ea6e-4410-b516-b7b7b9527ab3")
+	)
+	(no_connect
+		(at 226.06 69.85)
+		(uuid "823a5fd4-332c-4c8f-9a21-de4aa31f3875")
+	)
+	(no_connect
+		(at 180.34 97.79)
+		(uuid "8673f6a4-f88c-4d1a-a61e-7a5947943844")
+	)
+	(no_connect
+		(at 180.34 77.47)
+		(uuid "92f4af69-fbac-4722-bcee-c2a9ce13e76f")
+	)
+	(no_connect
+		(at 180.34 90.17)
+		(uuid "951a7591-27cc-4a08-a975-07eebb01fc93")
+	)
+	(no_connect
+		(at 198.12 36.83)
+		(uuid "99d95899-38bb-4f32-9e83-4da3d069cab4")
+	)
+	(no_connect
+		(at 180.34 54.61)
+		(uuid "9cc801bd-209c-45cd-a856-b93bad592031")
+	)
+	(no_connect
+		(at 180.34 72.39)
+		(uuid "9f35551a-fe7c-452d-9d95-9bfbd7253259")
+	)
+	(no_connect
+		(at 180.34 80.01)
+		(uuid "a127d1e8-d240-40ce-9216-71e53e53f2c4")
+	)
+	(no_connect
+		(at 226.06 72.39)
+		(uuid "a267d3e4-6ef9-47d1-8e1c-317df01fe392")
+	)
+	(no_connect
+		(at 180.34 82.55)
+		(uuid "a51f5efc-e63b-48ee-9c50-601984ded3d1")
+	)
+	(no_connect
+		(at 180.34 67.31)
+		(uuid "aeea072a-b779-4826-b853-69a2acab7b79")
+	)
+	(no_connect
+		(at 180.34 64.77)
+		(uuid "b6dab79e-63b0-427d-b1b9-5207f1773c1a")
+	)
+	(no_connect
+		(at 180.34 59.69)
+		(uuid "bcfd9813-bf6c-4be4-a66d-93b8d1f1b5db")
+	)
+	(no_connect
+		(at 226.06 92.71)
+		(uuid "c10443d0-d756-45ac-9139-de67ca3bb8da")
+	)
+	(no_connect
+		(at 180.34 44.45)
+		(uuid "d2b40167-ab42-4c44-8bd8-e3b13b88a9c3")
+	)
+	(no_connect
+		(at 180.34 46.99)
+		(uuid "e4c8e2c6-faf6-4dc0-a56f-572429973e2f")
+	)
+	(no_connect
+		(at 180.34 85.09)
+		(uuid "ea6ee09c-faad-4529-919a-381ef0302af6")
+	)
+	(no_connect
+		(at 180.34 87.63)
+		(uuid "f0fa89b1-d203-48de-a4c3-9ed7f049e671")
+	)
+	(no_connect
+		(at 180.34 52.07)
+		(uuid "f6d3cb8e-7847-46d2-859f-1601992f8087")
+	)
+	(wire
+		(pts
+			(xy 203.2 116.84) (xy 203.2 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7ee07d8a-f5b0-4b65-8ab6-5e1ee208fdb4")
+	)
 	(wire
 		(pts
 			(xy 85.09 59.69) (xy 87.63 59.69)
@@ -1351,6 +1473,16 @@
 			(type default)
 		)
 		(uuid "ae30bcc5-2fe3-4a85-8df2-c08f2d3256a6")
+	)
+	(wire
+		(pts
+			(xy 196.85 116.84) (xy 203.2 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fa4eefb9-458e-4b79-a9db-b44439baefc0")
 	)
 	(global_label "button_right"
 		(shape input)
@@ -2284,7 +2416,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 203.2 110.49 0)
+		(at 196.85 116.84 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2292,7 +2424,7 @@
 		(dnp no)
 		(uuid "a04a97e1-478c-4917-918d-9641d19fd8a3")
 		(property "Reference" "#PWR03"
-			(at 203.2 116.84 0)
+			(at 196.85 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2301,7 +2433,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 203.2 115.57 0)
+			(at 196.85 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2309,7 +2441,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 203.2 110.49 0)
+			(at 196.85 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2318,7 +2450,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 203.2 110.49 0)
+			(at 196.85 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2327,7 +2459,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 203.2 110.49 0)
+			(at 196.85 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2570,6 +2702,7 @@
 		)
 		(pin "33"
 			(uuid "b42c5db8-718e-4fd8-8b96-09588811a1d2")
+			(alternate "GND")
 		)
 		(pin "15"
 			(uuid "5268f247-f586-4dfb-8727-a1446d25f670")

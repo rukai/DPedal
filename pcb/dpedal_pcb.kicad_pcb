@@ -7151,7 +7151,7 @@
 		(descr "Raspberry Pi Pico (non-W) surface-mount footprint with debug pads for hand soldering, supports Raspberry Pi Pico 2 (non-W), https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf")
 		(tags "module usb pcb swd")
 		(property "Reference" "A1"
-			(at -14.69 14 0)
+			(at -13.85 7 0)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(uuid "2dd7e2fd-864c-47e6-af0e-f68cb3d7b096")
@@ -7648,7 +7648,7 @@
 			(roundrect_rratio 0.5)
 			(net 20 "unconnected-(A1-GPIO4-Pad6)")
 			(pinfunction "GPIO4")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "b964cfe4-0488-41c1-a427-e19ddf01c461")
 		)
 		(pad "7" smd roundrect
@@ -7658,7 +7658,7 @@
 			(roundrect_rratio 0.5)
 			(net 18 "unconnected-(A1-GPIO5-Pad7)")
 			(pinfunction "GPIO5")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "728b5344-11cc-43fc-aed9-4e76d1e9d552")
 		)
 		(pad "8" smd custom
@@ -7708,7 +7708,7 @@
 			(roundrect_rratio 0.5)
 			(net 26 "unconnected-(A1-GPIO6-Pad9)")
 			(pinfunction "GPIO6")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "f4ce9b1b-da0a-4868-9b13-23cf75e3bec7")
 		)
 		(pad "10" smd roundrect
@@ -7718,7 +7718,7 @@
 			(roundrect_rratio 0.5)
 			(net 7 "unconnected-(A1-GPIO7-Pad10)")
 			(pinfunction "GPIO7")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "70bf0a2c-6760-4935-a4c9-b993acf9b5e3")
 		)
 		(pad "11" smd roundrect
@@ -7728,7 +7728,7 @@
 			(roundrect_rratio 0.5)
 			(net 14 "unconnected-(A1-GPIO8-Pad11)")
 			(pinfunction "GPIO8")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "6848ad1d-3e09-4e19-b767-f131fc00e36b")
 		)
 		(pad "12" smd roundrect
@@ -7738,7 +7738,7 @@
 			(roundrect_rratio 0.5)
 			(net 4 "unconnected-(A1-GPIO9-Pad12)")
 			(pinfunction "GPIO9")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "160ba8eb-4dbb-4fdf-a573-0d95d0b29d8f")
 		)
 		(pad "13" smd custom
@@ -7788,7 +7788,7 @@
 			(roundrect_rratio 0.5)
 			(net 23 "unconnected-(A1-GPIO10-Pad14)")
 			(pinfunction "GPIO10")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "c67b66b9-0a70-4631-a458-b487adca7796")
 		)
 		(pad "15" smd roundrect
@@ -7798,7 +7798,7 @@
 			(roundrect_rratio 0.5)
 			(net 19 "unconnected-(A1-GPIO11-Pad15)")
 			(pinfunction "GPIO11")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "82992957-45c9-45bc-b27d-c260e798575d")
 		)
 		(pad "16" smd roundrect
@@ -7808,7 +7808,7 @@
 			(roundrect_rratio 0.5)
 			(net 24 "unconnected-(A1-GPIO12-Pad16)")
 			(pinfunction "GPIO12")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "e7551f38-1b26-4e26-94f3-50750edf23b0")
 		)
 		(pad "17" smd roundrect
@@ -7818,7 +7818,7 @@
 			(roundrect_rratio 0.5)
 			(net 25 "unconnected-(A1-GPIO13-Pad17)")
 			(pinfunction "GPIO13")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "e8d571f5-1112-4015-ae90-3f8425803c8d")
 		)
 		(pad "18" smd custom
@@ -7878,7 +7878,7 @@
 			(roundrect_rratio 0.5)
 			(net 3 "unconnected-(A1-GPIO15-Pad20)")
 			(pinfunction "GPIO15")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "27eeb478-069f-4d56-af27-8d921be180fc")
 		)
 		(pad "21" smd roundrect
@@ -7948,7 +7948,7 @@
 			(roundrect_rratio 0.5)
 			(net 6 "unconnected-(A1-GPIO18-Pad24)")
 			(pinfunction "GPIO18")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "24024a95-1e7e-4daf-a42b-86a5737f7004")
 		)
 		(pad "25" smd roundrect
@@ -7958,7 +7958,7 @@
 			(roundrect_rratio 0.5)
 			(net 22 "unconnected-(A1-GPIO19-Pad25)")
 			(pinfunction "GPIO19")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "c61c6b8c-3c13-4bd4-ba73-1eac1aaf98a3")
 		)
 		(pad "26" smd roundrect
@@ -7968,7 +7968,7 @@
 			(roundrect_rratio 0.5)
 			(net 8 "unconnected-(A1-GPIO20-Pad26)")
 			(pinfunction "GPIO20")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "8ee5c198-7cf3-4f47-9ee8-0eca6bdef4e0")
 		)
 		(pad "27" smd roundrect
@@ -7978,7 +7978,7 @@
 			(roundrect_rratio 0.5)
 			(net 10 "unconnected-(A1-GPIO21-Pad27)")
 			(pinfunction "GPIO21")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "3fb294ef-bfc4-4528-bc0d-e28b3c58a0ca")
 		)
 		(pad "28" smd custom
@@ -8038,7 +8038,7 @@
 			(roundrect_rratio 0.5)
 			(net 21 "unconnected-(A1-RUN-Pad30)")
 			(pinfunction "RUN")
-			(pintype "passive")
+			(pintype "passive+no_connect")
 			(uuid "c3421f95-afd7-4a8a-a1a5-ac2cb29aa23f")
 		)
 		(pad "31" smd roundrect
@@ -8066,7 +8066,7 @@
 			(size 1.6 0.8)
 			(layers "B.Cu" "B.Mask")
 			(net 27 "GND")
-			(pinfunction "AGND")
+			(pinfunction "GND")
 			(pintype "power_out")
 			(options
 				(clearance outline)
@@ -8108,7 +8108,7 @@
 			(roundrect_rratio 0.5)
 			(net 2 "unconnected-(A1-GPIO28_ADC2-Pad34)")
 			(pinfunction "GPIO28_ADC2")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "08f0d8fa-935a-456a-be4e-7ba76c0afac1")
 		)
 		(pad "35" smd roundrect
@@ -8118,7 +8118,7 @@
 			(roundrect_rratio 0.5)
 			(net 15 "unconnected-(A1-ADC_VREF-Pad35)")
 			(pinfunction "ADC_VREF")
-			(pintype "power_in")
+			(pintype "power_in+no_connect")
 			(uuid "68ae738c-3709-46d8-9734-66cd5a1b527d")
 		)
 		(pad "D1" smd roundrect
@@ -8131,7 +8131,7 @@
 			(roundrect_rratio 0.5)
 			(net 13 "unconnected-(A1-SWCLK-PadD1)")
 			(pinfunction "SWCLK")
-			(pintype "input")
+			(pintype "input+no_connect")
 			(uuid "67eb8b2b-9d43-46be-bd1c-3bdbd1595ea8")
 		)
 		(pad "D2" smd custom
@@ -8184,7 +8184,7 @@
 			(roundrect_rratio 0.5)
 			(net 11 "unconnected-(A1-SWDIO-PadD3)")
 			(pinfunction "SWDIO")
-			(pintype "bidirectional")
+			(pintype "bidirectional+no_connect")
 			(uuid "441cc052-f2c3-4d1b-a78d-f9329eb2d018")
 		)
 		(group ""
@@ -8568,14 +8568,6 @@
 		(uuid "e6be51c7-3196-4483-bc49-06c28e1565a2")
 	)
 	(segment
-		(start 115.62 124.6)
-		(end 113.560108 124.6)
-		(width 0.2)
-		(layer "B.Cu")
-		(net 14)
-		(uuid "6f05b8ae-b300-4e42-8195-8f6070a8a362")
-	)
-	(segment
 		(start 147.645744 121.629403)
 		(end 134.940597 121.629403)
 		(width 0.2)
@@ -8624,7 +8616,7 @@
 		(uuid "984c0cd1-5f24-4751-866d-a7bd8609f0b7")
 	)
 	(via
-		(at 140 107)
+		(at 143.5 114.5)
 		(size 0.6)
 		(drill 0.3)
 		(layers "F.Cu" "B.Cu")
@@ -8633,7 +8625,7 @@
 		(uuid "8d1e1ca4-3a2c-4e47-a4ef-8b36691cf923")
 	)
 	(via
-		(at 109 105)
+		(at 207 136)
 		(size 0.6)
 		(drill 0.3)
 		(layers "F.Cu" "B.Cu")
@@ -9571,14 +9563,10 @@
 				(xy 114.007266 122.860568) (xy 114.065275 122.887618) (xy 114.117714 122.933791) (xy 114.136866 123.000984)
 				(xy 114.11665 123.067865) (xy 114.065275 123.112382) (xy 114.007267 123.139431) (xy 114.007265 123.139432)
 				(xy 113.820858 123.269954) (xy 113.659954 123.430858) (xy 113.529432 123.617265) (xy 113.529431 123.617267)
-				(xy 113.433261 123.823502) (xy 113.433259 123.823509) (xy 113.396808 123.959545) (xy 113.360442 124.019205)
-				(xy 113.334836 124.035448) (xy 113.335362 124.036359) (xy 113.191395 124.119477) (xy 113.19139 124.119481)
-				(xy 113.079589 124.231282) (xy 113.079583 124.23129) (xy 113.000534 124.368209) (xy 113.000531 124.368216)
-				(xy 112.959608 124.520943) (xy 112.959608 124.679057) (xy 112.997604 124.820858) (xy 113.000531 124.831783)
-				(xy 113.000534 124.83179) (xy 113.079583 124.968709) (xy 113.079587 124.968714) (xy 113.079588 124.968716)
-				(xy 113.191392 125.08052) (xy 113.191394 125.080521) (xy 113.191398 125.080524) (xy 113.328317 125.159573)
-				(xy 113.328324 125.159577) (xy 113.481051 125.2005) (xy 113.699952 125.2005) (xy 113.766991 125.220185)
-				(xy 113.787634 125.23682) (xy 113.820859 125.270046) (xy 113.927453 125.344683) (xy 114.007266 125.400568)
+				(xy 113.433261 123.823502) (xy 113.433258 123.823511) (xy 113.374366 124.043302) (xy 113.374364 124.043312)
+				(xy 113.3595 124.213214) (xy 113.3595 124.326785) (xy 113.374364 124.496687) (xy 113.374366 124.496697)
+				(xy 113.433258 124.716488) (xy 113.433261 124.716497) (xy 113.529431 124.922732) (xy 113.529432 124.922734)
+				(xy 113.659954 125.109141) (xy 113.820858 125.270045) (xy 113.820861 125.270047) (xy 114.007266 125.400568)
 				(xy 114.065275 125.427618) (xy 114.117714 125.473791) (xy 114.136866 125.540984) (xy 114.11665 125.607865)
 				(xy 114.065275 125.652382) (xy 114.007267 125.679431) (xy 114.007265 125.679432) (xy 113.820858 125.809954)
 				(xy 113.659954 125.970858) (xy 113.529432 126.157265) (xy 113.529431 126.157267) (xy 113.433261 126.363502)
@@ -10153,8 +10141,8 @@
 				(xy 180.095088 129.327795) (xy 180.055672 129.254053) (xy 180.006784 129.172489) (xy 179.677048 128.622358)
 				(xy 179.677041 128.622347) (xy 179.267876 128.009987) (xy 178.829153 127.418438) (xy 178.361933 126.849129)
 				(xy 178.361929 126.849124) (xy 177.867346 126.303436) (xy 177.346563 125.782653) (xy 176.800875 125.28807)
-				(xy 176.411732 124.968709) (xy 176.231562 124.820847) (xy 175.640013 124.382124) (xy 175.027649 123.972956)
-				(xy 175.005274 123.959545) (xy 174.39597 123.594341) (xy 174.395938 123.594323) (xy 173.746448 123.247162)
+				(xy 176.538692 125.072902) (xy 176.231562 124.820847) (xy 175.640013 124.382124) (xy 175.027649 123.972956)
+				(xy 175.027641 123.972951) (xy 174.39597 123.594341) (xy 174.395938 123.594323) (xy 173.746448 123.247162)
 				(xy 173.746434 123.247155) (xy 173.080641 122.932259) (xy 173.080626 122.932253) (xy 172.656319 122.7565)
 				(xy 172.400232 122.650425) (xy 171.7068 122.402312) (xy 171.00203 122.188522) (xy 171.002022 122.18852)
 				(xy 171.002023 122.18852) (xy 170.287619 122.009571) (xy 169.565285 121.865889) (xy 169.56528 121.865888)
