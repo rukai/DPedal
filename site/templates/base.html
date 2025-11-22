@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>DPedal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
@@ -48,7 +47,6 @@
             background: #2380cc;
         }
 
-
         .main-box-text {
             font-size: min(5.2vw, 90pt);
             padding-top: 6cqw;
@@ -59,10 +57,14 @@
             font-weight: 200;
         }
 
+        .main-box:hover .main-box-text {
+            color: black;
+        }
+
         .arrow-right {
             z-index: 1;
             width: 20cqw;
-            background-color: #222222;
+            background-color: #444444;
             clip-path: polygon(15% 0%, 100% 50%, 15% 100%);
         }
 
@@ -118,6 +120,8 @@
             }
         }
     </style>
+    <title>{% block title %} {{ title }} {% endblock %}</title>
+    {% block head %}{% endblock %}
 </head>
 
 <body>
@@ -142,7 +146,7 @@
                 </div>
             </a>
             <div class="arrow-right"></div>
-            <a class="main-box main-box3" href="/use.html">
+            <a class="main-box main-box3" href="/">
                 <div class="background-number-container">
                     <p class="background-number">3</p>
                 </div>
@@ -151,12 +155,7 @@
                 </div>
             </a>
         </section>
-        <img src="dpedal_transparent.webp" style="display: block; margin:auto;" />
-        <div id="description">
-            <p>The dpedal is a <a href="/build">DIY</a> directional foot pedal, meaning it has intuitive controls for
-                up, down, left and
-                right plus some extra buttons, which can be <a href="/config">mapped</a> to anything at all.</p>
-        </div>
+        {% block content %}<p>Placeholder content</p>{% endblock %}
     </div>
 </body>
 

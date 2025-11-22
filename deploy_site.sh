@@ -2,7 +2,7 @@
 
 set -e -u
 
-cd site
+cd site/root
 
 OUTPUT_BUCKET_NAME=dpedal.com
 

@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}
+DPedal build instructions
+{% endblock %}
+
+{% block content %}
+<h1>DPedal build instructions</h1>
+<h2>Parts</h2>
+<table>
+  <tr>
+    <th>Part</th>
+    <th>Quantity</th>
+    <th>Link</th>
+  </tr>
+  <tr>
+    <td>DPedal PCB</td>
+    <td>1</td>
+    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Download</a>, then
+      <a href="#ordering PCB">order online</a>
+    </td>
+  </tr>
+  <tr>
+    <td>RP pico 1 (headerless)</td>
+    <td>0 or 1</td>
+    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
+  </tr>
+  <tr>
+    <td>RP pico 1 USB C variant (headerless)</td>
+    <td>0 or 1</td>
+    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
+  </tr>
+  <tr>
+    <td>micro USB cable (for standard pico)</td>
+    <td>0 or 1</td>
+    <td><a href="">Amazon</a></td>
+  </tr>
+  <tr>
+    <td>USB C cable (if using USB C pico)</td>
+    <td>0 or 1</td>
+    <td><a href="">Amazon</a></td>
+  </tr>
+  <tr>
+    <td>3D printed parts</td>
+    <td>1 each</td>
+    <td><a href="https://github.com/rukai/dpedal">Download</a> and print yourself,<br>or upload to a <a href="">printing
+        service</a>
+    </td>
+  </tr>
+  <tr>
+    <td>8mm M3 machine screws</td>
+    <td>8</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>M3 square nuts</td>
+    <td>8</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>choc v1 buttons</td>
+    <td>2</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>choc v1 switches</td>
+    <td>6</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>choc v1 hotswap sockets</td>
+    <td>6</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Solder</td>
+    <td>enough</td>
+    <td></td>
+  </tr>
+</table>
+<!--
+    * wire lengths (including stripped ends):
+    * button left: 70mm
+    * dpad left: 55mm
+    * dpad top: 70mm
+    * dpad right: 150mm (technically 145mm)
+    * dpad bottom: 150mm
+    * button right: 140mm
+    -->
+
+<p>TODO: image of everything laid out</p>
+
+
+<h2>Tools</h2>
+
+<table>
+  <tr>
+    <th>Tool</th>
+    <th>Link</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>3D printer</td>
+    <td><a href="https://www.amazon.com.au/ORIGINAL-PURSA-Beginner-Friendly-Filament-180X180X180/dp/B0D2HXHNG6">Prusa
+        mini on Amazon</a>
+    </td>
+    <td>The prusa mini is the printer I personally use.<br> Getting the kit is a great way to learn more about
+      printers through the assembly process.<br>
+      The mini is a bit outdated but it's a reliable, repairable and <br>I can only recommend a printer I've
+      actually used. </td>
+  </tr>
+  <tr>
+    <td>Soldering iron</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>3M Hex key</td>
+    <td><a href="https://www.amazon.com.au/FITTOO-Hex-Key-Set-Ball/dp/B0F938VSXX">Amazon</a>
+    </td>
+    <td></td>
+  </tr>
+</table>
+<p>TODO: image of everything laid out</p>
+
+<h2>Ordering PCB</h2>
+<ol>
+  <li>download gerbers</li>
+  <li>Go to <a href="https://cart.jlcpcb.com/quote">JLCPCB</a>, click "Add gerber file" and upload the gerbers file
+    you just downloaded</li>
+  <li>Set following options, leaving the rest as default:</li>
+  <ul>
+    <li>Surface finish: LeadFree HASL</li>
+    <li>PCB thickness 1.2mm</li>
+    <li>PCB Color: whatever you want</li>
+  </ul>
+</ol>
+
+
+<h2>Printing</h2>
+TODO: Guidance on printing or ordering the plastic parts.
+<h2>Soldering</h2>
+TODO: Intro to soldering
+<ol>
+  <li>Solder hotswap sockets to PCB</li>
+  <li>Solder pico to PCB</li>
+</ol>
+
+
+<h2>Assembling</h2>
+<ol>
+  <li>Ensure you have everything in the BOM</li>
+  <li>Place PCB in pico base</li>
+  <li>Place switch plate on top of pico base</li>
+  <li>Screw the switch plate on to the pico base</li>
+  <li>Clip the switches into their sockets</li>
+  <li>Put the dpad between the two base pieces and push the pieces together.</li>
+  <li>Screw the right base to the switch plate</li>
+  <li>Push the 2 buttons into the 2 empty switches</li>
+</ol>
+<!--
+    1. cut wires and strip ends, strip about ~2-3mm
+    * cut the longer wires first, in case you mess up the stripping and your long wires need to become short wires :)
+    2. solder wires to pico
+    3. place pico in pico base
+    4. place pico base and non-pico base next to each other
+    5. place switch plate on top of pico base, thread through all the soldered wires out of the switch holes
+    6. screw the switch plate on to the pico base
+    7. solder the wires to switches, one switch per socket
+    8. clip the switches into their sockets
+    9. Put the dpad between the two base pieces and push the pieces together.
+    10. Screw the right base to the switch plate
+    11. Push the 2 buttons into the 2 empty switches
+    -->
+<h2>Flashing firmware</h2>
+TODO
+<h2>Usage</h2>
+TODO
+{% endblock %}
+
+<!-- <style>
+    body {
+      margin: 0;
+      background-color: #DDDDDD;
+
+      color: black;
+      font-family: "Noto Sans", sans-serif;
+    }
+
+    section {
+      display: flex;
+      margin: 9%;
+      margin-top: 7%;
+      margin-bottom: 7%;
+    }
+
+    .document {
+      container-type: inline-size;
+      width: min(96vw, 1500pt);
+      display: block;
+      margin: auto;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #222222;
+        color: white;
+      }
+
+      a {
+        color: white
+      }
+    }
+  </style> -->

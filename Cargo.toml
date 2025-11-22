@@ -1,7 +1,8 @@
 [workspace]
 members = [
     "dpedal_flash",
-    "dpedal_config"
+    "dpedal_config",
+    "site"
 ]
 exclude = [
     "dpedal_firmware",
