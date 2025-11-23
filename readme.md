@@ -12,7 +12,7 @@ This repo contains the source for:
 
 * The [firmware](https://github.com/rukai/DPedal/tree/main/dpedal_firmware)
 * The [flashing tool](https://github.com/rukai/DPedal/tree/main/dpedal_flash)
-<!--* the PCB?-->
+* The [PCB](https://github.com/rukai/DPedal/tree/main/pcb)
 
 The cad parts are not in this repo, instead they are in [onshape](https://cad.onshape.com/documents/3322725aad79769314b0a0dc/w/7eb6c11c4e7989e30d759821/e/7eadfca9ff0dbd31823e3a21).
 
