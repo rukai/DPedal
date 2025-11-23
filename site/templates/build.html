@@ -16,34 +16,25 @@ DPedal build instructions
   <tr>
     <td>DPedal PCB</td>
     <td>1</td>
-    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Download</a>, then
-      <a href="#ordering PCB">order online</a>
+    <td><a href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_gerber_files.zip">Download</a>, then
+      <a href="#orderpcb">order online</a>
     </td>
   </tr>
   <tr>
-    <td>RP pico 1 (headerless)</td>
-    <td>0 or 1</td>
-    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
-  </tr>
-  <tr>
     <td>RP pico 1 USB C variant (headerless)</td>
-    <td>0 or 1</td>
+    <td>1</td>
     <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
   </tr>
   <tr>
-    <td>micro USB cable (for standard pico)</td>
-    <td>0 or 1</td>
+    <td>2m USB C&lt;-&gt;A cable</td>
+    <td>1</td>
     <td><a href="">Amazon</a></td>
   </tr>
-  <tr>
-    <td>USB C cable (if using USB C pico)</td>
-    <td>0 or 1</td>
-    <td><a href="">Amazon</a></td>
-  </tr>
-  <tr>
+  <tr><!--split into own section and list each part individually-->
     <td>3D printed parts</td>
     <td>1 each</td>
-    <td><a href="https://github.com/rukai/dpedal">Download</a> and print yourself,<br>or upload to a <a href="">printing
+    <td><a href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_3d_printed_parts.zip">Download</a>
+      and print yourself,<br>or upload to a <a href="">printing
         service</a>
     </td>
   </tr>
@@ -104,10 +95,9 @@ DPedal build instructions
     <td><a href="https://www.amazon.com.au/ORIGINAL-PURSA-Beginner-Friendly-Filament-180X180X180/dp/B0D2HXHNG6">Prusa
         mini on Amazon</a>
     </td>
-    <td>The prusa mini is the printer I personally use.<br> Getting the kit is a great way to learn more about
-      printers through the assembly process.<br>
-      The mini is a bit outdated but it's a reliable, repairable and <br>I can only recommend a printer I've
-      actually used. </td>
+    <td>The prusa mini is the printer I personally use.<br>
+      The mini is a bit outdated but it's reliable, repairable and <br>I can only recommend a printer I've
+      actually used. <br> Getting the kit is a great way to learn more about printers through the assembly process.</td>
   </tr>
   <tr>
     <td>Soldering iron</td>
@@ -123,28 +113,101 @@ DPedal build instructions
 </table>
 <p>TODO: image of everything laid out</p>
 
-<h2>Ordering PCB</h2>
+<h2 id="orderpcb">Ordering PCB</h2>
 <ol>
-  <li>download gerbers</li>
-  <li>Go to <a href="https://cart.jlcpcb.com/quote">JLCPCB</a>, click "Add gerber file" and upload the gerbers file
-    you just downloaded</li>
+  <li>Download <a
+      href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_gerber_files.zip">dpedal_gerber_files.zip</a>.
+  </li>
+  <li>Go to <a href="https://cart.jlcpcb.com/quote">JLCPCB</a>, click "Add gerber file" and upload the
+    dpedal_gerber_files.zip you just downloaded</li>
   <li>Set following options, leaving the rest as default:</li>
   <ul>
     <li>Surface finish: LeadFree HASL</li>
     <li>PCB thickness 1.2mm</li>
     <li>PCB Color: whatever you want</li>
   </ul>
+  <li>Complete order. You probably want "Global Standard Direct Line" for shipping.</li>
 </ol>
 
 
 <h2>Printing</h2>
-TODO: Guidance on printing or ordering the plastic parts.
+
+<p>
+  Download the STLs <a
+    href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_3d_printed_parts.zip">here</a>.
+  Then slice and print each STL yourself.
+</p>
+
+<p>Slicing configuration for each part:</p>
+
+<ul>
+  <li>default orientation with no supports</li>
+  <li>layer height: 0.10mm</li>
+  <li>infill: 15% gyroid infill (prusa slicer's default)</li>
+  <li>Filament: I use PLA but any hard filament should work fine.</li>
+</ul>
+
 <h2>Soldering</h2>
+<!--
 TODO: Intro to soldering
+-->
 <ol>
   <li>Solder hotswap sockets to PCB</li>
   <li>Solder pico to PCB</li>
 </ol>
+
+<h2>Flashing firmware</h2>
+
+<ol>
+  <li>Plug in the pico/PCB to your PC while holding down the flash button.</li>
+  <li>Follow the steps below depending on your OS</li>
+  <ul>
+
+    <li>macOS</li>
+    <ol>
+      <li>Download the <a
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_mac_arm.tar.gz">firmware
+          (arm host)</a>
+        and unzip.</li>
+      <li>Open a terminal to the directory containing the firmware and run
+        <span style="color:red;font-family:mono;">./dpedalflash</span>
+      </li>
+    </ol>
+    <li>Windows</li>
+    <ol>
+      <li>To enable flashing on windows, download and run <a href="https://zadig.akeo.ie">zadig</a></li>
+      <ol>
+        <li>Options -> tick List All Devices</li>
+        <li>In the dropdown choose STM32 BOOTLOADER</li>
+        <li>Press Replace Driver</li>
+      </ol>
+
+      <li>Download the <a
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_windows_x86.tar.gz">firmware
+          (x86 host)</a> and unzip.</li>
+      <li>Open a terminal to the directory containing the firmware and run
+        <span style="color:red;font-family:mono;">dpedalflash.exe</span>
+      </li>
+    </ol>
+    <li>Linux</li>
+    <ol>
+      <li>Download the <a
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_linux_x86.tar.gz">firmware
+          (x86 host)</a> or <a
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_linux_aarch64.tar.gz">firmware
+          (arm host)</a> and unzip.</li>
+      <li>open a terminal to the directory containing the firmware and run
+        <span style="color:red;font-family:mono;">./dpedalflash</span>
+      </li>
+    </ol>
+  </ul>
+
+  <li>Insert a switch into each socket</li>
+  <li>Open <a href="scroll_test.html">this page</a> and test each button works, the default button mapping of the dpedal
+    has mouse scroll on the dpad and page up/down on the left/right buttons</li>
+  <li>Disconnect the switches again, to prepare for the next stage.</li>
+</ol>
+
 
 
 <h2>Assembling</h2>
@@ -172,10 +235,9 @@ TODO: Intro to soldering
     10. Screw the right base to the switch plate
     11. Push the 2 buttons into the 2 empty switches
     -->
-<h2>Flashing firmware</h2>
-TODO
-<h2>Usage</h2>
-TODO
+
+
+<h2></h2>
 {% endblock %}
 
 <!-- <style>
