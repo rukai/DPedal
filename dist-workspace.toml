@@ -1,18 +1,16 @@
 [workspace]
 members = [
-    "cargo:.",
-    "dist:pcb"
+    "cargo:."
 ]
 
 # Config for 'dist'
 [dist]
-display-name = "DPedal"
 # The preferred dist version to use in CI (Cargo.toml SemVer syntax)
 cargo-dist-version = "0.30.2"
 # CI backends to support
 ci = "github"
 # Target platforms to build apps for (Rust target-triple syntax)
-targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
+targets = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 # Extra static files to include in each App (path relative to this Cargo.toml's dir)
 include = ["config.kdl"]
 # The installers to generate for each app
@@ -21,12 +19,14 @@ installers = []
 pr-run-mode = "plan"
 # Skip checking whether the specified configuration files are up to date
 allow-dirty = []
+# Checksums to generate for each App
 checksum = "false"
+# Generate and dist a source tarball
 source-tarball = false
 
 [[dist.extra-artifacts]]
-artifacts = ["pcb/dpedal_gerber_files.zip"]
-build = ["./export_pcb.sh"]
+artifacts = ["dpedal_gerber_files.zip"]
+build = ["bash", "-c", "./install_kicad_ubuntu.sh; ./export_pcb.sh"]
 
 # MANUAL STEP: Need to export these after creating the release and then reupload the zip
 [[dist.extra-artifacts]]

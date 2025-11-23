@@ -142,8 +142,8 @@ DPedal build instructions
 
 <ul>
   <li>default orientation with no supports</li>
-  <li>layer height: 0.10mm</li>
-  <li>infill: 15% gyroid infill (prusa slicer's default)</li>
+  <li>layer height: 0.10mm (The model is very precise so, so dont go any higher than this)</li>
+  <li>infill: 15% grid infill (I just use grid because its the default, any infill type is probably fine)</li>
   <li>Filament: I use PLA but any hard filament should work fine.</li>
 </ul>
 
@@ -166,7 +166,7 @@ TODO: Intro to soldering
     <li>macOS</li>
     <ol>
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_mac_arm.tar.gz">firmware
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-aarch64-apple-darwin.tar.xz">firmware
           (arm host)</a>
         and unzip.</li>
       <li>Open a terminal to the directory containing the firmware and run
@@ -183,7 +183,7 @@ TODO: Intro to soldering
       </ol>
 
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_windows_x86.tar.gz">firmware
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-x86_64-pc-windows-msvc.zip">firmware
           (x86 host)</a> and unzip.</li>
       <li>Open a terminal to the directory containing the firmware and run
         <span style="color:red;font-family:mono;">dpedalflash.exe</span>
@@ -192,10 +192,15 @@ TODO: Intro to soldering
     <li>Linux</li>
     <ol>
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_linux_x86.tar.gz">firmware
-          (x86 host)</a> or <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_firmware_linux_aarch64.tar.gz">firmware
-          (arm host)</a> and unzip.</li>
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-x86_64-unknown-linux-gnu.tar.xz">firmware
+          (x86 host)</a>
+        <!-- or
+           <a
+          href="https://github.com/rukai/DPedal_v3/releases/latest/download/TODO">firmware
+          (arm host)</a>
+          -->
+        and unzip.
+      </li>
       <li>open a terminal to the directory containing the firmware and run
         <span style="color:red;font-family:mono;">./dpedalflash</span>
       </li>
