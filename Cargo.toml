@@ -2,7 +2,8 @@
 members = [
     "dpedal_flash",
     "dpedal_config",
-    "site"
+    "site",
+    "dpedal_config_web_app"
 ]
 exclude = [
     "dpedal_firmware",
