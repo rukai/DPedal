@@ -81,7 +81,7 @@ fn flash_bytes_at_offset(conn: &mut PicobootConnection<Context>, data: &[u8], of
         let matching = page.iter().zip(&read).all(|(&a, &b)| a == b);
         assert!(matching, "page does not match flash");
     }
-    println!("");
+    println!();
 }
 
 fn bin_pages(fw: &[u8]) -> Vec<Vec<u8>> {
