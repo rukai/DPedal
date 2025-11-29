@@ -12,8 +12,8 @@ async fn run(directory: &Path) {
     // build our application with a route
     let app = Router::new()
         .nest_service(
-            "/assets",
-            routing::get_service(ServeDir::new(directory.join("assets"))),
+            "/media",
+            routing::get_service(ServeDir::new(directory.join("media"))),
         )
         .fallback_service(
             routing::get_service(ServeDir::new(directory))
