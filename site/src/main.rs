@@ -3,7 +3,11 @@ use clap::Parser;
 use cli::Args;
 use std::path::Path;
 
+use crate::output::OutDir;
+
 mod cli;
+mod output;
+mod serve;
 
 fn main() {
     // Set standard path to root of repo so this always runs in the same directory, regardless of where the user ran it from.
@@ -14,37 +18,33 @@ fn main() {
 
     let root = current_dir.join("site").join("root");
     std::fs::remove_dir_all(&root).ok();
-    std::fs::create_dir_all(&root).unwrap();
+    let out = OutDir::new(root);
+    out.create_compressed_file("index.html", Landing {}.render().unwrap().as_bytes());
 
     // copy assets
-    let dest_assets = root.join("assets");
-    std::fs::create_dir_all(&dest_assets).unwrap();
+    let dest_assets = out.join("assets");
     // TODO: properly include images in repo?
     for file in std::fs::read_dir("site/assets")
         .unwrap()
         .chain(std::fs::read_dir("../site_images").expect("Missing external site_images folder"))
     {
         let file = file.unwrap();
-        std::fs::copy(file.path(), dest_assets.join(file.file_name())).unwrap();
+        dest_assets.create_compressed_file(
+            file.file_name().to_str().unwrap(),
+            &std::fs::read(file.path()).unwrap(),
+        );
     }
     // browsers expect to find the file here.
     std::fs::rename("site/root/assets/favicon.ico", "site/root/favicon.ico").unwrap();
 
     // generate pages
-    std::fs::write(root.join("index.html"), Landing {}.render().unwrap()).unwrap();
-    std::fs::write(root.join("build.html"), Build {}.render().unwrap()).unwrap();
-    std::fs::write(root.join("config.html"), Config {}.render().unwrap()).unwrap();
+    out.create_compressed_file("index.html", Landing {}.render().unwrap().as_bytes());
+    out.create_compressed_file("build.html", Build {}.render().unwrap().as_bytes());
+    out.create_compressed_file("config.html", Config {}.render().unwrap().as_bytes());
 
     if args.serve {
         println!("Hosting website at: http://localhost:8000");
-
-        devserver_lib::run(
-            "localhost",
-            8000,
-            current_dir.join("site").join("root").to_str().unwrap(),
-            false,
-            "",
-        );
+        serve::serve(&current_dir.join("site").join("root"));
     } else {
         let out = current_dir.join("site").join("root");
         println!(
