@@ -26,15 +26,16 @@ impl OutDir {
     //     let file = File::create(self.path.join(file_name)).unwrap();
     //     GzEncoder::new(file, Compression::best())
     // }
+    pub fn create_file(&self, file_name: &str, data: &[u8]) {
+        let path = self.path.join(file_name);
+        std::fs::write(path, data).unwrap();
+    }
 
     pub fn create_compressed_file(&self, file_name: &str, data: &[u8]) {
         let path = self.path.join(file_name);
-        std::fs::write(path, data).unwrap();
-
-        // TODO: does not compress yet... it actually makes images take up more space, so need to filter images out of compression.
-        // let file = File::create(&path).unwrap();
-        // let mut writer = GzEncoder::new(file, Compression::best());
-        // writer.write_all(data).unwrap();
+        let file = File::create(path).unwrap();
+        let mut writer = GzEncoder::new(file, Compression::best());
+        writer.write_all(data).unwrap();
 
         // TODO
         // Path::new("/")

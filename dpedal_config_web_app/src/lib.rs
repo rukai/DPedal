@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 pub fn run() {
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     console_log::init_with_level(Level::Warn).expect("could not initialize logger");
+    log::error!("DFJDSFK");
 
     wasm_bindgen_futures::spawn_local(run_async());
 }

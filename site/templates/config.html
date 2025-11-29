@@ -6,5 +6,12 @@ DPedal
 
 {% block content %}
 <h1>Web configuration tool</h1>
-<p>Coming soon!</p>
+
+<script type="module">
+    import init, { run } from "/assets/dpedal_config_web_app.js";
+    (async function () {
+        await init();
+        run();
+    })();
+</script>
 {% endblock %}

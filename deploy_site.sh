@@ -6,5 +6,10 @@ cd site/root
 
 OUTPUT_BUCKET_NAME=dpedal.com
 
-# just deploy it all with no cache and no compression, we can come back to this later
-aws s3 sync . s3://$OUTPUT_BUCKET_NAME --cache-control no-cache
+# TODO: cache-control
+
+echo "Uploading assets/"
+aws s3 sync assets s3://$OUTPUT_BUCKET_NAME/assets --cache-control no-cache --content-encoding none
+
+echo "Uploading everything else"
+aws s3 sync . s3://$OUTPUT_BUCKET_NAME --exclude "assets/*" --cache-control no-cache --content-encoding gzip

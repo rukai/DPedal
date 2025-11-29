@@ -10,10 +10,15 @@ pub fn serve(directory: &Path) {
 
 async fn run(directory: &Path) {
     // build our application with a route
-    let app = Router::new().fallback_service(
-        routing::get_service(ServeDir::new(directory))
-            .layer(map_response(insert_compression_header)),
-    );
+    let app = Router::new()
+        .nest_service(
+            "/assets",
+            routing::get_service(ServeDir::new(directory.join("assets"))),
+        )
+        .fallback_service(
+            routing::get_service(ServeDir::new(directory))
+                .layer(map_response(insert_compression_header)),
+        );
 
     // run it
     let listener = tokio::net::TcpListener::bind("127.0.0.1:8000")
@@ -26,9 +31,8 @@ async fn run(directory: &Path) {
 // All files are compressed with gzip, so we need to overwrite content-encoding to let the client know.
 // We cant use `ServeDir::precompressed_gzip` since name on disk needs to match name served for hosting on AWS S3 to work.
 async fn insert_compression_header<B>(mut response: Response<B>) -> Response<B> {
-    // TODO: enable but not for images
-    // response
-    //     .headers_mut()
-    //     .insert("content-encoding", "gzip".parse().unwrap());
+    response
+        .headers_mut()
+        .insert("content-encoding", "gzip".parse().unwrap());
     response
 }

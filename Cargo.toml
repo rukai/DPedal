@@ -3,10 +3,10 @@ members = [
     "dpedal_flash",
     "dpedal_config",
     "site",
-    "dpedal_config_web_app"
 ]
 exclude = [
     "dpedal_firmware",
+    "dpedal_config_web_app"
 ]
 resolver = "2"
 
