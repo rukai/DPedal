@@ -6,6 +6,14 @@ DPedal
 
 {% block content %}
 <h1>Web configuration tool</h1>
+<div id="config-app">
+    <table id="input-output-table">
+        <tr>
+            <th>Input</th>
+            <th>Output</th>
+        </tr>
+    </table>
+</div>
 
 <script type="module">
     import init, { run } from "/assets/dpedal_config_web_app.js";
