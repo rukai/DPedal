@@ -25,9 +25,9 @@ async fn main(_spawner: Spawner) {
 
     let mut builder = usb::usb_builder(p.USB);
 
+    let mut web_config = WebConfig::new(&mut builder);
     let mut keyboard = Keyboard::new(&mut builder);
     let mut mouse = Mouse::new(&mut builder);
-    let mut web_config = WebConfig::new(&mut builder);
 
     let mut usb = builder.build();
 

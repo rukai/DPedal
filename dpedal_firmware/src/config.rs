@@ -10,7 +10,7 @@ pub fn load() -> Result<Config, Failure> {
     rkyv::api::low::deserialize::<_, Failure>(archive)
 }
 
-fn load_config_bytes_from_flash() -> Align<[u8; CONFIG_SIZE]> {
+pub fn load_config_bytes_from_flash() -> Align<[u8; CONFIG_SIZE]> {
     let mut data = Align([0; CONFIG_SIZE]);
     // Safety: This byte range is known to be valid flash memory on this device
     unsafe {

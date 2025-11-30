@@ -1,5 +1,7 @@
 #![no_std]
 
+pub mod web_config_protocol;
+
 // Memory layout
 pub const RP2040_FLASH_OFFSET: usize = 0x10000000;
 pub const RP2040_FLASH_SIZE: usize = 1024 * 1024 * 16; // 16 MiB

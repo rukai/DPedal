@@ -20,11 +20,12 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
 
     static CONFIG_DESC: StaticCell<[u8; 256]> = StaticCell::new();
     static BOS_DESC: StaticCell<[u8; 256]> = StaticCell::new();
+    static MSOS_DESC: StaticCell<[u8; 256]> = StaticCell::new();
     static CONTROL_BUF: StaticCell<[u8; 128]> = StaticCell::new();
 
     let mut config = Config::new(0xc0de, 0xcafe);
     config.manufacturer = Some("Rukai");
-    config.product = Some("DPedal");
+    config.product = Some("DPedal test");
     config.serial_number = Some("12345678");
     config.max_power = 100;
     config.max_packet_size_0 = 64;
@@ -34,7 +35,7 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
         config,
         &mut CONFIG_DESC.init([0; 256])[..],
         &mut BOS_DESC.init([0; 256])[..],
-        &mut [], // no msos descriptors
+        &mut MSOS_DESC.init([0; 256])[..],
         &mut CONTROL_BUF.init([0; 128])[..],
     );
 

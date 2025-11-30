@@ -1,4 +1,6 @@
 use defmt::*;
+use dpedal_config::web_config_protocol::Response;
+use embassy_rp::pio::program::ArrayVec;
 use embassy_rp::usb::{Endpoint, In, Out};
 use embassy_rp::{peripherals::USB, usb::Driver};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
@@ -7,8 +9,8 @@ use embassy_usb::class::web_usb::{Config as WebUsbConfig, State, Url, WebUsb};
 use embassy_usb::driver::{Endpoint as EndpointTrait, EndpointIn, EndpointOut};
 use embassy_usb::msos::{self, windows_version};
 use static_cell::StaticCell;
-use usbd_hid::descriptor::{KeyboardReport, KeyboardUsage, SerializedDescriptor};
 
+use crate::config::load_config_bytes_from_flash;
 use crate::usb::MyRequestHandler;
 
 // This is a randomly generated GUID to allow clients on Windows to find our device
@@ -29,8 +31,8 @@ impl WebConfig {
             vendor_code: 1,
             // If defined, shows a landing page which the device manufacturer would like the user to visit in order to control their device.
             // Suggest the user to navigate to this URL when the device is connected.
-            //landing_url: Some(Url::new("http://dpedal.com/config")),
-            landing_url: None,
+            landing_url: Some(Url::new("https://dpedal.com/config.html")),
+            // landing_url: None,
         });
 
         // Add the Microsoft OS Descriptor (MSOS/MOD) descriptor.
@@ -77,7 +79,10 @@ impl WebConfig {
             let n = self.read_ep.read(&mut buf).await.unwrap();
             let data = &buf[..n];
             info!("Data read: {:x}", data);
-            self.write_ep.write(data).await.unwrap();
+
+            let response = Response::GetConfig(ArrayVec::from(load_config_bytes_from_flash().0));
+            let bytes = [2; 1024];
+            self.write_ep.write(&bytes).await.unwrap();
         }
     }
 }
