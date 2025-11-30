@@ -5,7 +5,7 @@ use embassy_rp::{peripherals::USB, usb::Driver};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::{
     Builder,
-    class::hid::{HidReader, HidReaderWriter, HidWriter, State},
+    class::hid::{HidBootProtocol, HidReader, HidReaderWriter, HidSubclass, HidWriter, State},
 };
 use static_cell::StaticCell;
 use usbd_hid::descriptor::{MouseReport, SerializedDescriptor};
@@ -22,6 +22,8 @@ pub static MOUSE_CHANNEL: Channel<ThreadModeRawMutex, MouseEvent, 64> = Channel:
 impl Mouse {
     pub fn new(builder: &mut Builder<'static, Driver<'static, USB>>) -> Self {
         let config = embassy_usb::class::hid::Config {
+            hid_subclass: HidSubclass::Boot,
+            hid_boot_protocol: HidBootProtocol::Mouse,
             report_descriptor: MouseReport::desc(),
             request_handler: None,
             poll_ms: 1,

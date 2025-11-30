@@ -4,7 +4,7 @@ use embassy_rp::{peripherals::USB, usb::Driver};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::{
     Builder,
-    class::hid::{HidReader, HidReaderWriter, HidWriter, State},
+    class::hid::{HidBootProtocol, HidReader, HidReaderWriter, HidSubclass, HidWriter, State},
 };
 use static_cell::StaticCell;
 use usbd_hid::descriptor::{KeyboardReport, KeyboardUsage, SerializedDescriptor};
@@ -21,6 +21,8 @@ pub static KEYBOARD_CHANNEL: Channel<ThreadModeRawMutex, KeyboardEvent, 64> = Ch
 impl Keyboard {
     pub fn new(builder: &mut Builder<'static, Driver<'static, USB>>) -> Self {
         let config = embassy_usb::class::hid::Config {
+            hid_subclass: HidSubclass::Boot,
+            hid_boot_protocol: HidBootProtocol::Keyboard,
             report_descriptor: KeyboardReport::desc(),
             request_handler: None,
             poll_ms: 1,

@@ -7,4 +7,4 @@ repository = "https://github.com/rukai/dpedal"
 [dependencies]
 rkyv = { version = "0.8.10", default-features = false, features = ["arrayvec-0_7", "bytecheck"] }
 arrayvec = { version = "0.7.6", default-features = false }
-usbd-hid = "0.8.0"
+usbd-hid = "0.9.0"

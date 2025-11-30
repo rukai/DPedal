@@ -5,12 +5,14 @@ mod config;
 mod keyboard;
 mod mouse;
 mod usb;
+mod web_config;
 
 use crate::keyboard::{KEYBOARD_CHANNEL, Keyboard, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, Mouse, MouseEvent};
+use crate::web_config::WebConfig;
 use dpedal_config::{ComputerInput, InputSplit, MouseInput};
 use embassy_executor::Spawner;
-use embassy_futures::join::join4;
+use embassy_futures::join::join5;
 use embassy_rp::gpio::{Input, Pin, Pull};
 use embassy_rp::{Peri, PeripheralType};
 use embassy_time::Timer;
@@ -25,6 +27,7 @@ async fn main(_spawner: Spawner) {
 
     let mut keyboard = Keyboard::new(&mut builder);
     let mut mouse = Mouse::new(&mut builder);
+    let mut web_config = WebConfig::new(&mut builder);
 
     let mut usb = builder.build();
 
@@ -55,7 +58,14 @@ async fn main(_spawner: Spawner) {
         }
     };
 
-    join4(usb_fut, main, keyboard.process(), mouse.process()).await;
+    join5(
+        usb_fut,
+        main,
+        keyboard.process(),
+        mouse.process(),
+        web_config.process(),
+    )
+    .await;
 }
 
 async fn handle_input(pin: &Input<'static>, config: ComputerInput) {
