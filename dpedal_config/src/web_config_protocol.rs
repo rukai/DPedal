@@ -1,17 +1,17 @@
-use crate::{CONFIG_SIZE, Config};
+use crate::CONFIG_SIZE;
 use arrayvec::ArrayVec;
-use rkyv::{Archive, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq)]
-#[rkyv(derive(Debug))]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[expect(clippy::large_enum_variant)]
 pub enum Request {
     GetConfig,
     SetConfig(ArrayVec<u8, CONFIG_SIZE>),
 }
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq)]
-#[rkyv(derive(Debug))]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[expect(clippy::large_enum_variant)]
 pub enum Response {
-    GetConfig(ArrayVec<u8, CONFIG_SIZE>),
+    GetConfig(Result<ArrayVec<u8, CONFIG_SIZE>, ()>),
     SetConfig,
 }

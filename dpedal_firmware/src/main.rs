@@ -35,7 +35,7 @@ async fn main(_spawner: Spawner) {
     let usb_fut = usb.run();
 
     let main = async {
-        let config = config::load().unwrap(); // TODO: handle this error
+        let config = config::load().unwrap_or_default();
 
         // inputs
         let button_left = input(p.PIN_3);

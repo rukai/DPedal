@@ -1,9 +1,8 @@
 use defmt::*;
 use dpedal_config::web_config_protocol::Response;
-use embassy_rp::pio::program::ArrayVec;
 use embassy_rp::usb::{Endpoint, In, Out};
 use embassy_rp::{peripherals::USB, usb::Driver};
-use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
+//use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::Builder;
 use embassy_usb::class::web_usb::{Config as WebUsbConfig, State, Url, WebUsb};
 use embassy_usb::driver::{Endpoint as EndpointTrait, EndpointIn, EndpointOut};
@@ -11,7 +10,6 @@ use embassy_usb::msos::{self, windows_version};
 use static_cell::StaticCell;
 
 use crate::config::load_config_bytes_from_flash;
-use crate::usb::MyRequestHandler;
 
 // This is a randomly generated GUID to allow clients on Windows to find our device
 const DEVICE_INTERFACE_GUIDS: &[&str] = &["{da327103-02a8-4d8a-8329-be81cdb97cc7}"];
@@ -21,7 +19,7 @@ pub struct WebConfig {
     read_ep: Endpoint<'static, USB, Out>,
 }
 
-pub static CONFIG_CHANNEL: Channel<ThreadModeRawMutex, (), 64> = Channel::new();
+//pub static CONFIG_CHANNEL: Channel<ThreadModeRawMutex, (), 64> = Channel::new();
 
 impl WebConfig {
     pub fn new(builder: &mut Builder<'static, Driver<'static, USB>>) -> Self {
@@ -29,10 +27,7 @@ impl WebConfig {
         let webusb_config = WEBUSB_CONFIG.init(WebUsbConfig {
             max_packet_size: 64,
             vendor_code: 1,
-            // If defined, shows a landing page which the device manufacturer would like the user to visit in order to control their device.
-            // Suggest the user to navigate to this URL when the device is connected.
             landing_url: Some(Url::new("https://dpedal.com/config.html")),
-            // landing_url: None,
         });
 
         // Add the Microsoft OS Descriptor (MSOS/MOD) descriptor.
@@ -63,7 +58,7 @@ impl WebConfig {
 
     pub async fn process(&mut self) {
         self.wait_connected().await;
-        info!("Connected");
+        info!("Connected to web configurator");
         self.echo().await;
     }
 
@@ -78,11 +73,14 @@ impl WebConfig {
         loop {
             let n = self.read_ep.read(&mut buf).await.unwrap();
             let data = &buf[..n];
-            info!("Data read: {:x}", data);
+            info!("data {:?}", data);
 
-            let response = Response::GetConfig(ArrayVec::from(load_config_bytes_from_flash().0));
-            let bytes = [2; 1024];
-            self.write_ep.write(&bytes).await.unwrap();
+            let response = Response::GetConfig(load_config_bytes_from_flash().map(|x| x.0));
+            let mut bytes = [0; 1024];
+            let result = postcard::to_slice(&response, &mut bytes).unwrap();
+            for chunk in result.chunks(64) {
+                self.write_ep.write(chunk).await.unwrap();
+            }
         }
     }
 }

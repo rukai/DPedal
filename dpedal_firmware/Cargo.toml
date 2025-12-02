@@ -32,6 +32,8 @@ portable-atomic = { version = "1.11.0", features = ["critical-section"] }
 static_cell = "2.1.1"
 rkyv = { version = "0.8.10", default-features = false }
 dpedal_config = { path = "../dpedal_config"}
+postcard = "1.1.3"
+arrayvec = { version = "0.7.6", default-features = false, features = ["serde"] }
 
 [profile.release]
 codegen-units = 1

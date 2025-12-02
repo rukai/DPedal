@@ -1,3 +1,5 @@
+use dpedal_config::Config;
+use dpedal_config::web_config_protocol::Response;
 use log::Level;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
@@ -33,9 +35,9 @@ async fn open_device() {
         }
     };
 
-    let filter = UsbDeviceFilter::new();
-    // filter.vendor_id = Some(0x06);
-    // filter.product_id = Some(0x11);
+    let mut filter = UsbDeviceFilter::new();
+    filter.vendor_id = Some(0xc0de);
+    filter.product_id = Some(0xcafe);
     let usb_device = match usb.request_device([filter]).await {
         Ok(x) => x,
         Err(e) => {
@@ -50,8 +52,28 @@ async fn open_device() {
 
     open_usb.claim_interface(1).await.unwrap();
     open_usb.transfer_out(1, "HIII".as_bytes()).await.unwrap();
-    let result = open_usb.transfer_in(1, 4).await.unwrap();
-    log::info!("response {:?}", result);
+    let mut result = vec![];
+    loop {
+        let out = open_usb.transfer_in(1, 64).await.unwrap();
+        log::info!("out.len() {:?}", out.len());
+        result.extend(&out);
+        if out.len() != 64 {
+            // TODO: I think we'll need a message length prefix to avoid hangs when the last packet is 64 bytes long.
+            break;
+        }
+    }
+    let response: Response = postcard::from_bytes(&result).unwrap();
+    log::info!("response {:?}", response);
+    let config: Config = match response {
+        Response::GetConfig(config_bytes) => {
+            // TODO: Is Align required in some circumstances?
+            rkyv::from_bytes::<Config, rkyv::rancor::Error>(&config_bytes.unwrap_or_default())
+                .unwrap()
+        }
+        Response::SetConfig => panic!("Unexpected response"),
+    };
+    log::info!("config {:#?}", config);
+
     let table = document.get_element_by_id("input-output-table").unwrap();
 
     table
