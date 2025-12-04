@@ -1,4 +1,6 @@
+use dpedal_config::ComputerInput;
 use dpedal_config::Config;
+use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Response;
 use log::Level;
 use wasm_bindgen::JsCast;
@@ -74,16 +76,28 @@ async fn open_device() {
     };
     log::info!("config {:#?}", config);
 
-    let table = document.get_element_by_id("input-output-table").unwrap();
-
-    table
-        .append_child(&create_row(&document, "Left Button", "PageUp"))
-        .unwrap();
-    table
-        .append_child(&create_row(&document, "Right Button", "PageDown"))
-        .unwrap();
+    gen_for_profile(&document, &config.profiles[0]);
 
     log::info!("Setup complete");
+}
+
+fn gen_for_profile(document: &Document, profile: &Profile) {
+    let table = document.get_element_by_id("input-output-table").unwrap();
+    table.set_inner_html("");
+
+    let left_button = create_row(document, "Left Button", profile.button_left);
+    let right_button = create_row(document, "Right Button", profile.button_right);
+    let dpad_up = create_row(document, "Dpad Up", profile.dpad_up);
+    let dpad_down = create_row(document, "Dpad Down", profile.dpad_down);
+    let dpad_left = create_row(document, "Dpad Left", profile.dpad_left);
+    let dpad_right = create_row(document, "Dpad Right", profile.dpad_right);
+
+    table.append_child(&left_button).unwrap();
+    table.append_child(&right_button).unwrap();
+    table.append_child(&dpad_up).unwrap();
+    table.append_child(&dpad_down).unwrap();
+    table.append_child(&dpad_left).unwrap();
+    table.append_child(&dpad_right).unwrap();
 }
 
 fn set_error(document: &Document, error_message: &str) {
@@ -92,7 +106,9 @@ fn set_error(document: &Document, error_message: &str) {
     error.set_inner_text(error_message);
 }
 
-fn create_row(document: &Document, input_value: &str, output_value: &str) -> Element {
+fn create_row(document: &Document, input_value: &str, computer_input: ComputerInput) -> Element {
+    let output_value = &format!("{:?}", computer_input);
+
     let tr = document.create_element("tr").unwrap();
 
     let td1 = document.create_element("td").unwrap();
