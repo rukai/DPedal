@@ -58,6 +58,23 @@ async fn open_device() {
 
     let config = request_get_config(open_usb).await;
 
+    let config_div = document.create_element("div").unwrap();
+    config_div.set_inner_html(
+        r#"
+<table id="input-output-table">
+    <tr>
+        <th>Input</th>
+        <th>Output</th>
+    </tr>
+</table>
+<button id="flash">Save</button>
+"#,
+    );
+    let config_div = config_div.dyn_ref::<HtmlElement>().unwrap();
+
+    let app_div = document.get_element_by_id("config-app").unwrap();
+    app_div.append_child(config_div).unwrap();
+
     gen_for_profile(&document, &config.profiles[0]);
     log::info!("device config {:#?}", config);
 
