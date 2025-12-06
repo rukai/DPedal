@@ -1,12 +1,14 @@
 use dpedal_config::ComputerInput;
 use dpedal_config::Config;
 use dpedal_config::Profile;
+use dpedal_config::web_config_protocol::Request;
 use dpedal_config::web_config_protocol::Response;
 use log::Level;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 use web_sys::{Document, Element, HtmlInputElement};
+use webusb_web::OpenUsbDevice;
 use webusb_web::Usb;
 use webusb_web::UsbDeviceFilter;
 
@@ -50,35 +52,40 @@ async fn open_device() {
 
     let open_usb = usb_device.open().await.unwrap();
 
-    log::info!("config {:#?}", usb_device.configuration());
+    log::info!("usb config {:#?}", usb_device.configuration());
 
     open_usb.claim_interface(1).await.unwrap();
-    open_usb.transfer_out(1, "HIII".as_bytes()).await.unwrap();
-    let mut result = vec![];
-    loop {
+
+    let config = request_get_config(open_usb).await;
+
+    gen_for_profile(&document, &config.profiles[0]);
+    log::info!("device config {:#?}", config);
+
+    log::info!("Setup complete");
+}
+
+async fn request_get_config(open_usb: OpenUsbDevice) -> Config {
+    let request_bytes = postcard::to_stdvec_cobs(&Request::GetConfig).unwrap();
+    open_usb.transfer_out(1, &request_bytes).await.unwrap();
+
+    let mut result = open_usb.transfer_in(1, 64).await.unwrap();
+    let size = u32::from_be_bytes(result[0..4].try_into().unwrap());
+
+    while result.len() < size as usize {
         let out = open_usb.transfer_in(1, 64).await.unwrap();
-        log::info!("out.len() {:?}", out.len());
         result.extend(&out);
-        if out.len() != 64 {
-            // TODO: I think we'll need a message length prefix to avoid hangs when the last packet is 64 bytes long.
-            break;
-        }
     }
-    let response: Response = postcard::from_bytes(&result).unwrap();
-    log::info!("response {:?}", response);
+    let response: Response = postcard::from_bytes(&result[4..]).unwrap();
     let config: Config = match response {
         Response::GetConfig(config_bytes) => {
             // TODO: Is Align required in some circumstances?
             rkyv::from_bytes::<Config, rkyv::rancor::Error>(&config_bytes.unwrap_or_default())
                 .unwrap()
         }
-        Response::SetConfig => panic!("Unexpected response"),
+        Response::SetConfig => panic!("Unexpected dpedal response"),
+        Response::ProtocolError => panic!("dpedal protocol error"),
     };
-    log::info!("config {:#?}", config);
-
-    gen_for_profile(&document, &config.profiles[0]);
-
-    log::info!("Setup complete");
+    config
 }
 
 fn gen_for_profile(document: &Document, profile: &Profile) {

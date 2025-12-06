@@ -14,4 +14,5 @@ pub enum Request {
 pub enum Response {
     GetConfig(Result<ArrayVec<u8, CONFIG_SIZE>, ()>),
     SetConfig,
+    ProtocolError,
 }

@@ -1,12 +1,13 @@
 use defmt::*;
-use dpedal_config::web_config_protocol::Response;
+use dpedal_config::web_config_protocol::{Request, Response};
 use embassy_rp::usb::{Endpoint, In, Out};
 use embassy_rp::{peripherals::USB, usb::Driver};
 //use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::Builder;
-use embassy_usb::class::web_usb::{Config as WebUsbConfig, State, Url, WebUsb};
+use embassy_usb::class::web_usb::{Config as WebUsbConfig, State, WebUsb};
 use embassy_usb::driver::{Endpoint as EndpointTrait, EndpointIn, EndpointOut};
 use embassy_usb::msos::{self, windows_version};
+use postcard::accumulator::CobsAccumulator;
 use static_cell::StaticCell;
 
 use crate::config::load_config_bytes_from_flash;
@@ -27,7 +28,10 @@ impl WebConfig {
         let webusb_config = WEBUSB_CONFIG.init(WebUsbConfig {
             max_packet_size: 64,
             vendor_code: 1,
-            landing_url: Some(Url::new("https://dpedal.com/config.html")),
+            // This sounds useful but in reality is really annoying.
+            // TODO: Maybe we can make it pop-up only in certain circumstances?
+            //landing_url: Some(Url::new("https://dpedal.com/config.html")),
+            landing_url: None,
         });
 
         // Add the Microsoft OS Descriptor (MSOS/MOD) descriptor.
@@ -69,16 +73,52 @@ impl WebConfig {
 
     // Echo data back to the host.
     async fn echo(&mut self) {
-        let mut buf = [0; 64];
-        loop {
-            let n = self.read_ep.read(&mut buf).await.unwrap();
-            let data = &buf[..n];
-            info!("data {:?}", data);
+        let mut packet_buf = [0; 64];
+        'skip_request: loop {
+            let mut cobs_buf: CobsAccumulator<1024> = CobsAccumulator::new();
+            let request = loop {
+                let n = self.read_ep.read(&mut packet_buf).await.unwrap();
+                match cobs_buf.feed::<Request>(&packet_buf[..n]) {
+                    postcard::accumulator::FeedResult::Consumed => {}
+                    postcard::accumulator::FeedResult::OverFull(_items) => {
+                        error!("request exceeded 1024 bytes");
+                        self.send_response(Response::ProtocolError).await;
+                        continue 'skip_request;
+                    }
+                    postcard::accumulator::FeedResult::DeserError(_items) => {
+                        error!("Failed to deserialize request");
+                        self.send_response(Response::ProtocolError).await;
+                        continue 'skip_request;
+                    }
+                    postcard::accumulator::FeedResult::Success { data, .. } => break data,
+                }
+            };
+            let response = match request {
+                Request::GetConfig => {
+                    Response::GetConfig(load_config_bytes_from_flash().map(|x| x.0))
+                }
+                Request::SetConfig(array_vec) => {
+                    defmt::panic!("set config {:?}", array_vec.as_ref())
+                }
+            };
 
-            let response = Response::GetConfig(load_config_bytes_from_flash().map(|x| x.0));
-            let mut bytes = [0; 1024];
-            let result = postcard::to_slice(&response, &mut bytes).unwrap();
-            for chunk in result.chunks(64) {
+            self.send_response(response).await;
+        }
+    }
+
+    async fn send_response(&mut self, response: Response) {
+        // TODO: replace size prefix with cobs
+        let mut response_buf = [0; 1024];
+        let response = postcard::to_slice(&response, &mut response_buf).unwrap();
+        info!("response {:?}", response);
+        let response_size = response.len() as u32;
+        self.write_ep
+            .write(&response_size.to_be_bytes())
+            .await
+            .unwrap();
+
+        for chunk in response.chunks(64) {
+            if !chunk.is_empty() {
                 self.write_ep.write(chunk).await.unwrap();
             }
         }

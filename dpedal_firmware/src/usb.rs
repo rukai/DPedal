@@ -25,7 +25,10 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
 
     let mut config = Config::new(0xc0de, 0xcafe);
     config.manufacturer = Some("Rukai");
-    config.product = Some("DPedal test");
+    config.product = Some(match env!("PROFILE") {
+        "release" => "DPedal",
+        _ => "DPedal (debug build)",
+    });
     config.serial_number = Some("12345678");
     config.max_power = 100;
     config.max_packet_size_0 = 64;
