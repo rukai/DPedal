@@ -10,7 +10,7 @@ mod web_config;
 use crate::keyboard::{KEYBOARD_CHANNEL, Keyboard, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, Mouse, MouseEvent};
 use crate::web_config::WebConfig;
-use dpedal_config::{ComputerInput, InputSplit, MouseInput};
+use dpedal_config::{ComputerInput, DpedalInput, InputSplit, MouseInput};
 use embassy_executor::Spawner;
 use embassy_futures::join::join5;
 use embassy_rp::gpio::{Input, Pin, Pull};
@@ -49,12 +49,26 @@ async fn main(_spawner: Spawner) {
             let profile = &config.profiles[0];
             Timer::after_millis(1).await;
 
-            handle_input(&button_left, profile.button_left).await;
-            handle_input(&button_right, profile.button_right).await;
-            handle_input(&dpad_up, profile.dpad_up).await;
-            handle_input(&dpad_down, profile.dpad_down).await;
-            handle_input(&dpad_left, profile.dpad_left).await;
-            handle_input(&dpad_right, profile.dpad_right).await;
+            let input_state = DpedalInputState {
+                button_left: button_left.is_low(),
+                button_right: button_right.is_low(),
+                dpad_up: dpad_up.is_low(),
+                dpad_down: dpad_down.is_low(),
+                dpad_left: dpad_left.is_low(),
+                dpad_right: dpad_right.is_low(),
+            };
+
+            for mapping in &profile.mappings {
+                if input_state.is_all_pressed(&mapping.input) {
+                    for output in &mapping.output {
+                        pressed(*output).await;
+                    }
+                } else {
+                    for output in &mapping.output {
+                        released(*output).await;
+                    }
+                }
+            }
         }
     };
 
@@ -68,11 +82,32 @@ async fn main(_spawner: Spawner) {
     .await;
 }
 
-async fn handle_input(pin: &Input<'static>, config: ComputerInput) {
-    if pin.is_low() {
-        pressed(config).await;
-    } else {
-        released(config).await;
+struct DpedalInputState {
+    button_left: bool,
+    button_right: bool,
+    dpad_up: bool,
+    dpad_down: bool,
+    dpad_left: bool,
+    dpad_right: bool,
+}
+
+impl DpedalInputState {
+    fn is_all_pressed(&self, check: &[DpedalInput]) -> bool {
+        for input in check {
+            let pressed = match input {
+                DpedalInput::DpadUp => self.dpad_up,
+                DpedalInput::DpadDown => self.dpad_down,
+                DpedalInput::DpadLeft => self.dpad_left,
+                DpedalInput::DpadRight => self.dpad_right,
+                DpedalInput::ButtonLeft => self.button_left,
+                DpedalInput::ButtonRight => self.button_right,
+            };
+
+            if !pressed {
+                return false;
+            }
+        }
+        true
     }
 }
 

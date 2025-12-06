@@ -65,12 +65,26 @@ pub struct ConfigKdl {
 #[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
 #[kdl_config_finalize_into = "dpedal_config::Profile"]
 pub struct ProfileKdl {
-    pub dpad_up: Parsed<ComputerInputKdl>,
-    pub dpad_down: Parsed<ComputerInputKdl>,
-    pub dpad_left: Parsed<ComputerInputKdl>,
-    pub dpad_right: Parsed<ComputerInputKdl>,
-    pub button_left: Parsed<ComputerInputKdl>,
-    pub button_right: Parsed<ComputerInputKdl>,
+    pub mappings: Parsed<ArrayVec<Parsed<MappingKdl>, 20>>,
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::Mapping"]
+pub struct MappingKdl {
+    pub input: Parsed<ArrayVec<Parsed<DpedalInputKdl>, 4>>,
+    pub output: Parsed<ArrayVec<Parsed<ComputerInputKdl>, 20>>,
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::DpedalInput"]
+pub enum DpedalInputKdl {
+    #[default]
+    DpadUp,
+    DpadDown,
+    DpadLeft,
+    DpadRight,
+    ButtonLeft,
+    ButtonRight,
 }
 
 #[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]

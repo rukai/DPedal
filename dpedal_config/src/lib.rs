@@ -9,11 +9,20 @@ pub const RP2040_FLASH_SIZE: usize = 1024 * 1024 * 16; // 16 MiB
 pub const FIRMWARE_OFFSET: usize = 0;
 pub const FIRMWARE_SIZE: usize = 1024 * 1024 * 15; // 15 MiB
 pub const CONFIG_OFFSET: usize = 1024 * 1024 * 15;
-pub const CONFIG_SIZE: usize = 256; // 10 KiB
+pub const CONFIG_SIZE: usize = 1024 * 10; // 10 KiB
 
 use arrayvec::ArrayVec;
+use defmt::Format;
 use rkyv::{Archive, Deserialize, Serialize};
 use usbd_hid::descriptor::KeyboardUsage;
+
+const fn assert_config_fits_in_flash() {
+    // TODO: This isnt actually accurate, since the data will be serialized into rkyv format first.
+    //       Is there a way to calculate the maximum possible size in rkyv format?
+    assert!(core::mem::size_of::<Config>() <= CONFIG_SIZE);
+}
+
+const _: () = assert_config_fits_in_flash();
 
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
 #[rkyv(derive(Debug))]
@@ -27,15 +36,29 @@ pub struct Config {
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
 #[rkyv(derive(Debug))]
 pub struct Profile {
-    pub dpad_up: ComputerInput,
-    pub dpad_down: ComputerInput,
-    pub dpad_left: ComputerInput,
-    pub dpad_right: ComputerInput,
-    pub button_left: ComputerInput,
-    pub button_right: ComputerInput,
+    pub mappings: ArrayVec<Mapping, 20>,
 }
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
+#[rkyv(derive(Debug))]
+pub struct Mapping {
+    pub input: ArrayVec<DpedalInput, 4>,
+    pub output: ArrayVec<ComputerInput, 20>,
+}
+
+#[derive(Format, Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
+#[rkyv(derive(Debug))]
+pub enum DpedalInput {
+    #[default]
+    DpadUp,
+    DpadDown,
+    DpadLeft,
+    DpadRight,
+    ButtonLeft,
+    ButtonRight,
+}
+
+#[derive(Format, Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
 #[rkyv(derive(Debug))]
 pub enum ComputerInput {
     #[default]

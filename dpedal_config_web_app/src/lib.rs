@@ -1,5 +1,5 @@
-use dpedal_config::ComputerInput;
 use dpedal_config::Config;
+use dpedal_config::Mapping;
 use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Request;
 use dpedal_config::web_config_protocol::Response;
@@ -92,19 +92,10 @@ fn gen_for_profile(document: &Document, profile: &Profile) {
     let table = document.get_element_by_id("input-output-table").unwrap();
     table.set_inner_html("<tr><th>Input</th><th>Output</th></tr>");
 
-    let left_button = create_row(document, "Left Button", profile.button_left);
-    let right_button = create_row(document, "Right Button", profile.button_right);
-    let dpad_up = create_row(document, "Dpad Up", profile.dpad_up);
-    let dpad_down = create_row(document, "Dpad Down", profile.dpad_down);
-    let dpad_left = create_row(document, "Dpad Left", profile.dpad_left);
-    let dpad_right = create_row(document, "Dpad Right", profile.dpad_right);
-
-    table.append_child(&left_button).unwrap();
-    table.append_child(&right_button).unwrap();
-    table.append_child(&dpad_up).unwrap();
-    table.append_child(&dpad_down).unwrap();
-    table.append_child(&dpad_left).unwrap();
-    table.append_child(&dpad_right).unwrap();
+    for mapping in &profile.mappings {
+        let row = create_row(document, mapping);
+        table.append_child(&row).unwrap();
+    }
 }
 
 fn set_error(document: &Document, error_message: &str) {
@@ -113,8 +104,19 @@ fn set_error(document: &Document, error_message: &str) {
     error.set_inner_text(error_message);
 }
 
-fn create_row(document: &Document, input_value: &str, computer_input: ComputerInput) -> Element {
-    let output_value = &format!("{:?}", computer_input);
+fn create_row(document: &Document, mapping: &Mapping) -> Element {
+    let input_value = mapping
+        .input
+        .iter()
+        .map(|x| format!("{x:?}"))
+        .collect::<Vec<String>>()
+        .join("+");
+    let output_value = mapping
+        .output
+        .iter()
+        .map(|x| format!("{x:?}"))
+        .collect::<Vec<String>>()
+        .join("+");
 
     let tr = document.create_element("tr").unwrap();
 
@@ -126,12 +128,12 @@ fn create_row(document: &Document, input_value: &str, computer_input: ComputerIn
 
     let input = document.create_element("p").unwrap();
     let input = input.dyn_ref::<HtmlElement>().unwrap();
-    input.set_inner_text(input_value);
+    input.set_inner_text(&input_value);
     td1.append_child(input).unwrap();
 
     let output = document.create_element("input").unwrap();
     let output = output.dyn_ref::<HtmlInputElement>().unwrap();
-    output.set_value(output_value);
+    output.set_value(&output_value);
     td2.append_child(output).unwrap();
 
     tr
