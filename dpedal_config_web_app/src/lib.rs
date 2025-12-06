@@ -90,7 +90,7 @@ async fn request_get_config(open_usb: OpenUsbDevice) -> Config {
 
 fn gen_for_profile(document: &Document, profile: &Profile) {
     let table = document.get_element_by_id("input-output-table").unwrap();
-    table.set_inner_html("");
+    table.set_inner_html("<tr><th>Input</th><th>Output</th></tr>");
 
     let left_button = create_row(document, "Left Button", profile.button_left);
     let right_button = create_row(document, "Right Button", profile.button_right);
