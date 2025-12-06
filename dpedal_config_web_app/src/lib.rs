@@ -4,13 +4,15 @@ use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Request;
 use dpedal_config::web_config_protocol::Response;
 use log::Level;
+use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 use web_sys::{Document, Element, HtmlInputElement};
-use webusb_web::OpenUsbDevice;
-use webusb_web::Usb;
-use webusb_web::UsbDeviceFilter;
+
+use crate::device::Device;
+
+mod device;
 
 #[wasm_bindgen]
 pub fn run() {
@@ -31,32 +33,11 @@ async fn open_device() {
     let document = web_sys::window().unwrap().document().unwrap();
     set_error(&document, "");
 
-    let usb = match Usb::new() {
-        Ok(x) => x,
-        Err(e) => {
-            set_error(&document, e.msg());
-            return;
-        }
+    let Ok(device) = Device::new(&document).await else {
+        return;
     };
 
-    let mut filter = UsbDeviceFilter::new();
-    filter.vendor_id = Some(0xc0de);
-    filter.product_id = Some(0xcafe);
-    let usb_device = match usb.request_device([filter]).await {
-        Ok(x) => x,
-        Err(e) => {
-            set_error(&document, e.msg());
-            return;
-        }
-    };
-
-    let open_usb = usb_device.open().await.unwrap();
-
-    log::info!("usb config {:#?}", usb_device.configuration());
-
-    open_usb.claim_interface(1).await.unwrap();
-
-    let config = request_get_config(open_usb).await;
+    let config = request_get_config(&device).await;
 
     let config_div = document.create_element("div").unwrap();
     config_div.set_inner_html(
@@ -78,21 +59,26 @@ async fn open_device() {
     gen_for_profile(&document, &config.profiles[0]);
     log::info!("device config {:#?}", config);
 
+    // TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
+    let device = Rc::new(device);
+    set_button_on_click(
+        &document,
+        "flash",
+        Box::new(move || {
+            let device = device.clone();
+            wasm_bindgen_futures::spawn_local(write_config(device));
+        }) as Box<dyn FnMut()>,
+    );
+
     log::info!("Setup complete");
 }
 
-async fn request_get_config(open_usb: OpenUsbDevice) -> Config {
-    let request_bytes = postcard::to_stdvec_cobs(&Request::GetConfig).unwrap();
-    open_usb.transfer_out(1, &request_bytes).await.unwrap();
+async fn write_config(device: Rc<Device>) {
+    log::info!("SDFKSJDF")
+}
 
-    let mut result = open_usb.transfer_in(1, 64).await.unwrap();
-    let size = u32::from_be_bytes(result[0..4].try_into().unwrap());
-
-    while result.len() < size as usize {
-        let out = open_usb.transfer_in(1, 64).await.unwrap();
-        result.extend(&out);
-    }
-    let response: Response = postcard::from_bytes(&result[4..]).unwrap();
+async fn request_get_config(device: &Device) -> Config {
+    let response = device.send_request(&Request::GetConfig).await;
     let config: Config = match response {
         Response::GetConfig(config_bytes) => {
             // TODO: Is Align required in some circumstances?
@@ -107,7 +93,6 @@ async fn request_get_config(open_usb: OpenUsbDevice) -> Config {
 
 fn gen_for_profile(document: &Document, profile: &Profile) {
     let table = document.get_element_by_id("input-output-table").unwrap();
-    table.set_inner_html("<tr><th>Input</th><th>Output</th></tr>");
 
     for mapping in &profile.mappings {
         let row = create_row(document, mapping);
@@ -115,7 +100,7 @@ fn gen_for_profile(document: &Document, profile: &Profile) {
     }
 }
 
-fn set_error(document: &Document, error_message: &str) {
+pub fn set_error(document: &Document, error_message: &str) {
     let error = document.get_element_by_id("error").unwrap();
     let error = error.dyn_ref::<HtmlElement>().unwrap();
     error.set_inner_text(error_message);

@@ -93,6 +93,12 @@ struct DpedalInputState {
 
 impl DpedalInputState {
     fn is_all_pressed(&self, check: &[DpedalInput]) -> bool {
+        // Disable the mapping when the inputs are entirely empty
+        // It is an obvious configuration mistake and having it constantly trigger the input would be very annoying
+        if check.is_empty() {
+            return false;
+        }
+
         for input in check {
             let pressed = match input {
                 DpedalInput::DpadUp => self.dpad_up,
