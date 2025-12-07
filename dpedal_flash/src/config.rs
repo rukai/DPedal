@@ -59,6 +59,15 @@ pub struct ConfigKdl {
     //pub name: Parsed<String>,
     pub color: Parsed<u32>,
     pub profiles: Parsed<ArrayVec<Parsed<ProfileKdl>, 2>>,
+    // TODO: add validation: no duplicate pins (including default values), valid pin range
+    pub pin_remappings: Parsed<ArrayVec<Parsed<PinRemappingKdl>, 6>>,
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::PinRemapping"]
+pub struct PinRemappingKdl {
+    pub input: Parsed<DpedalInputKdl>,
+    pub pin: Parsed<u32>,
 }
 
 // TODO: add derive side validation that Parsed is used everywhere.

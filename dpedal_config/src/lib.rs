@@ -31,6 +31,15 @@ pub struct Config {
     //pub name: String,
     pub color: u32,
     pub profiles: ArrayVec<Profile, 2>,
+    pub pin_remappings: ArrayVec<PinRemapping, 6>,
+}
+
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
+#[rkyv(derive(Debug))]
+pub struct PinRemapping {
+    pub input: DpedalInput,
+    // TODO: make u8
+    pub pin: u32,
 }
 
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]

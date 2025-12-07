@@ -82,3 +82,5 @@ profiles {
     //     // button-left+button_right go-to-profile 1
     // }
 }
+
+pin-remappings { }

@@ -13,7 +13,7 @@ use crate::web_config::WebConfig;
 use dpedal_config::{ComputerInput, DpedalInput, InputSplit, MouseInput};
 use embassy_executor::Spawner;
 use embassy_futures::join::join5;
-use embassy_rp::gpio::{Input, Pin, Pull};
+use embassy_rp::gpio::{AnyPin, Input, Pin, Pull};
 use embassy_rp::{Peri, PeripheralType};
 use embassy_time::Timer;
 
@@ -37,13 +37,62 @@ async fn main(_spawner: Spawner) {
     let main = async {
         let config = config::load().unwrap_or_default();
 
-        // inputs
-        let button_left = input(p.PIN_3);
-        let button_right = input(p.PIN_20);
-        let dpad_up = input(p.PIN_27);
-        let dpad_down = input(p.PIN_7);
-        let dpad_left = input(p.PIN_16);
-        let dpad_right = input(p.PIN_15);
+        let mut pins: [Option<Peri<AnyPin>>; _] = [
+            Some(p.PIN_0.into()),
+            Some(p.PIN_1.into()),
+            Some(p.PIN_2.into()),
+            Some(p.PIN_3.into()),
+            Some(p.PIN_4.into()),
+            Some(p.PIN_5.into()),
+            Some(p.PIN_6.into()),
+            Some(p.PIN_7.into()),
+            Some(p.PIN_8.into()),
+            Some(p.PIN_9.into()),
+            Some(p.PIN_10.into()),
+            Some(p.PIN_11.into()),
+            Some(p.PIN_12.into()),
+            Some(p.PIN_13.into()),
+            Some(p.PIN_14.into()),
+            Some(p.PIN_15.into()),
+            Some(p.PIN_16.into()),
+            Some(p.PIN_17.into()),
+            Some(p.PIN_18.into()),
+            Some(p.PIN_19.into()),
+            Some(p.PIN_20.into()),
+            Some(p.PIN_21.into()),
+            Some(p.PIN_22.into()),
+            Some(p.PIN_23.into()),
+            Some(p.PIN_24.into()),
+            Some(p.PIN_25.into()),
+            Some(p.PIN_26.into()),
+            Some(p.PIN_27.into()),
+            Some(p.PIN_28.into()),
+            Some(p.PIN_29.into()),
+        ];
+
+        let mut button_left_pin = 13;
+        let mut button_right_pin = 27;
+        let mut dpad_up_pin = 26;
+        let mut dpad_down_pin = 16;
+        let mut dpad_left_pin = 17;
+        let mut dpad_right_pin = 22;
+        for remapping in config.pin_remappings {
+            match remapping.input {
+                DpedalInput::DpadUp => dpad_up_pin = remapping.pin as usize,
+                DpedalInput::DpadDown => dpad_down_pin = remapping.pin as usize,
+                DpedalInput::DpadLeft => dpad_left_pin = remapping.pin as usize,
+                DpedalInput::DpadRight => dpad_right_pin = remapping.pin as usize,
+                DpedalInput::ButtonLeft => button_left_pin = remapping.pin as usize,
+                DpedalInput::ButtonRight => button_right_pin = remapping.pin as usize,
+            }
+        }
+
+        let button_left = input(pins[button_left_pin].take().unwrap());
+        let button_right = input(pins[button_right_pin].take().unwrap());
+        let dpad_up = input(pins[dpad_up_pin].take().unwrap());
+        let dpad_down = input(pins[dpad_down_pin].take().unwrap());
+        let dpad_left = input(pins[dpad_left_pin].take().unwrap());
+        let dpad_right = input(pins[dpad_right_pin].take().unwrap());
 
         loop {
             let profile = &config.profiles[0];
