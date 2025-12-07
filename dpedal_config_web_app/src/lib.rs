@@ -1,9 +1,11 @@
+use arrayvec::ArrayVec;
 use dpedal_config::Config;
 use dpedal_config::Mapping;
 use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Request;
 use dpedal_config::web_config_protocol::Response;
 use log::Level;
+use rkyv::rancor::Error;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
@@ -39,17 +41,23 @@ async fn open_device() {
 
     let config = request_get_config(&device).await;
 
-    let config_div = document.create_element("div").unwrap();
+    let config_div = document
+        .get_element_by_id("mapping-section")
+        .unwrap_or_else(|| {
+            let config_div = document.create_element("div").unwrap();
+            config_div.set_id("mapping-section");
+            config_div
+        });
     config_div.set_inner_html(
         r#"
-<table id="input-output-table">
-    <tr>
-        <th>Input</th>
-        <th>Output</th>
-    </tr>
-</table>
-<button id="flash">Save</button>
-"#,
+            <table id="input-output-table">
+                <tr>
+                    <th>Input</th>
+                    <th>Output</th>
+                </tr>
+            </table>
+            <button id="flash">Save</button>
+            "#,
     );
     let config_div = config_div.dyn_ref::<HtmlElement>().unwrap();
 
@@ -74,7 +82,11 @@ async fn open_device() {
 }
 
 async fn write_config(device: Rc<Device>) {
-    log::info!("SDFKSJDF")
+    let config = Config::default();
+    let config_bytes =
+        ArrayVec::from_iter(rkyv::to_bytes::<Error>(&config).unwrap().iter().cloned());
+    device.send_request(&Request::SetConfig(config_bytes)).await;
+    log::info!("config written")
 }
 
 async fn request_get_config(device: &Device) -> Config {

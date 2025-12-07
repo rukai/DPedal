@@ -173,6 +173,7 @@ dependencies = [
 name = "dpedal_config_web_app"
 version = "0.1.0"
 dependencies = [
+ "arrayvec",
  "console_error_panic_hook",
  "console_log",
  "dpedal_config",

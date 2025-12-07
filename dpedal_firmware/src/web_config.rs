@@ -98,7 +98,8 @@ impl WebConfig {
                     Response::GetConfig(load_config_bytes_from_flash().map(|x| x.0))
                 }
                 Request::SetConfig(array_vec) => {
-                    defmt::panic!("set config {:?}", array_vec.as_ref())
+                    defmt::info!("set config {:?}", array_vec.as_ref());
+                    Response::SetConfig
                 }
             };
 
@@ -107,16 +108,9 @@ impl WebConfig {
     }
 
     async fn send_response(&mut self, response: Response) {
-        // TODO: replace size prefix with cobs
         let mut response_buf = [0; 1024];
-        let response = postcard::to_slice(&response, &mut response_buf).unwrap();
+        let response = postcard::to_slice_cobs(&response, &mut response_buf).unwrap();
         info!("response {:?}", response);
-        let response_size = response.len() as u32;
-        self.write_ep
-            .write(&response_size.to_be_bytes())
-            .await
-            .unwrap();
-
         for chunk in response.chunks(64) {
             if !chunk.is_empty() {
                 self.write_ep.write(chunk).await.unwrap();

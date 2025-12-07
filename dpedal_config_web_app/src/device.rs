@@ -1,4 +1,5 @@
 use dpedal_config::web_config_protocol::{Request, Response};
+use postcard::accumulator::CobsAccumulator;
 use web_sys::Document;
 use webusb_web::{OpenUsbDevice, Usb, UsbDeviceFilter};
 
@@ -40,14 +41,19 @@ impl Device {
         let request_bytes = postcard::to_stdvec_cobs(request).unwrap();
         self.usb.transfer_out(1, &request_bytes).await.unwrap();
 
-        let mut result = self.usb.transfer_in(1, 64).await.unwrap();
-        let size = u32::from_be_bytes(result[0..4].try_into().unwrap());
-
-        while result.len() < size as usize {
+        let mut cobs_buf: CobsAccumulator<1024> = CobsAccumulator::new();
+        loop {
             let out = self.usb.transfer_in(1, 64).await.unwrap();
-            result.extend(&out);
+            match cobs_buf.feed::<Response>(&out) {
+                postcard::accumulator::FeedResult::Consumed => {}
+                postcard::accumulator::FeedResult::OverFull(_items) => {
+                    todo!()
+                }
+                postcard::accumulator::FeedResult::DeserError(_items) => {
+                    todo!()
+                }
+                postcard::accumulator::FeedResult::Success { data, .. } => return data,
+            }
         }
-
-        postcard::from_bytes(&result[4..]).unwrap()
     }
 }
