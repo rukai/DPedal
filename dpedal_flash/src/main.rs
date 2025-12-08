@@ -1,11 +1,14 @@
+use clap::Parser;
 use miette::Result;
 
+pub mod cli;
 pub mod config;
 pub mod elf;
 pub mod flash;
 
 fn main() -> Result<()> {
-    let config = config::load()?;
+    let cli = cli::Args::parse();
+    let config = config::load(cli.path)?;
     let config_bytes = config::encode_config(&config)?;
 
     // TODO: use this once -Z bindeps stabilizes

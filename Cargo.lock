@@ -437,6 +437,7 @@ name = "dpedal_flash"
 version = "0.0.1"
 dependencies = [
  "arrayvec",
+ "clap",
  "dpedal_config",
  "goblin",
  "kdl",

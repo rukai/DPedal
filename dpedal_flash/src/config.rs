@@ -15,8 +15,8 @@ pub fn encode_config(config: &Config) -> miette::Result<Vec<u8>> {
     Ok(result)
 }
 
-pub fn load() -> miette::Result<Config> {
-    let input = load_source(None)?;
+pub fn load(path: Option<PathBuf>) -> miette::Result<Config> {
+    let input = load_source(path)?;
     // TODO: upstream a way to tell KDL parser what the filename is.
     let kdl: KdlDocument = input.inner().parse()?;
     let (profile, error): (Parsed<ConfigKdl>, ParseError) = kdl_config::parse(input, kdl);
