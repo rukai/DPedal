@@ -78,6 +78,10 @@ pub enum ComputerInput {
     MouseScrollRight,
     KeyboardA,
     KeyboardB,
+    KeyboardUpArrow,
+    KeyboardDownArrow,
+    KeyboardLeftArrow,
+    KeyboardRightArrow,
     KeyboardPageUp,
     KeyboardPageDown,
 }
@@ -92,6 +96,16 @@ impl ComputerInput {
             ComputerInput::MouseScrollRight => InputSplit::Mouse(MouseInput::Scroll { x: 1, y: 0 }),
             ComputerInput::KeyboardA => InputSplit::Keyboard(KeyboardUsage::KeyboardAa),
             ComputerInput::KeyboardB => InputSplit::Keyboard(KeyboardUsage::KeyboardBb),
+            ComputerInput::KeyboardUpArrow => InputSplit::Keyboard(KeyboardUsage::KeyboardUpArrow),
+            ComputerInput::KeyboardDownArrow => {
+                InputSplit::Keyboard(KeyboardUsage::KeyboardDownArrow)
+            }
+            ComputerInput::KeyboardLeftArrow => {
+                InputSplit::Keyboard(KeyboardUsage::KeyboardLeftArrow)
+            }
+            ComputerInput::KeyboardRightArrow => {
+                InputSplit::Keyboard(KeyboardUsage::KeyboardRightArrow)
+            }
             ComputerInput::KeyboardPageUp => InputSplit::Keyboard(KeyboardUsage::KeyboardPageUp),
             ComputerInput::KeyboardPageDown => {
                 InputSplit::Keyboard(KeyboardUsage::KeyboardPageDown)
