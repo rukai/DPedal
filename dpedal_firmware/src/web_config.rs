@@ -10,7 +10,7 @@ use embassy_usb::msos::{self, windows_version};
 use postcard::accumulator::CobsAccumulator;
 use static_cell::StaticCell;
 
-use crate::config::{check_valid_config, load_config_bytes_from_flash};
+use crate::config::ConfigFlash;
 
 // This is a randomly generated GUID to allow clients on Windows to find our device
 const DEVICE_INTERFACE_GUIDS: &[&str] = &["{da327103-02a8-4d8a-8329-be81cdb97cc7}"];
@@ -18,12 +18,16 @@ const DEVICE_INTERFACE_GUIDS: &[&str] = &["{da327103-02a8-4d8a-8329-be81cdb97cc7
 pub struct WebConfig {
     write_ep: Endpoint<'static, USB, In>,
     read_ep: Endpoint<'static, USB, Out>,
+    config_flash: ConfigFlash,
 }
 
 //pub static CONFIG_CHANNEL: Channel<ThreadModeRawMutex, (), 64> = Channel::new();
 
 impl WebConfig {
-    pub fn new(builder: &mut Builder<'static, Driver<'static, USB>>) -> Self {
+    pub fn new(
+        builder: &mut Builder<'static, Driver<'static, USB>>,
+        config_flash: ConfigFlash,
+    ) -> Self {
         static WEBUSB_CONFIG: StaticCell<WebUsbConfig> = StaticCell::new();
         let webusb_config = WEBUSB_CONFIG.init(WebUsbConfig {
             max_packet_size: 64,
@@ -57,7 +61,11 @@ impl WebConfig {
         let write_ep = alt.endpoint_bulk_in(None, 64);
         let read_ep = alt.endpoint_bulk_out(None, 64);
 
-        Self { write_ep, read_ep }
+        Self {
+            write_ep,
+            read_ep,
+            config_flash,
+        }
     }
 
     pub async fn process(&mut self) {
@@ -94,12 +102,14 @@ impl WebConfig {
                 }
             };
             let response = match request {
-                Request::GetConfig => {
-                    Response::GetConfig(load_config_bytes_from_flash().map(|x| x.0))
-                }
+                Request::GetConfig => Response::GetConfig(
+                    self.config_flash
+                        .load_config_bytes_from_flash()
+                        .map(|x| x.0),
+                ),
                 Request::SetConfig(array_vec) => {
                     defmt::info!("set config {:?}", array_vec.as_ref());
-                    if let Err(()) = check_valid_config(&array_vec) {
+                    if let Err(()) = self.config_flash.load_config_bytes_to_flash(array_vec) {
                         // TODO: return error over protocol
                         defmt::panic!("Config invalid, not writing to flash")
                     }

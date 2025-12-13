@@ -7,6 +7,7 @@ mod mouse;
 mod usb;
 mod web_config;
 
+use crate::config::ConfigFlash;
 use crate::keyboard::{KEYBOARD_CHANNEL, Keyboard, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, Mouse, MouseEvent};
 use crate::web_config::WebConfig;
@@ -23,9 +24,12 @@ use {defmt_rtt as _, panic_probe as _};
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
+    let config_flash = ConfigFlash::new(p.FLASH);
+    let config = config_flash.load().unwrap_or_default();
+
     let mut builder = usb::usb_builder(p.USB);
 
-    let mut web_config = WebConfig::new(&mut builder);
+    let mut web_config = WebConfig::new(&mut builder, config_flash);
     let mut keyboard = Keyboard::new(&mut builder);
     let mut mouse = Mouse::new(&mut builder);
 
@@ -35,8 +39,6 @@ async fn main(_spawner: Spawner) {
     let usb_fut = usb.run();
 
     let main = async {
-        let config = config::load().unwrap_or_default();
-
         let mut pins: [Option<Peri<AnyPin>>; _] = [
             Some(p.PIN_0.into()),
             Some(p.PIN_1.into()),
