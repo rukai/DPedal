@@ -8,5 +8,5 @@ repository = "https://github.com/rukai/dpedal"
 rkyv = { version = "0.8.10", default-features = false, features = ["arrayvec-0_7", "bytecheck"] }
 arrayvec = { version = "0.7.6", default-features = false, features = ["serde"] }
 usbd-hid = { version = "0.9.0", default-features = false }
-serde = { version = "1.0.0", default-features = false }
+serde = { version = "1.0.0", default-features = false, features = ["derive"] }
 defmt = "1"
