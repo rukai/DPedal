@@ -10,7 +10,7 @@ use embassy_usb::msos::{self, windows_version};
 use postcard::accumulator::CobsAccumulator;
 use static_cell::StaticCell;
 
-use crate::config::load_config_bytes_from_flash;
+use crate::config::{check_valid_config, load_config_bytes_from_flash};
 
 // This is a randomly generated GUID to allow clients on Windows to find our device
 const DEVICE_INTERFACE_GUIDS: &[&str] = &["{da327103-02a8-4d8a-8329-be81cdb97cc7}"];
@@ -99,6 +99,10 @@ impl WebConfig {
                 }
                 Request::SetConfig(array_vec) => {
                     defmt::info!("set config {:?}", array_vec.as_ref());
+                    if let Err(()) = check_valid_config(&array_vec) {
+                        // TODO: return error over protocol
+                        defmt::panic!("Config invalid, not writing to flash")
+                    }
                     Response::SetConfig
                 }
             };

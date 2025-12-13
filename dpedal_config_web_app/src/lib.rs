@@ -1,5 +1,7 @@
 use arrayvec::ArrayVec;
+use dpedal_config::ComputerInput;
 use dpedal_config::Config;
+use dpedal_config::DpedalInput;
 use dpedal_config::Mapping;
 use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Request;
@@ -9,6 +11,7 @@ use rkyv::rancor::Error;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
+use web_sys::HtmlCollection;
 use web_sys::HtmlElement;
 use web_sys::{Document, Element, HtmlInputElement};
 
@@ -67,26 +70,65 @@ async fn open_device() {
     gen_for_profile(&document, &config.profiles[0]);
     log::info!("device config {:#?}", config);
 
-    // TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
     let device = Rc::new(device);
     set_button_on_click(
         &document,
         "flash",
         Box::new(move || {
             let device = device.clone();
-            wasm_bindgen_futures::spawn_local(write_config(device));
+            wasm_bindgen_futures::spawn_local(write_config_task(device));
         }) as Box<dyn FnMut()>,
     );
 
     log::info!("Setup complete");
 }
 
-async fn write_config(device: Rc<Device>) {
-    let config = Config::default();
+// TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
+async fn write_config_task(device: Rc<Device>) {
+    let document = web_sys::window().unwrap().document().unwrap();
+    if let Err(err) = write_config(&document, device).await {
+        set_error(&document, &err);
+    }
+}
+
+async fn write_config(document: &Document, device: Rc<Device>) -> Result<(), String> {
+    let table = document.get_element_by_id("input-output-table").unwrap();
+
+    let mut mappings = ArrayVec::new();
+
+    // Iterate over rows, skipping the header
+    for row in ElementChildIterator::new(&table).skip(1) {
+        let mut cells = ElementChildIterator::new(&row);
+        let input_cell = ElementChildIterator::new(&cells.next().unwrap())
+            .next()
+            .unwrap();
+        let output_cell = ElementChildIterator::new(&cells.next().unwrap())
+            .next()
+            .unwrap();
+
+        let input = input_cell.inner_html();
+        let output = output_cell.dyn_ref::<HtmlInputElement>().unwrap().value();
+        mappings.push(Mapping {
+            input: ArrayVec::from_iter([DpedalInput::from_string(&input)
+                .ok_or_else(|| format!("{input} is not a valid input"))?]),
+            output: ArrayVec::from_iter([ComputerInput::from_string(&output)
+                .ok_or_else(|| format!("{output} is not a valid output"))?]),
+        });
+    }
+
+    let config = Config {
+        version: 0,
+        color: 0,
+        profiles: ArrayVec::from_iter([Profile { mappings }]),
+        pin_remappings: ArrayVec::new(),
+    };
+
     let config_bytes =
         ArrayVec::from_iter(rkyv::to_bytes::<Error>(&config).unwrap().iter().cloned());
     device.send_request(&Request::SetConfig(config_bytes)).await;
-    log::info!("config written")
+    log::info!("config written {:#?}", config);
+
+    Ok(())
 }
 
 async fn request_get_config(device: &Device) -> Config {
@@ -164,4 +206,38 @@ fn set_button_on_click(document: &Document, id: &str, closure: Box<dyn FnMut()>)
 
     // Need to forget closure otherwise the destructor destroys it ;-;
     closure.forget();
+}
+
+pub struct ElementChildIterator {
+    collection: HtmlCollection,
+    index: u32,
+    length: u32,
+}
+
+impl ElementChildIterator {
+    /// Create a new iterator over the children of an element
+    pub fn new(element: &Element) -> Self {
+        let collection = element.children();
+        let length = collection.length();
+
+        Self {
+            collection,
+            index: 0,
+            length,
+        }
+    }
+}
+
+impl Iterator for ElementChildIterator {
+    type Item = Element;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index < self.length {
+            let element = self.collection.item(self.index);
+            self.index += 1;
+            element
+        } else {
+            None
+        }
+    }
 }

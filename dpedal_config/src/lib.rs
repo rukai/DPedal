@@ -67,6 +67,20 @@ pub enum DpedalInput {
     ButtonRight,
 }
 
+impl DpedalInput {
+    pub fn from_string(s: &str) -> Option<Self> {
+        match s {
+            "DpadUp" => Some(Self::DpadUp),
+            "DpadDown" => Some(Self::DpadDown),
+            "DpadLeft" => Some(Self::DpadLeft),
+            "DpadRight" => Some(Self::DpadRight),
+            "ButtonLeft" => Some(Self::ButtonLeft),
+            "ButtonRight" => Some(Self::ButtonRight),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Format, Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy)]
 #[rkyv(derive(Debug))]
 pub enum ComputerInput {
@@ -84,6 +98,27 @@ pub enum ComputerInput {
     KeyboardRightArrow,
     KeyboardPageUp,
     KeyboardPageDown,
+}
+
+impl ComputerInput {
+    pub fn from_string(s: &str) -> Option<Self> {
+        match s {
+            "None" => Some(Self::None),
+            "MouseScrollUp" => Some(Self::MouseScrollUp),
+            "MouseScrollDown" => Some(Self::MouseScrollDown),
+            "MouseScrollLeft" => Some(Self::MouseScrollLeft),
+            "MouseScrollRight" => Some(Self::MouseScrollRight),
+            "KeyboardA" => Some(Self::KeyboardA),
+            "KeyboardB" => Some(Self::KeyboardB),
+            "KeyboardUpArrow" => Some(Self::KeyboardUpArrow),
+            "KeyboardDownArrow" => Some(Self::KeyboardDownArrow),
+            "KeyboardLeftArrow" => Some(Self::KeyboardLeftArrow),
+            "KeyboardRightArrow" => Some(Self::KeyboardRightArrow),
+            "KeyboardPageUp" => Some(Self::KeyboardPageUp),
+            "KeyboardPageDown" => Some(Self::KeyboardPageDown),
+            _ => None,
+        }
+    }
 }
 
 impl ComputerInput {

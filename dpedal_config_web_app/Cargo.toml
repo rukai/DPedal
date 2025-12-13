@@ -31,6 +31,8 @@ features = [
   'HtmlCollection',
   'HtmlInputElement',
   'HtmlSelectElement',
+  'Node',
+  'NodeList',
   'Window',
   'Document'
 ]

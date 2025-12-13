@@ -5,6 +5,12 @@ use rkyv::{rancor::Failure, util::Align};
 
 // TODO: store in heap instead, apparently only 2kb of stack o.0
 
+pub fn check_valid_config(bytes: &[u8]) -> Result<(), ()> {
+    let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(bytes).map_err(|_| ())?;
+    rkyv::api::low::deserialize::<_, Failure>(archive).map_err(|_| ())?;
+    Ok(())
+}
+
 pub fn load() -> Result<Config, ()> {
     let bytes = load_config_bytes_from_flash()?;
     let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(&bytes).map_err(|_| ())?;
