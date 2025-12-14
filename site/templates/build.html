@@ -16,12 +16,12 @@ DPedal build instructions
   <tr>
     <td>DPedal PCB</td>
     <td>1</td>
-    <td><a href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_gerber_files.zip">Download</a>, then
+    <td><a href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_gerber_files.zip">Download</a>, then
       <a href="#orderpcb">order online</a>
     </td>
   </tr>
   <tr>
-    <td>RP pico 1 USB C variant (headerless)</td>
+    <td>Raspberry Pi pico 1 USB C variant (headerless)</td>
     <td>1</td>
     <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
   </tr>
@@ -33,7 +33,7 @@ DPedal build instructions
   <tr><!--split into own section and list each part individually-->
     <td>3D printed parts</td>
     <td>1 each</td>
-    <td><a href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_3d_printed_parts.zip">Download</a>
+    <td><a href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_3d_printed_parts.zip">Download</a>
       and print yourself,<br>or upload to a <a href="">printing
         service</a>
     </td>
@@ -69,6 +69,9 @@ DPedal build instructions
     <td><a href="https://www.amazon.com.au/gp/product/B09LDCZGH1">Amazon</a></td>
   </tr>
 </table>
+
+<p>Note: The official micro usb version of the pico will also work fine, but I reccommend the unofficial usb C version,
+  since USB C is a nicer connector.</p>
 <!--
     * wire lengths (including stripped ends):
     * button left: 70mm
@@ -79,7 +82,7 @@ DPedal build instructions
     * button right: 140mm
     -->
 
-<p>TODO: image of everything laid out</p>
+<img src="/media/all_parts.webp">
 
 
 <h2>Tools</h2>
@@ -111,12 +114,12 @@ DPedal build instructions
     <td></td>
   </tr>
 </table>
-<p>TODO: image of everything laid out</p>
+<!--<p>TODO: image of everything laid out</p>-->
 
 <h2 id="orderpcb">Ordering PCB</h2>
 <ol>
   <li>Download <a
-      href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_gerber_files.zip">dpedal_gerber_files.zip</a>.
+      href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_gerber_files.zip">dpedal_gerber_files.zip</a>.
   </li>
   <li>Go to <a href="https://cart.jlcpcb.com/quote">JLCPCB</a>, click "Add gerber file" and upload the
     dpedal_gerber_files.zip you just downloaded</li>
@@ -134,7 +137,7 @@ DPedal build instructions
 
 <p>
   Download the STLs <a
-    href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_3d_printed_parts.zip">here</a>.
+    href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_3d_printed_parts.zip">here</a>.
   Then slice and print each STL yourself.
 </p>
 
@@ -142,7 +145,7 @@ DPedal build instructions
 
 <ul>
   <li>default orientation with no supports</li>
-  <li>layer height: 0.10mm (The model is very precise so, so dont go any higher than this)</li>
+  <li>layer height: 0.10mm (The model is very precise, so dont go any higher than this)</li>
   <li>infill: 15% grid infill (I just use grid because its the default, any infill type is probably fine)</li>
   <li>Filament: I use PLA but any hard filament should work fine.</li>
 </ul>
@@ -152,14 +155,15 @@ DPedal build instructions
 TODO: Intro to soldering
 -->
 <ol>
-  <li>Take the printed jig and pico</li><img src="/media/pico_jig1.jpg">
-  <li>Connect printed jig into the pico via the through holes and pins</li><img src="/media/pico_jig2.jpg">
+  <li>Take the printed jig and pico</li><img loading="lazy" src="/media/pico_jig1.webp" height="287">
+  <li>Connect printed jig into the pico via the through holes and pins</li><img src="/media/pico_jig2.webp"
+    height="287">
   <li>Connect pico to the PCB via the jig, it may need to be pushed until clicking into place. The pico should sit
-    secure and flatly on the PCB.</li><img src="/media/pico_jig4.jpg">
+    secure and flatly on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp" height="287">
   <li>Solder pico to the PCB, some masking tape can be used to further secure the pico until the first few solder joints
     are made. Heat both the pad on the pico and the pad on the PCB with the tip of the soldering iron, then solder into
     the point where the two pins connect. The solder should not form blobs on top of the pico or you may have trouble
-    fitting into the case.</li><img src="/media/pico_jig5.jpg">
+    fitting into the case.</li><img loading="lazy" src="/media/pico_jig5.webp" height="287">
   <li>Solder hotswap sockets to PCB</li>
 </ol>
 
@@ -173,7 +177,7 @@ TODO: Intro to soldering
     <li>macOS</li>
     <ol>
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-aarch64-apple-darwin.tar.xz">firmware
+          href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_flash-aarch64-apple-darwin.tar.xz">firmware
           (arm host)</a>
         and unzip.</li>
       <li>Open a terminal to the directory containing the firmware and run
@@ -190,7 +194,7 @@ TODO: Intro to soldering
       </ol>
 
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-x86_64-pc-windows-msvc.zip">firmware
+          href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_flash-x86_64-pc-windows-msvc.zip">firmware
           (x86 host)</a> and unzip.</li>
       <li>Open a terminal to the directory containing the firmware and run
         <span style="color:red;font-family:mono;">dpedalflash.exe</span>
@@ -199,11 +203,11 @@ TODO: Intro to soldering
     <li>Linux</li>
     <ol>
       <li>Download the <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/dpedal_flash-x86_64-unknown-linux-gnu.tar.xz">firmware
+          href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_flash-x86_64-unknown-linux-gnu.tar.xz">firmware
           (x86 host)</a>
         <!-- or
            <a
-          href="https://github.com/rukai/DPedal_v3/releases/latest/download/TODO">firmware
+          href="https://github.com/rukai/DPedal/releases/latest/download/TODO">firmware
           (arm host)</a>
           -->
         and unzip.
@@ -224,14 +228,20 @@ TODO: Intro to soldering
 
 <h2>Assembling</h2>
 <ol>
-  <li>Ensure you have everything in the BOM</li>
-  <li>Place PCB in pico base</li>
-  <li>Place switch plate on top of pico base</li>
-  <li>Screw the switch plate on to the pico base</li>
-  <li>Clip the switches into their sockets</li>
-  <li>Put the dpad between the two base pieces and push the pieces together.</li>
-  <li>Screw the right base to the switch plate</li>
-  <li>Push the 2 buttons into the 2 empty switches</li>
+  <li>Place PCB into the base part with the hole for the USB port</li><img loading="lazy"
+    src="/media/switchplate_and_base1.webp" height="287">
+  <li>Place switch plate on top of the PCB</li><img loading="lazy" src="/media/switchplate_and_base2.webp" height="287">
+  <li>Place 4 screws through the switch plate and base.</li><img loading="lazy" src="/media/switchplate_and_base3.webp"
+    height="287">
+  <li>For each screw, hold a square nut behind it and screw them together</li><img loading="lazy"
+    src="/media/switchplate_and_base4.webp" height="287">
+  <li>Clip the switches into their sockets</li><img loading="lazy" src="/media/insert_switches.webp" height="287">
+  <li>Put the dpad between the two base pieces and push the pieces together.</li><img loading="lazy"
+    src="/media/connect_other_base.webp" height="287">
+  <li>Screw the remaining base part to the switch plate</li><img loading="lazy" src="/media/screw_other_base.webp"
+    height="287">
+  <li>Push the 2 buttons into the 2 empty switches</li><img loading="lazy" src="/media/insert_buttons.webp"
+    height="287">
 </ol>
 <!--
     1. cut wires and strip ends, strip about ~2-3mm
@@ -252,7 +262,10 @@ TODO: Intro to soldering
 <h2>Finished!</h2>
 
 <p>Your dpedal is now fully assembled and ready to use.</p>
-<img src="/media/finished.jpg" loading="lazy">
+<img src="/media/finished.webp" loading="lazy">
+
+<p>Slot in the footrest when using it.</p>
+<img src="/media/attach_footrest.webp" loading="lazy" height="287">
 
 <p>If you want to change the keyboard/mouse mapping you can use the <a href="/config">web configurator</a>.</p>
 {% endblock %}

@@ -7,7 +7,7 @@ version 0
 color 0xFF0000
 
 // A maximum of 50 profiles can be defined.
-// On startup, dpedal will use the first the first defined profile.
+// On startup, dpedal will use the first defined profile.
 profiles {
     // Standard profile
     - {

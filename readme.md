@@ -6,7 +6,7 @@ It is built around a raspberry pi pico and connects to your PC over usb to send 
 It consists entirely of 3d printed parts except for the PCB, keyboard switches and 2 side button caps.
 You can build your own from this design if you are comfortable with 3d printing, ordering assembled PCB's from a manufacturer and a tiny bit of soldering.
 
-To build your own dpedal follow [the instructions here](https://dpedal.com/build).
+To build your own dpedal follow [the instructions here](https://dpedal.com/build.html).
 
 This repo contains the source for:
 
