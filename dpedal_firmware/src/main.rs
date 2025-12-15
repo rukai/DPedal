@@ -24,7 +24,7 @@ use {defmt_rtt as _, panic_probe as _};
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
-    let config_flash = ConfigFlash::new(p.FLASH);
+    let mut config_flash = ConfigFlash::new(p.FLASH);
     let config = config_flash.load().unwrap_or_default();
 
     let mut builder = usb::usb_builder(p.USB);

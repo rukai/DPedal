@@ -1,8 +1,6 @@
 use arrayvec::ArrayVec;
 use defmt::error;
-use dpedal_config::{
-    ArchivedConfig, CONFIG_OFFSET, CONFIG_SIZE, Config, RP2040_FLASH_OFFSET, RP2040_FLASH_SIZE,
-};
+use dpedal_config::{ArchivedConfig, CONFIG_OFFSET, CONFIG_SIZE, Config, RP2040_FLASH_SIZE};
 use embassy_rp::{
     Peri,
     flash::{Blocking, Flash},
@@ -21,37 +19,30 @@ impl ConfigFlash {
         }
     }
 
-    pub fn load(&self) -> Result<Config, ()> {
+    pub fn load(&mut self) -> Result<Config, ()> {
         let bytes = self.load_config_bytes_from_flash()?;
         let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(&bytes).map_err(|_| ())?;
         rkyv::api::low::deserialize::<_, Failure>(archive).map_err(|_| ())
     }
 
-    pub fn load_config_bytes_from_flash(&self) -> Result<Align<ArrayVec<u8, CONFIG_SIZE>>, ()> {
-        let mut data = Align(ArrayVec::new());
-        // Safety: This byte range is known to be valid flash memory on this device
-        unsafe {
-            let mut size = 0u32;
-            for i in 0..4 {
-                let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + i) as *mut u8;
-                size |= (core::ptr::read_volatile::<u8>(address) as u32) << ((3 - i) * 8);
-            }
+    pub fn load_config_bytes_from_flash(&mut self) -> Result<Align<ArrayVec<u8, CONFIG_SIZE>>, ()> {
+        // TODO: store in heap instead, apparently only 2kb of stack o.0
+        let mut bytes = [0u8; CONFIG_SIZE];
+        self.flash
+            .blocking_read(CONFIG_OFFSET as u32, &mut bytes)
+            .unwrap();
+        let size = u32::from_be_bytes(bytes[..4].try_into().unwrap());
 
-            let size = size as usize;
-            if size > CONFIG_SIZE {
-                error!("config bytes length prefix too long {}", size);
-                return Err(());
-            }
-
-            for i in 0..size {
-                let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + 4 + i) as *mut u8;
-                data.push(core::ptr::read_volatile::<u8>(address));
-            }
+        let size = size as usize;
+        if size > CONFIG_SIZE - 4 {
+            error!("config bytes length prefix too long {}", size);
+            return Err(());
         }
-        Ok(data)
-    }
 
-    // TODO: store in heap instead, apparently only 2kb of stack o.0
+        Ok(Align(ArrayVec::from_iter(
+            bytes[4..4 + size].iter().cloned(),
+        )))
+    }
 
     pub fn check_valid_config(&self, bytes: &[u8]) -> Result<(), ()> {
         let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(bytes).map_err(|_| ())?;
@@ -80,7 +71,7 @@ impl ConfigFlash {
 
         //     let size = size as usize;
         //     for i in 0..size {
-        //         let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + 4 + i) as *mut u8;
+        //         let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + + i) as *mut u8;
         //         data.push(core::ptr::read_volatile::<u8>(address));
         //     }
         // }

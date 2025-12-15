@@ -113,4 +113,8 @@ pub enum ComputerInputKdl {
     KeyboardRightArrow,
     KeyboardPageUp,
     KeyboardPageDown,
+    KeyboardBackspace,
+    KeyboardDelete,
+    KeyboardTab,
+    KeyboardEnter,
 }

@@ -104,6 +104,10 @@ pub enum ComputerInput {
     KeyboardRightArrow,
     KeyboardPageUp,
     KeyboardPageDown,
+    KeyboardBackspace,
+    KeyboardDelete,
+    KeyboardTab,
+    KeyboardEnter,
 }
 
 impl ComputerInput {
@@ -122,6 +126,10 @@ impl ComputerInput {
             "KeyboardRightArrow" => Some(Self::KeyboardRightArrow),
             "KeyboardPageUp" => Some(Self::KeyboardPageUp),
             "KeyboardPageDown" => Some(Self::KeyboardPageDown),
+            "KeyboardBackspace" => Some(Self::KeyboardBackspace),
+            "KeyboardDelete" => Some(Self::KeyboardDelete),
+            "KeyboardTab" => Some(Self::KeyboardTab),
+            "KeyboardEnter" => Some(Self::KeyboardEnter),
             _ => None,
         }
     }
@@ -151,6 +159,12 @@ impl ComputerInput {
             ComputerInput::KeyboardPageDown => {
                 InputSplit::Keyboard(KeyboardUsage::KeyboardPageDown)
             }
+            ComputerInput::KeyboardBackspace => {
+                InputSplit::Keyboard(KeyboardUsage::KeyboardBackspace)
+            }
+            ComputerInput::KeyboardDelete => InputSplit::Keyboard(KeyboardUsage::KeyboardDelete),
+            ComputerInput::KeyboardTab => InputSplit::Keyboard(KeyboardUsage::KeyboardTab),
+            ComputerInput::KeyboardEnter => InputSplit::Keyboard(KeyboardUsage::KeyboardEnter),
         }
     }
 }
