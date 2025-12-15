@@ -97,29 +97,29 @@ async fn main(_spawner: Spawner) {
         let dpad_right = input(pins[dpad_right_pin].take().unwrap());
 
         loop {
-            let profile = &config.profiles[0];
-            Timer::after_millis(1).await;
+            if let Some(profile) = config.profiles.first() {
+                let input_state = DpedalInputState {
+                    button_left: button_left.is_low(),
+                    button_right: button_right.is_low(),
+                    dpad_up: dpad_up.is_low(),
+                    dpad_down: dpad_down.is_low(),
+                    dpad_left: dpad_left.is_low(),
+                    dpad_right: dpad_right.is_low(),
+                };
 
-            let input_state = DpedalInputState {
-                button_left: button_left.is_low(),
-                button_right: button_right.is_low(),
-                dpad_up: dpad_up.is_low(),
-                dpad_down: dpad_down.is_low(),
-                dpad_left: dpad_left.is_low(),
-                dpad_right: dpad_right.is_low(),
-            };
-
-            for mapping in &profile.mappings {
-                if input_state.is_all_pressed(&mapping.input) {
-                    for output in &mapping.output {
-                        pressed(*output).await;
-                    }
-                } else {
-                    for output in &mapping.output {
-                        released(*output).await;
+                for mapping in &profile.mappings {
+                    if input_state.is_all_pressed(&mapping.input) {
+                        for output in &mapping.output {
+                            pressed(*output).await;
+                        }
+                    } else {
+                        for output in &mapping.output {
+                            released(*output).await;
+                        }
                     }
                 }
             }
+            Timer::after_millis(1).await;
         }
     };
 

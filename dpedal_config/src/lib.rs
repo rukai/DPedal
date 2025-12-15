@@ -30,7 +30,7 @@ const fn assert_config_size_fits_into_writable_flash_blocks() {
 const _: () = assert_config_fits_in_flash();
 const _: () = assert_config_size_fits_into_writable_flash_blocks();
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Clone)]
 #[rkyv(derive(Debug))]
 pub struct Config {
     pub version: u32,
@@ -40,7 +40,45 @@ pub struct Config {
     pub pin_remappings: ArrayVec<PinRemapping, 6>,
 }
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            version: Default::default(),
+            color: 0x1790e3,
+            profiles: ArrayVec::from_iter([Profile {
+                mappings: ArrayVec::from_iter([
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::DpadLeft]),
+                        output: ArrayVec::from_iter([ComputerInput::MouseScrollLeft]),
+                    },
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::DpadRight]),
+                        output: ArrayVec::from_iter([ComputerInput::MouseScrollRight]),
+                    },
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::DpadUp]),
+                        output: ArrayVec::from_iter([ComputerInput::MouseScrollUp]),
+                    },
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::DpadDown]),
+                        output: ArrayVec::from_iter([ComputerInput::MouseScrollDown]),
+                    },
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::ButtonLeft]),
+                        output: ArrayVec::from_iter([ComputerInput::KeyboardPageUp]),
+                    },
+                    Mapping {
+                        input: ArrayVec::from_iter([DpedalInput::ButtonRight]),
+                        output: ArrayVec::from_iter([ComputerInput::KeyboardPageDown]),
+                    },
+                ]),
+            }]),
+            pin_remappings: Default::default(),
+        }
+    }
+}
+
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
 #[rkyv(derive(Debug))]
 pub struct PinRemapping {
     pub input: DpedalInput,
@@ -48,7 +86,7 @@ pub struct PinRemapping {
     pub pin: u32,
 }
 
-#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default)]
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
 #[rkyv(derive(Debug))]
 pub struct Profile {
     pub mappings: ArrayVec<Mapping, 20>,

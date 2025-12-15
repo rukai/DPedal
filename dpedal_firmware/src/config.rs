@@ -50,7 +50,10 @@ impl ConfigFlash {
         Ok(())
     }
 
-    pub fn load_config_bytes_to_flash(&self, bytes: ArrayVec<u8, CONFIG_SIZE>) -> Result<(), ()> {
+    pub fn load_config_bytes_to_flash(
+        &mut self,
+        bytes: ArrayVec<u8, CONFIG_SIZE>,
+    ) -> Result<(), ()> {
         let size = bytes.len();
         if size > CONFIG_SIZE {
             error!("config bytes length prefix too long {}", size);
@@ -58,23 +61,23 @@ impl ConfigFlash {
         }
 
         self.check_valid_config(&bytes)?;
+        // TODO: Upstream this check, blocking_erase is not sound
+        let block_aligned_size = (4 + size as u32).div_ceil(4096) * 4096;
+        self.flash
+            .blocking_erase(
+                CONFIG_OFFSET as u32,
+                CONFIG_OFFSET as u32 + block_aligned_size,
+            )
+            .unwrap();
 
-        // let mut data = ArrayVec::new();
-        // TODO: write size + body to data
+        let mut final_bytes: ArrayVec<u8, CONFIG_SIZE> = ArrayVec::from_iter(size.to_be_bytes());
+        final_bytes.extend(bytes);
+        self.flash
+            .blocking_write(CONFIG_OFFSET as u32, &final_bytes)
+            .unwrap();
 
-        // Safety: This byte range is known to be valid flash memory on this device
-        // unsafe {
-        //     for i in 0..4 {
-        //         let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + i) as *mut u8;
-        //         core::ptr::write_volatile::<u8>(address) as u32) << ((3 - i) * 8);
-        //     }
+        defmt::info!("config of size {} written to flash", size.to_be_bytes());
 
-        //     let size = size as usize;
-        //     for i in 0..size {
-        //         let address = (RP2040_FLASH_OFFSET + CONFIG_OFFSET + + i) as *mut u8;
-        //         data.push(core::ptr::read_volatile::<u8>(address));
-        //     }
-        // }
         Ok(())
     }
 }

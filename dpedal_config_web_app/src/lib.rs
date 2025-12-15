@@ -42,7 +42,14 @@ async fn open_device() {
         return;
     };
 
-    let config = request_get_config(&device).await;
+    let config = match request_get_config(&device).await {
+        Ok(x) => x,
+        Err(err) => {
+            log::error!("{err}");
+            // TODO: put up dialog asking "Config on the device is not present, outdated, or corrupt. Default config will be restored."
+            Default::default()
+        }
+    };
 
     let config_div = document
         .get_element_by_id("mapping-section")
@@ -67,7 +74,7 @@ async fn open_device() {
     let app_div = document.get_element_by_id("config-app").unwrap();
     app_div.append_child(config_div).unwrap();
 
-    gen_for_profile(&document, &config.profiles[0]);
+    gen_for_profile(&document, &config.profiles[0]); // TODO: handle empty config.profiles
     log::info!("device config {:#?}", config);
 
     let device = Rc::new(device);
@@ -76,7 +83,8 @@ async fn open_device() {
         "flash",
         Box::new(move || {
             let device = device.clone();
-            wasm_bindgen_futures::spawn_local(write_config_task(device));
+            let config = config.clone();
+            wasm_bindgen_futures::spawn_local(write_config_task(device, config));
         }) as Box<dyn FnMut()>,
     );
 
@@ -84,14 +92,18 @@ async fn open_device() {
 }
 
 // TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
-async fn write_config_task(device: Rc<Device>) {
+async fn write_config_task(device: Rc<Device>, config: Config) {
     let document = web_sys::window().unwrap().document().unwrap();
-    if let Err(err) = write_config(&document, device).await {
+    if let Err(err) = write_config(&document, device, config).await {
         set_error(&document, &err);
     }
 }
 
-async fn write_config(document: &Document, device: Rc<Device>) -> Result<(), String> {
+async fn write_config(
+    document: &Document,
+    device: Rc<Device>,
+    mut config: Config,
+) -> Result<(), String> {
     let table = document.get_element_by_id("input-output-table").unwrap();
 
     let mut mappings = ArrayVec::new();
@@ -116,12 +128,7 @@ async fn write_config(document: &Document, device: Rc<Device>) -> Result<(), Str
         });
     }
 
-    let config = Config {
-        version: 0,
-        color: 0,
-        profiles: ArrayVec::from_iter([Profile { mappings }]),
-        pin_remappings: ArrayVec::new(),
-    };
+    config.profiles = ArrayVec::from_iter([Profile { mappings }]);
 
     let config_bytes =
         ArrayVec::from_iter(rkyv::to_bytes::<Error>(&config).unwrap().iter().cloned());
@@ -131,18 +138,19 @@ async fn write_config(document: &Document, device: Rc<Device>) -> Result<(), Str
     Ok(())
 }
 
-async fn request_get_config(device: &Device) -> Config {
+async fn request_get_config(device: &Device) -> Result<Config, String> {
     let response = device.send_request(&Request::GetConfig).await;
-    let config: Config = match response {
+    match response {
         Response::GetConfig(config_bytes) => {
             // TODO: Is Align required in some circumstances?
-            rkyv::from_bytes::<Config, rkyv::rancor::Error>(&config_bytes.unwrap_or_default())
-                .unwrap()
+            rkyv::from_bytes::<Config, rkyv::rancor::Error>(
+                &config_bytes.map_err(|e| format!("{e:?}"))?,
+            )
+            .map_err(|e| format!("{e:?}"))
         }
         Response::SetConfig => panic!("Unexpected dpedal response"),
         Response::ProtocolError => panic!("dpedal protocol error"),
-    };
-    config
+    }
 }
 
 fn gen_for_profile(document: &Document, profile: &Profile) {
