@@ -11,7 +11,7 @@ use crate::config::ConfigFlash;
 use crate::keyboard::{KEYBOARD_CHANNEL, Keyboard, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, Mouse, MouseEvent};
 use crate::web_config::WebConfig;
-use dpedal_config::{ComputerInput, DpedalInput, InputSplit, MouseInput};
+use dpedal_config::{ComputerInput, Config, DpedalInput, InputSplit, MouseInput};
 use embassy_executor::Spawner;
 use embassy_futures::join::join5;
 use embassy_rp::gpio::{AnyPin, Input, Pin, Pull};
@@ -38,99 +38,101 @@ async fn main(_spawner: Spawner) {
     // Run the USB device.
     let usb_fut = usb.run();
 
-    let main = async {
-        let mut pins: [Option<Peri<AnyPin>>; _] = [
-            Some(p.PIN_0.into()),
-            Some(p.PIN_1.into()),
-            Some(p.PIN_2.into()),
-            Some(p.PIN_3.into()),
-            Some(p.PIN_4.into()),
-            Some(p.PIN_5.into()),
-            Some(p.PIN_6.into()),
-            Some(p.PIN_7.into()),
-            Some(p.PIN_8.into()),
-            Some(p.PIN_9.into()),
-            Some(p.PIN_10.into()),
-            Some(p.PIN_11.into()),
-            Some(p.PIN_12.into()),
-            Some(p.PIN_13.into()),
-            Some(p.PIN_14.into()),
-            Some(p.PIN_15.into()),
-            Some(p.PIN_16.into()),
-            Some(p.PIN_17.into()),
-            Some(p.PIN_18.into()),
-            Some(p.PIN_19.into()),
-            Some(p.PIN_20.into()),
-            Some(p.PIN_21.into()),
-            Some(p.PIN_22.into()),
-            Some(p.PIN_23.into()),
-            Some(p.PIN_24.into()),
-            Some(p.PIN_25.into()),
-            Some(p.PIN_26.into()),
-            Some(p.PIN_27.into()),
-            Some(p.PIN_28.into()),
-            Some(p.PIN_29.into()),
-        ];
-
-        let mut button_left_pin = 13;
-        let mut button_right_pin = 27;
-        let mut dpad_up_pin = 26;
-        let mut dpad_down_pin = 16;
-        let mut dpad_left_pin = 17;
-        let mut dpad_right_pin = 22;
-        for remapping in config.pin_remappings {
-            match remapping.input {
-                DpedalInput::DpadUp => dpad_up_pin = remapping.pin as usize,
-                DpedalInput::DpadDown => dpad_down_pin = remapping.pin as usize,
-                DpedalInput::DpadLeft => dpad_left_pin = remapping.pin as usize,
-                DpedalInput::DpadRight => dpad_right_pin = remapping.pin as usize,
-                DpedalInput::ButtonLeft => button_left_pin = remapping.pin as usize,
-                DpedalInput::ButtonRight => button_right_pin = remapping.pin as usize,
-            }
-        }
-
-        let button_left = input(pins[button_left_pin].take().unwrap());
-        let button_right = input(pins[button_right_pin].take().unwrap());
-        let dpad_up = input(pins[dpad_up_pin].take().unwrap());
-        let dpad_down = input(pins[dpad_down_pin].take().unwrap());
-        let dpad_left = input(pins[dpad_left_pin].take().unwrap());
-        let dpad_right = input(pins[dpad_right_pin].take().unwrap());
-
-        loop {
-            if let Some(profile) = config.profiles.first() {
-                let input_state = DpedalInputState {
-                    button_left: button_left.is_low(),
-                    button_right: button_right.is_low(),
-                    dpad_up: dpad_up.is_low(),
-                    dpad_down: dpad_down.is_low(),
-                    dpad_left: dpad_left.is_low(),
-                    dpad_right: dpad_right.is_low(),
-                };
-
-                for mapping in &profile.mappings {
-                    if input_state.is_all_pressed(&mapping.input) {
-                        for output in &mapping.output {
-                            pressed(*output).await;
-                        }
-                    } else {
-                        for output in &mapping.output {
-                            released(*output).await;
-                        }
-                    }
-                }
-            }
-            Timer::after_millis(1).await;
-        }
-    };
+    let pins: [Option<Peri<AnyPin>>; _] = [
+        Some(p.PIN_0.into()),
+        Some(p.PIN_1.into()),
+        Some(p.PIN_2.into()),
+        Some(p.PIN_3.into()),
+        Some(p.PIN_4.into()),
+        Some(p.PIN_5.into()),
+        Some(p.PIN_6.into()),
+        Some(p.PIN_7.into()),
+        Some(p.PIN_8.into()),
+        Some(p.PIN_9.into()),
+        Some(p.PIN_10.into()),
+        Some(p.PIN_11.into()),
+        Some(p.PIN_12.into()),
+        Some(p.PIN_13.into()),
+        Some(p.PIN_14.into()),
+        Some(p.PIN_15.into()),
+        Some(p.PIN_16.into()),
+        Some(p.PIN_17.into()),
+        Some(p.PIN_18.into()),
+        Some(p.PIN_19.into()),
+        Some(p.PIN_20.into()),
+        Some(p.PIN_21.into()),
+        Some(p.PIN_22.into()),
+        Some(p.PIN_23.into()),
+        Some(p.PIN_24.into()),
+        Some(p.PIN_25.into()),
+        Some(p.PIN_26.into()),
+        Some(p.PIN_27.into()),
+        Some(p.PIN_28.into()),
+        Some(p.PIN_29.into()),
+    ];
 
     join5(
         usb_fut,
-        main,
+        map_inputs(pins, config),
         keyboard.process(),
         mouse.process(),
         web_config.process(),
     )
     .await;
+}
+
+async fn map_inputs(mut pins: [Option<Peri<'static, AnyPin>>; 30], config: Config) {
+    let mut button_left_pin = 13;
+    let mut button_right_pin = 27;
+    let mut dpad_up_pin = 26;
+    let mut dpad_down_pin = 16;
+    let mut dpad_left_pin = 17;
+    let mut dpad_right_pin = 22;
+
+    // pin_remappings cant be set by the web configurator, so we dont need to worry about resetting this after web configuration occurs.
+    for remapping in config.pin_remappings {
+        match remapping.input {
+            DpedalInput::DpadUp => dpad_up_pin = remapping.pin as usize,
+            DpedalInput::DpadDown => dpad_down_pin = remapping.pin as usize,
+            DpedalInput::DpadLeft => dpad_left_pin = remapping.pin as usize,
+            DpedalInput::DpadRight => dpad_right_pin = remapping.pin as usize,
+            DpedalInput::ButtonLeft => button_left_pin = remapping.pin as usize,
+            DpedalInput::ButtonRight => button_right_pin = remapping.pin as usize,
+        }
+    }
+
+    let button_left = input(pins[button_left_pin].take().unwrap());
+    let button_right = input(pins[button_right_pin].take().unwrap());
+    let dpad_up = input(pins[dpad_up_pin].take().unwrap());
+    let dpad_down = input(pins[dpad_down_pin].take().unwrap());
+    let dpad_left = input(pins[dpad_left_pin].take().unwrap());
+    let dpad_right = input(pins[dpad_right_pin].take().unwrap());
+
+    loop {
+        if let Some(profile) = config.profiles.first() {
+            let input_state = DpedalInputState {
+                button_left: button_left.is_low(),
+                button_right: button_right.is_low(),
+                dpad_up: dpad_up.is_low(),
+                dpad_down: dpad_down.is_low(),
+                dpad_left: dpad_left.is_low(),
+                dpad_right: dpad_right.is_low(),
+            };
+
+            for mapping in &profile.mappings {
+                if input_state.is_all_pressed(&mapping.input) {
+                    for output in &mapping.output {
+                        pressed(*output).await;
+                    }
+                } else {
+                    for output in &mapping.output {
+                        released(*output).await;
+                    }
+                }
+            }
+        }
+        Timer::after_millis(1).await;
+    }
 }
 
 struct DpedalInputState {
