@@ -30,7 +30,7 @@ impl ConfigFlash {
         }
     }
 
-    pub async fn load_inner(&mut self) -> Result<(), ()> {
+    async fn load_inner(&mut self) -> Result<(), ()> {
         let bytes = self.load_config_bytes_from_flash()?;
         let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(&bytes).map_err(|_| ())?;
         let mut config_lock = CONFIG.lock().await;
@@ -64,7 +64,7 @@ impl ConfigFlash {
         Ok(())
     }
 
-    pub async fn load_config_bytes_to_flash(
+    pub async fn load_config_bytes_to_flash_and_reload_config(
         &mut self,
         bytes: ArrayVec<u8, CONFIG_SIZE>,
     ) -> Result<(), ()> {
