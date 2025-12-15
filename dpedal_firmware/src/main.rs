@@ -7,11 +7,11 @@ mod mouse;
 mod usb;
 mod web_config;
 
-use crate::config::ConfigFlash;
+use crate::config::{CONFIG, ConfigFlash};
 use crate::keyboard::{KEYBOARD_CHANNEL, Keyboard, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, Mouse, MouseEvent};
 use crate::web_config::WebConfig;
-use dpedal_config::{ComputerInput, Config, DpedalInput, InputSplit, MouseInput};
+use dpedal_config::{ComputerInput, DpedalInput, InputSplit, MouseInput};
 use embassy_executor::Spawner;
 use embassy_futures::join::join5;
 use embassy_rp::gpio::{AnyPin, Input, Pin, Pull};
@@ -24,8 +24,7 @@ use {defmt_rtt as _, panic_probe as _};
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
-    let mut config_flash = ConfigFlash::new(p.FLASH);
-    let config = config_flash.load().unwrap_or_default();
+    let config_flash = ConfigFlash::new(p.FLASH).await;
 
     let mut builder = usb::usb_builder(p.USB);
 
@@ -73,7 +72,7 @@ async fn main(_spawner: Spawner) {
 
     join5(
         usb_fut,
-        map_inputs(pins, config),
+        map_inputs(pins),
         keyboard.process(),
         mouse.process(),
         web_config.process(),
@@ -81,7 +80,7 @@ async fn main(_spawner: Spawner) {
     .await;
 }
 
-async fn map_inputs(mut pins: [Option<Peri<'static, AnyPin>>; 30], config: Config) {
+async fn map_inputs(mut pins: [Option<Peri<'static, AnyPin>>; 30]) {
     let mut button_left_pin = 13;
     let mut button_right_pin = 27;
     let mut dpad_up_pin = 26;
@@ -89,15 +88,18 @@ async fn map_inputs(mut pins: [Option<Peri<'static, AnyPin>>; 30], config: Confi
     let mut dpad_left_pin = 17;
     let mut dpad_right_pin = 22;
 
-    // pin_remappings cant be set by the web configurator, so we dont need to worry about resetting this after web configuration occurs.
-    for remapping in config.pin_remappings {
-        match remapping.input {
-            DpedalInput::DpadUp => dpad_up_pin = remapping.pin as usize,
-            DpedalInput::DpadDown => dpad_down_pin = remapping.pin as usize,
-            DpedalInput::DpadLeft => dpad_left_pin = remapping.pin as usize,
-            DpedalInput::DpadRight => dpad_right_pin = remapping.pin as usize,
-            DpedalInput::ButtonLeft => button_left_pin = remapping.pin as usize,
-            DpedalInput::ButtonRight => button_right_pin = remapping.pin as usize,
+    {
+        // pin_remappings cant be set by the web configurator, so we dont need to worry about resetting this after web configuration occurs.
+        let config = CONFIG.lock().await.clone().unwrap();
+        for remapping in config.pin_remappings {
+            match remapping.input {
+                DpedalInput::DpadUp => dpad_up_pin = remapping.pin as usize,
+                DpedalInput::DpadDown => dpad_down_pin = remapping.pin as usize,
+                DpedalInput::DpadLeft => dpad_left_pin = remapping.pin as usize,
+                DpedalInput::DpadRight => dpad_right_pin = remapping.pin as usize,
+                DpedalInput::ButtonLeft => button_left_pin = remapping.pin as usize,
+                DpedalInput::ButtonRight => button_right_pin = remapping.pin as usize,
+            }
         }
     }
 
@@ -109,6 +111,7 @@ async fn map_inputs(mut pins: [Option<Peri<'static, AnyPin>>; 30], config: Confi
     let dpad_right = input(pins[dpad_right_pin].take().unwrap());
 
     loop {
+        let config = CONFIG.lock().await.clone().unwrap();
         if let Some(profile) = config.profiles.first() {
             let input_state = DpedalInputState {
                 button_left: button_left.is_low(),

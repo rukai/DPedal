@@ -6,23 +6,37 @@ use embassy_rp::{
     flash::{Blocking, Flash},
     peripherals::FLASH,
 };
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use rkyv::{rancor::Failure, util::Align};
+
+pub static CONFIG: Mutex<CriticalSectionRawMutex, Option<Config>> = Mutex::new(None);
 
 pub struct ConfigFlash {
     flash: Flash<'static, FLASH, Blocking, RP2040_FLASH_SIZE>,
 }
 
 impl ConfigFlash {
-    pub fn new(p_flash: Peri<'static, FLASH>) -> Self {
-        ConfigFlash {
+    pub async fn new(p_flash: Peri<'static, FLASH>) -> Self {
+        let mut flash = ConfigFlash {
             flash: Flash::new_blocking(p_flash),
+        };
+        flash.load().await;
+        flash
+    }
+
+    pub async fn load(&mut self) {
+        if let Err(()) = self.load_inner().await {
+            error!("Failed to load config from flash")
         }
     }
 
-    pub fn load(&mut self) -> Result<Config, ()> {
+    pub async fn load_inner(&mut self) -> Result<(), ()> {
         let bytes = self.load_config_bytes_from_flash()?;
         let archive = rkyv::api::low::access::<ArchivedConfig, Failure>(&bytes).map_err(|_| ())?;
-        rkyv::api::low::deserialize::<_, Failure>(archive).map_err(|_| ())
+        let mut config_lock = CONFIG.lock().await;
+        *config_lock = Some(rkyv::api::low::deserialize::<_, Failure>(archive).map_err(|_| ())?);
+
+        Ok(())
     }
 
     pub fn load_config_bytes_from_flash(&mut self) -> Result<Align<ArrayVec<u8, CONFIG_SIZE>>, ()> {
@@ -50,7 +64,7 @@ impl ConfigFlash {
         Ok(())
     }
 
-    pub fn load_config_bytes_to_flash(
+    pub async fn load_config_bytes_to_flash(
         &mut self,
         bytes: ArrayVec<u8, CONFIG_SIZE>,
     ) -> Result<(), ()> {
@@ -77,6 +91,8 @@ impl ConfigFlash {
             .unwrap();
 
         defmt::info!("config of size {} written to flash", size.to_be_bytes());
+
+        self.load().await;
 
         Ok(())
     }

@@ -109,7 +109,11 @@ impl WebConfig {
                 ),
                 Request::SetConfig(array_vec) => {
                     defmt::info!("set config {:?}", array_vec.as_ref());
-                    if let Err(()) = self.config_flash.load_config_bytes_to_flash(array_vec) {
+                    if let Err(()) = self
+                        .config_flash
+                        .load_config_bytes_to_flash(array_vec)
+                        .await
+                    {
                         // TODO: return error over protocol
                         defmt::panic!("Config invalid, not writing to flash")
                     }
@@ -124,7 +128,7 @@ impl WebConfig {
     async fn send_response(&mut self, response: Response) {
         let mut response_buf = [0; 1024];
         let response = postcard::to_slice_cobs(&response, &mut response_buf).unwrap();
-        info!("response {:?}", response);
+        info!("responsed with message containing {} bytes", response.len());
         for chunk in response.chunks(64) {
             if !chunk.is_empty() {
                 self.write_ep.write(chunk).await.unwrap();
