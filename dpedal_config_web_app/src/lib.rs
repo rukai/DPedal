@@ -132,14 +132,16 @@ async fn write_config(
 
     let config_bytes =
         ArrayVec::from_iter(rkyv::to_bytes::<Error>(&config).unwrap().iter().cloned());
-    device.send_request(&Request::SetConfig(config_bytes)).await;
+    device
+        .send_request(&Request::SetConfig(config_bytes))
+        .await?;
     log::info!("config written {:#?}", config);
 
     Ok(())
 }
 
 async fn request_get_config(device: &Device) -> Result<Config, String> {
-    let response = device.send_request(&Request::GetConfig).await;
+    let response = device.send_request(&Request::GetConfig).await?;
     match response {
         Response::GetConfig(config_bytes) => {
             // TODO: Is Align required in some circumstances?

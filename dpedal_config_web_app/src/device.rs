@@ -20,7 +20,7 @@ impl Device {
         let mut filter = UsbDeviceFilter::new();
         filter.vendor_id = Some(0xc0de);
         filter.product_id = Some(0xcafe);
-        let usb_device = match usb.request_device([filter]).await {
+        let usb_device = match usb.request_device([]).await {
             Ok(x) => x,
             Err(e) => {
                 crate::set_error(document, e.msg());
@@ -37,7 +37,7 @@ impl Device {
         Ok(Device { usb: open_usb })
     }
 
-    pub async fn send_request(&self, request: &Request) -> Response {
+    pub async fn send_request(&self, request: &Request) -> Result<Response, String> {
         let request_bytes = postcard::to_stdvec_cobs(request).unwrap();
         self.usb.transfer_out(1, &request_bytes).await.unwrap();
 
@@ -47,12 +47,12 @@ impl Device {
             match cobs_buf.feed::<Response>(&out) {
                 postcard::accumulator::FeedResult::Consumed => {}
                 postcard::accumulator::FeedResult::OverFull(_items) => {
-                    todo!()
+                    return Err("Device sent response > 1024 bytes".into());
                 }
                 postcard::accumulator::FeedResult::DeserError(_items) => {
-                    todo!()
+                    return Err("Device sent response that could not be parsed.".into());
                 }
-                postcard::accumulator::FeedResult::Success { data, .. } => return data,
+                postcard::accumulator::FeedResult::Success { data, .. } => return Ok(data),
             }
         }
     }

@@ -14,7 +14,6 @@ use crate::keyboard::Keyboard;
 use crate::mouse::Mouse;
 use crate::web_config::WebConfig;
 use embassy_executor::Spawner;
-use embassy_futures::join::join5;
 
 use {defmt_rtt as _, panic_probe as _};
 
@@ -68,7 +67,7 @@ async fn main(_spawner: Spawner) {
         Some(p.PIN_29.into()),
     ]);
 
-    join5(
+    embassy_futures::join::join5(
         usb_fut,
         inputs.process(),
         keyboard.process(),
