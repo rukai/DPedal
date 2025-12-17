@@ -20,7 +20,7 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
 
     static CONFIG_DESC: StaticCell<[u8; 256]> = StaticCell::new();
     static BOS_DESC: StaticCell<[u8; 256]> = StaticCell::new();
-    static MSOS_DESC: StaticCell<[u8; 256]> = StaticCell::new();
+    static MSOS_DESC: StaticCell<[u8; 1024]> = StaticCell::new();
     static CONTROL_BUF: StaticCell<[u8; 128]> = StaticCell::new();
 
     let mut config = Config::new(0xc0de, 0xcafe);
@@ -38,7 +38,7 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
         config,
         &mut CONFIG_DESC.init([0; 256])[..],
         &mut BOS_DESC.init([0; 256])[..],
-        &mut MSOS_DESC.init([0; 256])[..],
+        &mut MSOS_DESC.init([0; 1024])[..],
         &mut CONTROL_BUF.init([0; 128])[..],
     );
 

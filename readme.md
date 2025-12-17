@@ -1,12 +1,13 @@
 # DPedal
 
 A large foot controlled DPad.
-It is built around a raspberry pi pico and connects to your PC over usb to send user configurable HID keyboard and mouse events.
+It is built around a raspberry pi Pico and connects to your PC over usb to send user configurable HID keyboard and mouse events.
 
-It consists entirely of 3d printed parts except for the PCB, keyboard switches and 2 side button caps.
-You can build your own from this design if you are comfortable with 3d printing, ordering assembled PCB's from a manufacturer and a tiny bit of soldering.
+You can build your own from this design if you are comfortable with 3d printing, ordering PCB's from a manufacturer and some soldering.
 
 To build your own dpedal follow [the instructions here](https://dpedal.com/build.html).
+
+![Image of the dpedal](https://dpedal.com/media/dpedal_transparent.webp)
 
 This repo contains the source for:
 
@@ -14,7 +15,7 @@ This repo contains the source for:
 * The [flashing tool](https://github.com/rukai/DPedal/tree/main/dpedal_flash)
 * The [PCB](https://github.com/rukai/DPedal/tree/main/pcb)
 
-The cad parts are not in this repo, instead they are in [onshape](https://cad.onshape.com/documents/3322725aad79769314b0a0dc/w/7eb6c11c4e7989e30d759821/e/7eadfca9ff0dbd31823e3a21).
+The 3D printed parts are not in this repo, instead they are in [onshape](https://cad.onshape.com/documents/3322725aad79769314b0a0dc/w/7eb6c11c4e7989e30d759821/e/7eadfca9ff0dbd31823e3a21).
 
 ## Changes from [DPedal v2](https://github.com/rukai/dpedal_legacy)
 

@@ -156,9 +156,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "cc"
-version = "1.2.48"
+version = "1.2.49"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c481bdbf0ed3b892f6f806287d72acd515b352a4ec27a208489b8c1bc839633a"
+checksum = "90583009037521a116abf44494efecd645ba48b6622457080f080b85544e2215"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -417,7 +417,7 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 [[package]]
 name = "embassy-embedded-hal"
 version = "0.5.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "embassy-futures",
  "embassy-hal-internal",
@@ -433,7 +433,7 @@ dependencies = [
 [[package]]
 name = "embassy-executor"
 version = "0.9.1"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "cordyceps",
  "cortex-m",
@@ -447,7 +447,7 @@ dependencies = [
 [[package]]
 name = "embassy-executor-macros"
 version = "0.7.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -458,17 +458,17 @@ dependencies = [
 [[package]]
 name = "embassy-executor-timer-queue"
 version = "0.1.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 
 [[package]]
 name = "embassy-futures"
 version = "0.1.2"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 
 [[package]]
 name = "embassy-hal-internal"
 version = "0.3.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "cortex-m",
  "critical-section",
@@ -479,12 +479,12 @@ dependencies = [
 [[package]]
 name = "embassy-net-driver"
 version = "0.2.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 
 [[package]]
 name = "embassy-net-driver-channel"
 version = "0.3.2"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "embassy-futures",
  "embassy-net-driver",
@@ -494,7 +494,7 @@ dependencies = [
 [[package]]
 name = "embassy-rp"
 version = "0.9.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "cfg-if",
  "cortex-m",
@@ -532,7 +532,7 @@ dependencies = [
 [[package]]
 name = "embassy-sync"
 version = "0.7.2"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "cfg-if",
  "critical-section",
@@ -545,7 +545,7 @@ dependencies = [
 [[package]]
 name = "embassy-time"
 version = "0.5.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "cfg-if",
  "critical-section",
@@ -560,7 +560,7 @@ dependencies = [
 [[package]]
 name = "embassy-time-driver"
 version = "0.2.1"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "document-features",
 ]
@@ -568,7 +568,7 @@ dependencies = [
 [[package]]
 name = "embassy-time-queue-utils"
 version = "0.3.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "embassy-executor-timer-queue",
  "heapless 0.8.0",
@@ -577,7 +577,7 @@ dependencies = [
 [[package]]
 name = "embassy-usb"
 version = "0.5.1"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "defmt",
  "embassy-futures",
@@ -593,7 +593,7 @@ dependencies = [
 [[package]]
 name = "embassy-usb-driver"
 version = "0.2.0"
-source = "git+https://github.com/embassy-rs/embassy#a382238225ea55ee478bbde9ddb7d0d37cf004b5"
+source = "git+https://github.com/embassy-rs/embassy#e2d9adc56481e97fa490c8c3cc05bdad0dbe22e4"
 dependencies = [
  "defmt",
  "embedded-io-async",
@@ -729,16 +729,17 @@ checksum = "e575fab7d1e0dcb8d0c7bcf9a63ee213816ab51902e6d244a95819acacf1d4f7"
 
 [[package]]
 name = "generator"
-version = "0.8.7"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "605183a538e3e2a9c1038635cc5c2d194e2ee8fd0d1b66b8349fad7dbacce5a2"
+checksum = "52f04ae4152da20c76fe800fa48659201d5cf627c5149ca0b707b69d7eef6cf9"
 dependencies = [
  "cc",
  "cfg-if",
  "libc",
  "log",
  "rustversion",
- "windows",
+ "windows-link",
+ "windows-result",
 ]
 
 [[package]]
@@ -1062,7 +1063,7 @@ dependencies = [
  "libc",
  "redox_syscall",
  "smallvec",
- "windows-link 0.2.1",
+ "windows-link",
 ]
 
 [[package]]
@@ -1594,9 +1595,9 @@ dependencies = [
 
 [[package]]
 name = "term"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2111ef44dae28680ae9752bb89409e7310ca33a8c621ebe7b106cf5c928b3ac0"
+checksum = "d8c27177b12a6399ffc08b98f76f7c9a1f4fe9fc967c784c5a071fa8d93cf7e1"
 dependencies = [
  "windows-sys",
 ]
@@ -1824,111 +1825,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "windows"
-version = "0.61.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9babd3a767a4c1aef6900409f85f5d53ce2544ccdfaa86dad48c91782c6d6893"
-dependencies = [
- "windows-collections",
- "windows-core",
- "windows-future",
- "windows-link 0.1.3",
- "windows-numerics",
-]
-
-[[package]]
-name = "windows-collections"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3beeceb5e5cfd9eb1d76b381630e82c4241ccd0d27f1a39ed41b2760b255c5e8"
-dependencies = [
- "windows-core",
-]
-
-[[package]]
-name = "windows-core"
-version = "0.61.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0fdd3ddb90610c7638aa2b3a3ab2904fb9e5cdbecc643ddb3647212781c4ae3"
-dependencies = [
- "windows-implement",
- "windows-interface",
- "windows-link 0.1.3",
- "windows-result",
- "windows-strings",
-]
-
-[[package]]
-name = "windows-future"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc6a41e98427b19fe4b73c550f060b59fa592d7d686537eebf9385621bfbad8e"
-dependencies = [
- "windows-core",
- "windows-link 0.1.3",
- "windows-threading",
-]
-
-[[package]]
-name = "windows-implement"
-version = "0.60.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "053e2e040ab57b9dc951b72c264860db7eb3b0200ba345b4e4c3b14f67855ddf"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.111",
-]
-
-[[package]]
-name = "windows-interface"
-version = "0.59.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f316c4a2570ba26bbec722032c4099d8c8bc095efccdc15688708623367e358"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.111",
-]
-
-[[package]]
-name = "windows-link"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e6ad25900d524eaabdbbb96d20b4311e1e7ae1699af4fb28c17ae66c80d798a"
-
-[[package]]
 name = "windows-link"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
 
 [[package]]
-name = "windows-numerics"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9150af68066c4c5c07ddc0ce30421554771e528bde427614c61038bc2c92c2b1"
-dependencies = [
- "windows-core",
- "windows-link 0.1.3",
-]
-
-[[package]]
 name = "windows-result"
-version = "0.3.4"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56f42bd332cc6c8eac5af113fc0c1fd6a8fd2aa08a0119358686e5160d0586c6"
+checksum = "7781fa89eaf60850ac3d2da7af8e5242a5ea78d1a11c49bf2910bb5a73853eb5"
 dependencies = [
- "windows-link 0.1.3",
-]
-
-[[package]]
-name = "windows-strings"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56e6c93f3a0c3b36176cb1327a4958a0353d5d166c2a35cb268ace15e91d3b57"
-dependencies = [
- "windows-link 0.1.3",
+ "windows-link",
 ]
 
 [[package]]
@@ -1937,16 +1845,7 @@ version = "0.61.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
- "windows-link 0.2.1",
-]
-
-[[package]]
-name = "windows-threading"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b66463ad2e0ea3bbf808b7f1d371311c80e115c0b71d60efc142cafbcfb057a6"
-dependencies = [
- "windows-link 0.1.3",
+ "windows-link",
 ]
 
 [[package]]

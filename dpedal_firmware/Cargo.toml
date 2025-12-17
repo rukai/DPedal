@@ -14,6 +14,7 @@ panic-probe = { version = "1.0.0", features = ["print-defmt"] }
 defmt = "1"
 defmt-rtt = "1"
 
+
 embassy-futures = { git = "https://github.com/embassy-rs/embassy"}
 embassy-rp = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "unstable-pac", "time-driver", "critical-section-impl", "rp2040"] }
 embassy-executor = { git = "https://github.com/embassy-rs/embassy", features = ["arch-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }

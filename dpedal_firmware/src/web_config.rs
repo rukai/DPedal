@@ -7,6 +7,7 @@ use embassy_usb::Builder;
 use embassy_usb::class::web_usb::{Config as WebUsbConfig, State, WebUsb};
 use embassy_usb::driver::{Endpoint as EndpointTrait, EndpointIn, EndpointOut};
 use embassy_usb::msos::{self, windows_version};
+use embassy_usb::types::InterfaceNumber;
 use postcard::accumulator::CobsAccumulator;
 use static_cell::StaticCell;
 
@@ -43,6 +44,14 @@ impl WebConfig {
         // which causes it to use the built-in WinUSB driver automatically, which in turn
         // can be used by libusb/rusb software without needing a custom driver or INF file.
         builder.msos_descriptor(windows_version::WIN8_1, 0);
+        builder.msos_writer().configuration(0);
+        builder.msos_writer().function(InterfaceNumber(0));
+        builder.msos_feature(msos::CompatibleIdFeatureDescriptor::new("WINUSB", ""));
+        builder.msos_feature(msos::RegistryPropertyFeatureDescriptor::new(
+            "DeviceInterfaceGUIDs",
+            msos::PropertyData::RegMultiSz(DEVICE_INTERFACE_GUIDS),
+        ));
+        builder.msos_writer().function(InterfaceNumber(1));
         builder.msos_feature(msos::CompatibleIdFeatureDescriptor::new("WINUSB", ""));
         builder.msos_feature(msos::RegistryPropertyFeatureDescriptor::new(
             "DeviceInterfaceGUIDs",

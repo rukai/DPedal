@@ -20,7 +20,7 @@ impl Device {
         let mut filter = UsbDeviceFilter::new();
         filter.vendor_id = Some(0xc0de);
         filter.product_id = Some(0xcafe);
-        let usb_device = match usb.request_device([]).await {
+        let usb_device = match usb.request_device([filter]).await {
             Ok(x) => x,
             Err(e) => {
                 crate::set_error(document, e.msg());
