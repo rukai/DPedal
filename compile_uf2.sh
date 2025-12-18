@@ -2,7 +2,7 @@
 
 set -e
 
-cargo install elf2uf2-rs
+cargo install elf2uf2-rs@2.2.0 --no-default-features
 
 cd dpedal_firmware
 cargo build --release

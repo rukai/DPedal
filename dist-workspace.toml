@@ -10,7 +10,7 @@ cargo-dist-version = "0.30.2"
 # CI backends to support
 ci = "github"
 # Target platforms to build apps for (Rust target-triple syntax)
-targets = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
+targets = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu"]
 # Extra static files to include in each App (path relative to this Cargo.toml's dir)
 include = ["config.kdl"]
 # The installers to generate for each app
@@ -26,11 +26,11 @@ source-tarball = false
 
 [[dist.extra-artifacts]]
 artifacts = ["dpedal_gerber_files.zip"]
-build = ["./compile_uf2.sh"]
+build = ["bash", "-c", "./install_kicad_ubuntu.sh; ./export_pcb.sh"]
 
 [[dist.extra-artifacts]]
 artifacts = ["dpedal_firmware.uf2"]
-build = ["bash", "-c", "./install_kicad_ubuntu.sh; ./export_pcb.sh"]
+build = ["./compile_uf2.sh"]
 
 # MANUAL STEP: Need to export these after creating the release and then reupload the zip
 [[dist.extra-artifacts]]
