@@ -26,6 +26,10 @@ source-tarball = false
 
 [[dist.extra-artifacts]]
 artifacts = ["dpedal_gerber_files.zip"]
+build = ["./compile_uf2.sh"]
+
+[[dist.extra-artifacts]]
+artifacts = ["dpedal_firmware.uf2"]
 build = ["bash", "-c", "./install_kicad_ubuntu.sh; ./export_pcb.sh"]
 
 # MANUAL STEP: Need to export these after creating the release and then reupload the zip

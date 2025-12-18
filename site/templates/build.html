@@ -70,7 +70,7 @@ DPedal build instructions
   </tr>
 </table>
 
-<p>Note: The official micro usb version of the pico will also work fine, but I reccommend the unofficial usb C version,
+<p>Note: The official micro usb version of the Pico will also work fine, but I recommend the unofficial usb C version,
   since USB C is a nicer connector.</p>
 <!--
     * wire lengths (including stripped ends):
@@ -98,7 +98,7 @@ DPedal build instructions
     <td><a href="https://www.amazon.com.au/ORIGINAL-PURSA-Beginner-Friendly-Filament-180X180X180/dp/B0D2HXHNG6">Prusa
         mini on Amazon</a>
     </td>
-    <td>The prusa mini is the printer I personally use.<br>
+    <td>The Prusa Mini is the printer I personally use.<br>
       The mini is a bit outdated but it's reliable, repairable and <br>I can only recommend a printer I've
       actually used. <br> Getting the kit is a great way to learn more about printers through the assembly process.</td>
   </tr>
@@ -123,7 +123,7 @@ DPedal build instructions
   </li>
   <li>Go to <a href="https://cart.jlcpcb.com/quote">JLCPCB</a>, click "Add gerber file" and upload the
     dpedal_gerber_files.zip you just downloaded</li>
-  <li>Set following options, leaving the rest as default:</li>
+  <li>Set the following options, leaving the rest as default:</li>
   <ul>
     <li>Surface finish: LeadFree HASL</li>
     <li>PCB thickness 1.2mm</li>
@@ -145,7 +145,7 @@ DPedal build instructions
 
 <ul>
   <li>default orientation with no supports</li>
-  <li>layer height: 0.10mm (The model is very precise, so dont go any higher than this)</li>
+  <li>layer height: 0.10mm (The model is very precise, so don't go any higher than this)</li>
   <li>infill: 15% grid infill (I just use grid because its the default, any infill type is probably fine)</li>
   <li>Filament: I use PLA but any hard filament should work fine.</li>
 </ul>
@@ -158,10 +158,10 @@ TODO: Intro to soldering
   <li>Take the printed jig and pico</li><img loading="lazy" src="/media/pico_jig1.webp" height="287">
   <li>Connect printed jig into the pico via the through holes and pins</li><img src="/media/pico_jig2.webp"
     height="287">
-  <li>Connect pico to the PCB via the jig, it may need to be pushed until clicking into place. The pico should sit
+  <li>Connect Pico to the PCB via the jig, it may need to be pushed until clicking into place. The pico should sit
     secure and flatly on the PCB. Make sure the orientation matches the image, the "DPedal V3" text should not be
     visible on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp" height="287">
-  <li>Solder pico to the PCB, some masking tape can be used to further secure the pico until the first few solder joints
+  <li>Solder Pico to the PCB, some masking tape can be used to further secure the pico until the first few solder joints
     are made. Heat both the pad on the pico and the pad on the PCB with the tip of the soldering iron, then solder into
     the point where the two pins connect. The solder should not form blobs on top of the pico or you may have trouble
     fitting into the case.</li><img loading="lazy" src="/media/pico_jig5.webp" height="287">
@@ -171,7 +171,7 @@ TODO: Intro to soldering
 <h2>Flashing firmware</h2>
 
 <ol>
-  <li>Plug in the pico/PCB to your PC while holding down the flash button.</li>
+  <li>Plug in the Pico/PCB to your PC while holding down the flash button.</li>
   <li>Follow the steps below depending on your OS</li>
   <ul>
 
@@ -187,19 +187,12 @@ TODO: Intro to soldering
     </ol>
     <li>Windows</li>
     <ol>
-      <li>To enable flashing on windows, download and run <a href="https://zadig.akeo.ie">zadig</a></li>
-      <ol>
-        <li>Options -> tick List All Devices</li>
-        <li>In the dropdown choose STM32 BOOTLOADER</li>
-        <li>Press Replace Driver</li>
-      </ol>
-
-      <li>Download the <a
-          href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_flash-x86_64-pc-windows-msvc.zip">firmware
-          (x86 host)</a> and unzip.</li>
-      <li>Open a terminal to the directory containing the firmware and run
-        <span style="color:red;font-family:mono;">dpedalflash.exe</span>
+      <li>Download the <a href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_firmware.uf2">firmware
+          (UF2 file)</a></li>
+      <li>The Pico should present itself as an extra drive. Click and drag the downloaded dpedal_firmware.uf2 onto the
+        Pico's drive
       </li>
+      <img loading="lazy" src="/media/uf2_windows2.webp">
     </ol>
     <li>Linux</li>
     <ol>
@@ -220,11 +213,10 @@ TODO: Intro to soldering
   </ul>
 
   <li>Insert a switch into each socket</li>
-  <li>Open <a href="scroll_test.html">this page</a> and test each button works, the default button mapping of the dpedal
+  <li>Open <a href="scroll_test.html">this page</a> and test each button works, the default button mapping of the DPedal
     has mouse scroll on the dpad and page up/down on the left/right buttons</li>
   <li>Disconnect the switches again, to prepare for the next stage.</li>
 </ol>
-
 
 
 <h2>Assembling</h2>
@@ -262,11 +254,21 @@ TODO: Intro to soldering
 
 <h2>Finished!</h2>
 
-<p>Your dpedal is now fully assembled and ready to use.</p>
+<p>Your DPedal is now fully assembled and ready to use.</p>
 <img src="/media/finished.webp" loading="lazy">
 
 <p>Slot in the footrest when using it.</p>
 <img src="/media/attach_footrest.webp" loading="lazy" height="287">
 
 <p>If you want to change the keyboard/mouse mapping you can use the <a href="/config">web configurator</a>.</p>
+
+<h2>Community</h2>
+
+<p>Something not working out? Or want to share the results of a successful build?</p>
+<p>Join <a href="https://discord.gg/KyjBs4x">the Discord</a>!</p>
+
+<div style="height:100px;">
+  <!-- add some extra padding at the bottom, so the text doesn't abruptly hit the bottom of the page-->
+</div>
+
 {% endblock %}
