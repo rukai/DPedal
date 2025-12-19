@@ -1,7 +1,10 @@
 use arrayvec::ArrayVec;
-use dpedal_config::Config;
+use dpedal_config::{ComputerInput, Config, DpedalInput, KeyboardInput, MouseInput};
 use kdl::{KdlDocument, KdlNode};
-use kdl_config::{KdlConfig, KdlConfigFinalize, Parsed, error::ParseError};
+use kdl_config::{
+    KdlConfig, KdlConfigFinalize, Parsed,
+    error::{ParseDiagnostic, ParseError},
+};
 use kdl_config_derive::{KdlConfig, KdlConfigFinalize};
 use miette::{IntoDiagnostic, NamedSource, miette};
 use rkyv::rancor::Error;
@@ -77,11 +80,191 @@ pub struct ProfileKdl {
     pub mappings: Parsed<ArrayVec<Parsed<MappingKdl>, 20>>,
 }
 
-#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
-#[kdl_config_finalize_into = "dpedal_config::Mapping"]
+#[derive(Default, Debug)]
 pub struct MappingKdl {
-    pub input: Parsed<ArrayVec<Parsed<DpedalInputKdl>, 4>>,
-    pub output: Parsed<ArrayVec<Parsed<ComputerInputKdl>, 20>>,
+    pub input: ArrayVec<dpedal_config::DpedalInput, 4>,
+    pub output: ArrayVec<dpedal_config::ComputerInput, 20>,
+}
+
+impl KdlConfigFinalize for MappingKdl {
+    type FinalizeType = dpedal_config::Mapping;
+
+    fn finalize(&self) -> Self::FinalizeType {
+        Self::FinalizeType {
+            input: self.input.clone(),
+            output: self.output.clone(),
+        }
+    }
+}
+
+impl KdlConfig for MappingKdl {
+    fn parse_as_node(
+        source: NamedSource<String>,
+        node: &KdlNode,
+        diagnostics: &mut Vec<kdl_config::error::ParseDiagnostic>,
+    ) -> Parsed<Self>
+    where
+        Self: Sized,
+    {
+        let Some(entry) = node.entries().first() else {
+            diagnostics.push(ParseDiagnostic {
+                input: source.clone(),
+                span: node.span(),
+                message: Some("Unexpected format".to_owned()),
+                label: None,
+                help: None,
+                severity: miette::Severity::Error,
+            });
+            return Parsed {
+                value: Default::default(),
+                full_span: node.span(),
+                name_span: node.span(),
+                valid: false,
+            };
+        };
+        match entry.value() {
+            kdl::KdlValue::String(value) => {
+                let mut split = value.split("->");
+                let input = split.next().unwrap().trim();
+                let Some(output) = split.next() else {
+                    diagnostics.push(ParseDiagnostic {
+                        input: source.clone(),
+                        span: node.span(),
+                        message: Some(
+                            "Mapping needs to follow format `input -> output` but `->` was not present".to_owned()
+                        ),
+                        label: None,
+                        help: None,
+                        severity: miette::Severity::Error,
+                    });
+                    return Parsed {
+                        value: Default::default(),
+                        full_span: node.span(),
+                        name_span: node.span(),
+                        valid: false,
+                    };
+                };
+                let output = output.trim();
+
+                let Some(input) = DpedalInput::from_string_kebab(input) else {
+                    diagnostics.push(ParseDiagnostic {
+                        input: source.clone(),
+                        span: node.span(),
+                        message: Some(format!("Unknown input {input:?}")),
+                        label: None,
+                        help: None,
+                        severity: miette::Severity::Error,
+                    });
+                    return Parsed {
+                        value: Default::default(),
+                        full_span: node.span(),
+                        name_span: node.span(),
+                        valid: false,
+                    };
+                };
+                let input = ArrayVec::from_iter([input]);
+
+                let Some((ty, sub_ty)) = output.split_once("-") else {
+                    diagnostics.push(ParseDiagnostic {
+                        input: source.clone(),
+                        span: node.span(),
+                        message: Some(format!("Unknown output {output:?}")),
+                        label: None,
+                        help: None,
+                        severity: miette::Severity::Error,
+                    });
+                    return Parsed {
+                        value: Default::default(),
+                        full_span: node.span(),
+                        name_span: node.span(),
+                        valid: false,
+                    };
+                };
+
+                let output = match ty {
+                    "mouse" => match MouseInput::from_string_kebab(sub_ty) {
+                        Some(input) => ComputerInput::Mouse(input),
+                        None => {
+                            diagnostics.push(ParseDiagnostic {
+                                input: source.clone(),
+                                span: node.span(),
+                                message: Some(format!("Unknown output {output:?}")),
+                                label: None,
+                                help: None,
+                                severity: miette::Severity::Error,
+                            });
+                            return Parsed {
+                                value: Default::default(),
+                                full_span: node.span(),
+                                name_span: node.span(),
+                                valid: false,
+                            };
+                        }
+                    },
+                    "keyboard" => match KeyboardInput::from_string_kebab(sub_ty) {
+                        Some(input) => ComputerInput::Keyboard(input),
+                        None => {
+                            diagnostics.push(ParseDiagnostic {
+                                input: source.clone(),
+                                span: node.span(),
+                                message: Some(format!("Unknown output {output:?}")),
+                                label: None,
+                                help: None,
+                                severity: miette::Severity::Error,
+                            });
+                            return Parsed {
+                                value: Default::default(),
+                                full_span: node.span(),
+                                name_span: node.span(),
+                                valid: false,
+                            };
+                        }
+                    },
+                    _ => {
+                        diagnostics.push(ParseDiagnostic {
+                            input: source.clone(),
+                            span: node.span(),
+                            message: Some(format!("Unknown output {output:?}")),
+                            label: None,
+                            help: None,
+                            severity: miette::Severity::Error,
+                        });
+                        return Parsed {
+                            value: Default::default(),
+                            full_span: node.span(),
+                            name_span: node.span(),
+                            valid: false,
+                        };
+                    }
+                };
+                let output = ArrayVec::from_iter([output]);
+                Parsed {
+                    value: MappingKdl { input, output },
+                    full_span: node.span(),
+                    name_span: node.span(),
+                    valid: true,
+                }
+            }
+            value => {
+                diagnostics.push(ParseDiagnostic {
+                    input: source.clone(),
+                    span: node.span(),
+                    message: Some(format!(
+                        "Node contains {value:?} but expected it to contain a string"
+                    )),
+                    label: None,
+                    help: None,
+                    severity: miette::Severity::Error,
+                });
+                Parsed {
+                    value: Default::default(),
+                    full_span: node.span(),
+                    name_span: node.span(),
+                    valid: false,
+                }
+            }
+        }
+    }
 }
 
 #[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
@@ -96,25 +279,46 @@ pub enum DpedalInputKdl {
     ButtonRight,
 }
 
-#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[derive(KdlConfigFinalize, Default, Debug)]
 #[kdl_config_finalize_into = "dpedal_config::ComputerInput"]
 pub enum ComputerInputKdl {
     #[default]
     None,
-    MouseScrollUp,
-    MouseScrollDown,
-    MouseScrollLeft,
-    MouseScrollRight,
-    KeyboardA,
-    KeyboardB,
-    KeyboardUpArrow,
-    KeyboardDownArrow,
-    KeyboardLeftArrow,
-    KeyboardRightArrow,
-    KeyboardPageUp,
-    KeyboardPageDown,
-    KeyboardBackspace,
-    KeyboardDelete,
-    KeyboardTab,
-    KeyboardEnter,
+    Mouse(Parsed<MouseInputKdl>),
+    Keyboard(Parsed<KeyboardInputKdl>),
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::MouseInput"]
+pub enum MouseInputKdl {
+    #[default]
+    ScrollUp,
+    ScrollDown,
+    ScrollRight,
+    ScrollLeft,
+    MoveUp,
+    MoveDown,
+    MoveRight,
+    MoveLeft,
+    ClickLeft,
+    ClickMiddle,
+    ClickRight,
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::KeyboardInput"]
+pub enum KeyboardInputKdl {
+    #[default]
+    A,
+    B,
+    UpArrow,
+    DownArrow,
+    LeftArrow,
+    RightArrow,
+    PageUp,
+    PageDown,
+    Backspace,
+    Delete,
+    Tab,
+    Enter,
 }

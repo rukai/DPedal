@@ -1,5 +1,5 @@
 use defmt::*;
-use dpedal_config::MouseClick;
+use dpedal_config::MouseInput;
 use embassy_futures::join::join;
 use embassy_rp::{peripherals::USB, usb::Driver};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
@@ -69,20 +69,34 @@ impl Mouse {
 
             while let Ok(event) = MOUSE_CHANNEL.try_receive() {
                 match event {
-                    MouseEvent::Scroll { x, y } => {
-                        if ticks.is_multiple_of(80) {
-                            report.pan += x;
-                            report.wheel += y;
+                    MouseEvent::Pressed(input) => match input {
+                        MouseInput::ScrollUp => scroll(&mut report, ticks, 0, 1),
+                        MouseInput::ScrollDown => scroll(&mut report, ticks, 0, -1),
+                        MouseInput::ScrollLeft => scroll(&mut report, ticks, -1, 0),
+                        MouseInput::ScrollRight => scroll(&mut report, ticks, 1, 0),
+                        MouseInput::MoveUp => move_cursor(&mut report, ticks, 0, 1),
+                        MouseInput::MoveDown => move_cursor(&mut report, ticks, 0, -1),
+                        MouseInput::MoveLeft => move_cursor(&mut report, ticks, -1, 0),
+                        MouseInput::MoveRight => move_cursor(&mut report, ticks, 1, 0),
+                        MouseInput::ClickLeft => defmt::todo!(),
+                        MouseInput::ClickMiddle => defmt::todo!(),
+                        MouseInput::ClickRight => defmt::todo!(),
+                    },
+                    MouseEvent::Released(input) => match input {
+                        MouseInput::ScrollUp
+                        | MouseInput::ScrollDown
+                        | MouseInput::ScrollLeft
+                        | MouseInput::ScrollRight
+                        | MouseInput::MoveUp
+                        | MouseInput::MoveDown
+                        | MouseInput::MoveLeft
+                        | MouseInput::MoveRight => {
+                            // Releasing one of these inputs has no effect
                         }
-                    }
-                    MouseEvent::Move { x, y } => {
-                        if ticks.is_multiple_of(80) {
-                            report.x += x;
-                            report.y += y;
-                        }
-                    }
-                    MouseEvent::Pressed(_) => defmt::todo!(),
-                    MouseEvent::Released(_) => defmt::todo!(),
+                        MouseInput::ClickLeft => defmt::todo!(),
+                        MouseInput::ClickMiddle => defmt::todo!(),
+                        MouseInput::ClickRight => defmt::todo!(),
+                    },
                 }
             }
 
@@ -101,11 +115,23 @@ impl Mouse {
     }
 }
 
+fn scroll(report: &mut MouseReport, ticks: u32, x: i8, y: i8) {
+    if ticks.is_multiple_of(80) {
+        report.pan += x;
+        report.wheel += y;
+    }
+}
+
+fn move_cursor(report: &mut MouseReport, ticks: u32, x: i8, y: i8) {
+    if ticks.is_multiple_of(80) {
+        report.x += x;
+        report.y += y;
+    }
+}
+
 #[allow(unused)]
 #[derive(Clone, Copy)]
 pub enum MouseEvent {
-    Scroll { x: i8, y: i8 },
-    Move { x: i8, y: i8 },
-    Pressed(MouseClick),
-    Released(MouseClick),
+    Pressed(MouseInput),
+    Released(MouseInput),
 }

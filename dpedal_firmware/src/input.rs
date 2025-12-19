@@ -1,7 +1,7 @@
 use crate::config::CONFIG;
 use crate::keyboard::{KEYBOARD_CHANNEL, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, MouseEvent};
-use dpedal_config::{ComputerInput, DpedalInput, InputSplit, MouseInput};
+use dpedal_config::{ComputerInput, DpedalInput};
 use embassy_rp::gpio::{AnyPin, Input, Pin, Pull};
 use embassy_rp::{Peri, PeripheralType};
 use embassy_time::Timer;
@@ -110,29 +110,28 @@ impl DpedalInputState {
 }
 
 async fn pressed(input: ComputerInput) {
-    match input.split() {
-        InputSplit::None => {}
-        InputSplit::Keyboard(key) => KEYBOARD_CHANNEL.send(KeyboardEvent::Pressed(key)).await,
-        InputSplit::Mouse(input) => {
-            MOUSE_CHANNEL
-                .send(match input {
-                    MouseInput::Scroll { x, y } => MouseEvent::Scroll { x, y },
-                    MouseInput::Move { x, y } => MouseEvent::Move { x, y },
-                    MouseInput::Click(click) => MouseEvent::Pressed(click),
-                })
-                .await;
+    match input {
+        ComputerInput::None => {}
+        ComputerInput::Keyboard(key) => {
+            KEYBOARD_CHANNEL
+                .send(KeyboardEvent::Pressed(key.usage()))
+                .await
         }
+        ComputerInput::Mouse(mouse) => MOUSE_CHANNEL.send(MouseEvent::Pressed(mouse)).await,
+        ComputerInput::Control(_) => {}
     }
 }
 
 async fn released(input: ComputerInput) {
-    match input.split() {
-        InputSplit::None => {}
-        InputSplit::Keyboard(key) => KEYBOARD_CHANNEL.send(KeyboardEvent::Released(key)).await,
-        InputSplit::Mouse(MouseInput::Click(click)) => {
-            MOUSE_CHANNEL.send(MouseEvent::Released(click)).await
+    match input {
+        ComputerInput::None => {}
+        ComputerInput::Keyboard(key) => {
+            KEYBOARD_CHANNEL
+                .send(KeyboardEvent::Released(key.usage()))
+                .await
         }
-        InputSplit::Mouse(MouseInput::Move { .. } | MouseInput::Scroll { .. }) => {}
+        ComputerInput::Mouse(mouse) => MOUSE_CHANNEL.send(MouseEvent::Released(mouse)).await,
+        ComputerInput::Control(_) => {}
     }
 }
 

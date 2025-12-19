@@ -26,6 +26,7 @@ impl ConfigFlash {
 
     pub async fn load(&mut self) {
         if let Err(()) = self.load_inner().await {
+            *CONFIG.lock().await = Some(Config::default());
             error!("Failed to load config from flash")
         }
     }

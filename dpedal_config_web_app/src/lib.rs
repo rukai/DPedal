@@ -1,23 +1,29 @@
 use arrayvec::ArrayVec;
 use dpedal_config::ComputerInput;
 use dpedal_config::Config;
+use dpedal_config::DPedalControl;
 use dpedal_config::DpedalInput;
+use dpedal_config::KeyboardInput;
 use dpedal_config::Mapping;
+use dpedal_config::MouseInput;
 use dpedal_config::Profile;
 use dpedal_config::web_config_protocol::Request;
 use dpedal_config::web_config_protocol::Response;
+use element_iterator::ElementChildIterator;
 use log::Level;
 use rkyv::rancor::Error;
 use std::rc::Rc;
+use strum::IntoEnumIterator;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
-use web_sys::HtmlCollection;
 use web_sys::HtmlElement;
-use web_sys::{Document, Element, HtmlInputElement};
+use web_sys::HtmlSelectElement;
+use web_sys::{Document, Element};
 
 use crate::device::Device;
 
 mod device;
+mod element_iterator;
 
 #[wasm_bindgen]
 pub fn run() {
@@ -45,7 +51,7 @@ async fn open_device() {
     let config = match request_get_config(&device).await {
         Ok(x) => x,
         Err(err) => {
-            log::error!("{err}");
+            log::error!("Failed to request config from device {err}");
             // TODO: put up dialog asking "Config on the device is not present, outdated, or corrupt. Default config will be restored."
             Default::default()
         }
@@ -114,18 +120,16 @@ async fn write_config(
         let input_cell = ElementChildIterator::new(&cells.next().unwrap())
             .next()
             .unwrap();
-        let output_cell = ElementChildIterator::new(&cells.next().unwrap())
-            .next()
-            .unwrap();
+        let mut output_cell = ElementChildIterator::new(&cells.next().unwrap());
+        let mut output = ArrayVec::new();
+        while let Some(result) = parse_output(&mut output_cell) {
+            output.push(result);
+        }
 
         let input = input_cell.inner_html();
-        let output = output_cell.dyn_ref::<HtmlInputElement>().unwrap().value();
-        mappings.push(Mapping {
-            input: ArrayVec::from_iter([DpedalInput::from_string(&input)
-                .ok_or_else(|| format!("{input} is not a valid input"))?]),
-            output: ArrayVec::from_iter([ComputerInput::from_string(&output)
-                .ok_or_else(|| format!("{output} is not a valid output"))?]),
-        });
+        let input = ArrayVec::from_iter([DpedalInput::from_string(&input)
+            .ok_or_else(|| format!("{input} is not a valid input"))?]);
+        mappings.push(Mapping { input, output });
     }
 
     config.profiles = ArrayVec::from_iter([Profile { mappings }]);
@@ -138,6 +142,27 @@ async fn write_config(
     log::info!("config written {:#?}", config);
 
     Ok(())
+}
+
+fn parse_output(output_cell: &mut ElementChildIterator) -> Option<ComputerInput> {
+    let ty_value = output_cell
+        .next()?
+        .dyn_ref::<HtmlSelectElement>()
+        .unwrap()
+        .value();
+
+    let sub_ty_value = output_cell
+        .next()?
+        .dyn_ref::<HtmlSelectElement>()
+        .unwrap()
+        .value();
+
+    match ty_value.as_str() {
+        "mouse" => MouseInput::from_string(&sub_ty_value).map(ComputerInput::Mouse),
+        "keyboard" => KeyboardInput::from_string(&sub_ty_value).map(ComputerInput::Keyboard),
+        "control" => DPedalControl::from_string(&sub_ty_value).map(ComputerInput::Control),
+        _ => None,
+    }
 }
 
 async fn request_get_config(device: &Device) -> Result<Config, String> {
@@ -171,38 +196,119 @@ pub fn set_error(document: &Document, error_message: &str) {
 }
 
 fn create_row(document: &Document, mapping: &Mapping) -> Element {
-    let input_value = mapping
-        .input
-        .iter()
-        .map(|x| format!("{x:?}"))
-        .collect::<Vec<String>>()
-        .join("+");
-    let output_value = mapping
-        .output
-        .iter()
-        .map(|x| format!("{x:?}"))
-        .collect::<Vec<String>>()
-        .join("+");
-
     let tr = document.create_element("tr").unwrap();
 
-    let td1 = document.create_element("td").unwrap();
-    let td2 = document.create_element("td").unwrap();
+    tr.append_child(&create_row_input(document, &mapping.input))
+        .unwrap();
+    tr.append_child(&create_row_output(document, &mapping.output))
+        .unwrap();
 
-    tr.append_child(&td1).unwrap();
-    tr.append_child(&td2).unwrap();
+    tr
+}
+
+fn create_row_input<const CAP: usize>(
+    document: &Document,
+    inputs: &ArrayVec<DpedalInput, CAP>,
+) -> Element {
+    let input_value = inputs
+        .iter()
+        .map(|x| format!("{x:?}"))
+        .collect::<Vec<String>>()
+        .join("+");
+    let td1 = document.create_element("td").unwrap();
 
     let input = document.create_element("p").unwrap();
     let input = input.dyn_ref::<HtmlElement>().unwrap();
     input.set_inner_text(&input_value);
     td1.append_child(input).unwrap();
+    td1
+}
 
-    let output = document.create_element("input").unwrap();
-    let output = output.dyn_ref::<HtmlInputElement>().unwrap();
-    output.set_value(&output_value);
-    td2.append_child(output).unwrap();
+fn create_row_output<const CAP: usize>(
+    document: &Document,
+    outputs: &ArrayVec<ComputerInput, CAP>,
+) -> Element {
+    let td2 = document.create_element("td").unwrap();
+    for output in outputs {
+        let select_type = document.create_element("select").unwrap();
+        let select_type = select_type.dyn_ref::<HtmlSelectElement>().unwrap();
+        select_type.set_inner_html(
+            "
+<option value=\"keyboard\">⌨️</option>
+<option value=\"mouse\">🖱️</option>
+<option value=\"control\">⚙️</option>
+",
+        );
+        select_type.style().set_css_text("font-size:2em;");
+        select_type.set_value(match output {
+            ComputerInput::None => {
+                continue;
+            }
+            ComputerInput::Mouse(_) => "mouse",
+            ComputerInput::Keyboard(_) => "keyboard",
+            ComputerInput::Control(_) => "control",
+        });
+        td2.append_child(select_type).unwrap();
 
-    tr
+        let select_subtype = document.create_element("select").unwrap();
+        let select_subtype = select_subtype.dyn_ref::<HtmlSelectElement>().unwrap();
+        select_subtype.style().set_css_text("font-size:2em;");
+        td2.append_child(select_subtype).unwrap();
+
+        let select_type_clone = select_type.clone();
+        let select_subtype = select_subtype.clone();
+        setup_select_subtype(&select_subtype, output);
+        set_onchange(
+            select_type,
+            Box::new(move || {
+                let output = match select_type_clone.value().as_str() {
+                    "mouse" => ComputerInput::Mouse(Default::default()),
+                    "keyboard" => ComputerInput::Keyboard(Default::default()),
+                    "control" => ComputerInput::Control(Default::default()),
+                    _ => ComputerInput::None,
+                };
+                setup_select_subtype(&select_subtype, &output);
+            }) as Box<dyn FnMut()>,
+        );
+    }
+
+    td2
+}
+
+fn setup_select_subtype(select_subtype: &HtmlSelectElement, output: &ComputerInput) {
+    match output {
+        ComputerInput::None => {}
+        ComputerInput::Mouse(mouse_input) => {
+            let mut options = String::new();
+            for variant in MouseInput::iter() {
+                options.push_str(&format!(
+                    "<option value=\"{variant:?}\">{variant:?}</option>"
+                ));
+            }
+            select_subtype.set_inner_html(&options);
+            select_subtype.set_value(&format!("{mouse_input:?}"));
+        }
+        ComputerInput::Keyboard(keyboard_input) => {
+            let mut options = String::new();
+            for variant in KeyboardInput::iter() {
+                options.push_str(&format!(
+                    "<option value=\"{variant:?}\">{variant:?}</option>"
+                ));
+            }
+            select_subtype.set_inner_html(&options);
+            select_subtype.set_value(&format!("{keyboard_input:?}"));
+        }
+        ComputerInput::Control(control) => {
+            let mut options = String::new();
+            for variant in DPedalControl::iter() {
+                options.push_str(&format!(
+                    "<option value=\"{variant:?}\">{variant:?}</option>"
+                ));
+            }
+            select_subtype.set_inner_html(&options);
+            select_subtype.set_value(&format!("{control:?}"));
+        }
+    }
 }
 
 fn set_button_on_click(document: &Document, id: &str, closure: Box<dyn FnMut()>) {
@@ -218,36 +324,10 @@ fn set_button_on_click(document: &Document, id: &str, closure: Box<dyn FnMut()>)
     closure.forget();
 }
 
-pub struct ElementChildIterator {
-    collection: HtmlCollection,
-    index: u32,
-    length: u32,
-}
+fn set_onchange(select: &HtmlElement, closure: Box<dyn FnMut()>) {
+    let closure = Closure::wrap(closure);
+    select.set_onchange(Some(closure.as_ref().unchecked_ref()));
 
-impl ElementChildIterator {
-    /// Create a new iterator over the children of an element
-    pub fn new(element: &Element) -> Self {
-        let collection = element.children();
-        let length = collection.length();
-
-        Self {
-            collection,
-            index: 0,
-            length,
-        }
-    }
-}
-
-impl Iterator for ElementChildIterator {
-    type Item = Element;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.index < self.length {
-            let element = self.collection.item(self.index);
-            self.index += 1;
-            element
-        } else {
-            None
-        }
-    }
+    // Need to forget closure otherwise the destructor destroys it ;-;
+    closure.forget();
 }

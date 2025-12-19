@@ -12,60 +12,19 @@ profiles {
     // Standard profile
     - {
         mappings {
-          - {
-            // TODO: after extending the input/output format the config is hideous, need to clean this up somehow.
-              input {
-                - dpad-up
-              }
-              output {
-                - mouse-scroll-up
-              }
-          }
-          - {
-              input {
-                - dpad-down
-              }
-              output {
-                - mouse-scroll-down
-              }
-          }
-          - {
-              input {
-                - dpad-left
-              }
-              output {
-                - mouse-scroll-left
-              }
-          }
-          - {
-              input {
-                - dpad-right
-              }
-              output {
-                - mouse-scroll-right
-              }
-          }
-          - {
-              input {
-                - button-left
-              }
-              output {
-                - keyboard-page-up
-              }
-          }
-          - {
-              input {
-                - button-right
-              }
-              output {
-                - keyboard-page-down
-              }
-          }
-        }
+          - "dpad-up -> mouse-scroll-up"
+          - "dpad-down -> mouse-scroll-down"
+          - "dpad-left -> mouse-scroll-left"
+          - "dpad-right -> mouse-scroll-right"
+          - "button-left -> keyboard-page-up"
+          - "button-right -> keyboard-page-down"
 
-        // TODO:
-        // button-left+button_right+dpad_down enter-flash-mode
-        // button-left+button_right go-to-profile 2
+          // TODO:
+          // - button-left+button_right+dpad_down -> enter-flash-mode
+          // - button-left+button_right -> go-to-profile 2
+          // and allow:
+          // - dpad-right -> mouse-scroll-right 5 + sleep 5s + mouse-scroll-right 5
+        }
     }
     // Alternate profile
     // - {
