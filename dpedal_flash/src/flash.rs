@@ -7,17 +7,17 @@ use picoboot_rs::{
 use rusb::Context;
 
 pub fn flash_device(firmware: &[u8], config: &[u8]) -> Result<()> {
-    if firmware.len() >= FIRMWARE_SIZE {
+    if firmware.len() > FIRMWARE_SIZE {
         return Err(miette!(
-            "Firmware is too large to flash, is {:?} bytes but must be less than {:?} bytes.",
+            "Firmware is too large to flash, is {:?} bytes but must be less than or equal to {:?} bytes.",
             firmware.len(),
             FIRMWARE_SIZE
         ));
     }
-    if config.len() >= CONFIG_SIZE {
+    if config.len() > CONFIG_SIZE {
         return Err(miette!(
-            "Config is too large to flash, is {:?} bytes but must be less than {:?} bytes.",
-            firmware.len(),
+            "Config is too large to flash, is {:?} bytes but must be less than or equal to {:?} bytes.",
+            config.len(),
             CONFIG_SIZE
         ));
     }

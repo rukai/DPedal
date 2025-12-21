@@ -8,4 +8,8 @@ pub struct Args {
     /// If not specified, loads config from `config.kdl` located in the same directory as the exe/binary.
     #[arg()]
     pub path: Option<PathBuf>,
+    /// Flash firmware, but overwrite existing config with 0's and do not write any config.
+    /// This is only useful for development purposes, for testing invalid config.
+    #[arg(long)]
+    pub erase_config: bool,
 }
