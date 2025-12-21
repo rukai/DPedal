@@ -52,7 +52,10 @@ async fn open_device() {
         Ok(x) => x,
         Err(err) => {
             log::error!("Failed to request config from device {err}");
-            // TODO: put up dialog asking "Config on the device is not present, outdated, or corrupt. Default config will be restored."
+            web_sys::window()
+                .unwrap()
+                .alert_with_message("Config on the device is not present, outdated, or corrupt. Default config will be restored.")
+                .unwrap();
             Default::default()
         }
     };
@@ -80,7 +83,9 @@ async fn open_device() {
     let app_div = document.get_element_by_id("config-app").unwrap();
     app_div.append_child(config_div).unwrap();
 
-    gen_for_profile(&document, &config.profiles[0]); // TODO: handle empty config.profiles
+    if let Some(profile) = config.profiles.first() {
+        gen_for_profile(&document, profile);
+    }
     log::info!("device config {:#?}", config);
 
     let device = Rc::new(device);
