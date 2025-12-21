@@ -14,7 +14,7 @@ pub const CONFIG_SIZE: usize = 1024 * 16; // 10 KiB
 use arrayvec::ArrayVec;
 use defmt::Format;
 use rkyv::{Archive, Deserialize, Serialize};
-use strum::EnumIter;
+use strum::{EnumIter, EnumString};
 use usbd_hid::descriptor::KeyboardUsage;
 
 const fn assert_config_fits_in_flash() {
@@ -50,21 +50,27 @@ impl Default for Config {
                 mappings: ArrayVec::from_iter([
                     Mapping {
                         input: ArrayVec::from_iter([DpedalInput::DpadLeft]),
-                        output: ArrayVec::from_iter([ComputerInput::Mouse(MouseInput::ScrollLeft)]),
+                        output: ArrayVec::from_iter([ComputerInput::Mouse(
+                            MouseInput::ScrollLeft(10),
+                        )]),
                     },
                     Mapping {
                         input: ArrayVec::from_iter([DpedalInput::DpadRight]),
                         output: ArrayVec::from_iter([ComputerInput::Mouse(
-                            MouseInput::ScrollRight,
+                            MouseInput::ScrollRight(10),
                         )]),
                     },
                     Mapping {
                         input: ArrayVec::from_iter([DpedalInput::DpadUp]),
-                        output: ArrayVec::from_iter([ComputerInput::Mouse(MouseInput::ScrollUp)]),
+                        output: ArrayVec::from_iter([ComputerInput::Mouse(MouseInput::ScrollUp(
+                            10,
+                        ))]),
                     },
                     Mapping {
                         input: ArrayVec::from_iter([DpedalInput::DpadDown]),
-                        output: ArrayVec::from_iter([ComputerInput::Mouse(MouseInput::ScrollDown)]),
+                        output: ArrayVec::from_iter([ComputerInput::Mouse(
+                            MouseInput::ScrollDown(10),
+                        )]),
                     },
                     Mapping {
                         input: ArrayVec::from_iter([DpedalInput::ButtonLeft]),
@@ -159,65 +165,51 @@ pub enum ComputerInput {
 )]
 #[rkyv(derive(Debug))]
 pub enum MouseInput {
+    ScrollUp(i16),
+    ScrollDown(i16),
+    ScrollRight(i16),
+    ScrollLeft(i16),
+    MoveUp(i16),
+    MoveDown(i16),
+    MoveRight(i16),
+    MoveLeft(i16),
     #[default]
-    ScrollUp,
-    ScrollDown,
-    ScrollRight,
-    ScrollLeft,
-    MoveUp,
-    MoveDown,
-    MoveRight,
-    MoveLeft,
     ClickLeft,
     ClickMiddle,
     ClickRight,
 }
 
 impl MouseInput {
-    // TODO: return Result<Self, MouseInputError>
-    // enum MouseInputError {
-    //   /// Entirely incorrect
-    //   Invalid,
-    //   /// requires more data e.g. `scroll-right 5`
-    //   Partial
-    // }
-    pub fn from_string(s: &str) -> Option<Self> {
+    pub fn from_string(s: &str, value: &str) -> Option<Self> {
         match s {
-            "ScrollUp" => Some(MouseInput::ScrollUp),
-            "ScrollDown" => Some(MouseInput::ScrollDown),
-            "ScrollRight" => Some(MouseInput::ScrollRight),
-            "ScrollLeft" => Some(MouseInput::ScrollLeft),
-            "MoveUp" => Some(MouseInput::MoveUp),
-            "MoveDown" => Some(MouseInput::MoveDown),
-            "MoveRight" => Some(MouseInput::MoveRight),
-            "MoveLeft" => Some(MouseInput::MoveLeft),
-            "ClickLeft" => Some(MouseInput::ClickLeft),
-            "ClickMiddle" => Some(MouseInput::ClickMiddle),
-            "ClickRight" => Some(MouseInput::ClickRight),
-            _ => None,
-        }
-    }
-
-    pub fn from_string_kebab(s: &str) -> Option<Self> {
-        match s {
-            "scroll-up" => Some(MouseInput::ScrollUp),
-            "scroll-down" => Some(MouseInput::ScrollDown),
-            "scroll-right" => Some(MouseInput::ScrollRight),
-            "scroll-left" => Some(MouseInput::ScrollLeft),
-            "move-up" => Some(MouseInput::MoveUp),
-            "move-down" => Some(MouseInput::MoveDown),
-            "move-right" => Some(MouseInput::MoveRight),
-            "move-left" => Some(MouseInput::MoveLeft),
-            "click-left" => Some(MouseInput::ClickLeft),
-            "click-middle" => Some(MouseInput::ClickMiddle),
-            "click-right" => Some(MouseInput::ClickRight),
+            "ScrollUp" | "scroll-up" => Some(MouseInput::ScrollUp(value.parse().ok()?)),
+            "ScrollDown" | "scroll-down" => Some(MouseInput::ScrollDown(value.parse().ok()?)),
+            "ScrollRight" | "scroll-right" => Some(MouseInput::ScrollRight(value.parse().ok()?)),
+            "ScrollLeft" | "scroll-left" => Some(MouseInput::ScrollLeft(value.parse().ok()?)),
+            "MoveUp" | "move-up" => Some(MouseInput::MoveUp(value.parse().ok()?)),
+            "MoveDown" | "move-down" => Some(MouseInput::MoveDown(value.parse().ok()?)),
+            "MoveRight" | "move-right" => Some(MouseInput::MoveRight(value.parse().ok()?)),
+            "MoveLeft" | "move-left" => Some(MouseInput::MoveLeft(value.parse().ok()?)),
+            "ClickLeft" | "click-left" => Some(MouseInput::ClickLeft),
+            "ClickMiddle" | "click-middle " => Some(MouseInput::ClickMiddle),
+            "ClickRight" | "click-right" => Some(MouseInput::ClickRight),
             _ => None,
         }
     }
 }
 
 #[derive(
-    Format, Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone, Copy, EnumIter,
+    Format,
+    Archive,
+    Deserialize,
+    Serialize,
+    Debug,
+    PartialEq,
+    Default,
+    Clone,
+    Copy,
+    EnumIter,
+    EnumString,
 )]
 #[rkyv(derive(Debug))]
 pub enum KeyboardInput {
@@ -234,43 +226,6 @@ pub enum KeyboardInput {
     Delete,
     Tab,
     Enter,
-}
-
-impl KeyboardInput {
-    pub fn from_string(s: &str) -> Option<Self> {
-        match s {
-            "A" => Some(KeyboardInput::A),
-            "B" => Some(KeyboardInput::B),
-            "UpArrow" => Some(KeyboardInput::UpArrow),
-            "DownArrow" => Some(KeyboardInput::DownArrow),
-            "LeftArrow" => Some(KeyboardInput::LeftArrow),
-            "RightArrow" => Some(KeyboardInput::RightArrow),
-            "PageUp" => Some(KeyboardInput::PageUp),
-            "PageDown" => Some(KeyboardInput::PageDown),
-            "Backspace" => Some(KeyboardInput::Backspace),
-            "Delete" => Some(KeyboardInput::Delete),
-            "Tab" => Some(KeyboardInput::Tab),
-            "Enter" => Some(KeyboardInput::Enter),
-            _ => None,
-        }
-    }
-    pub fn from_string_kebab(s: &str) -> Option<Self> {
-        match s {
-            "a" => Some(KeyboardInput::A),
-            "b" => Some(KeyboardInput::B),
-            "up-arrow" => Some(KeyboardInput::UpArrow),
-            "down-arrow" => Some(KeyboardInput::DownArrow),
-            "left-arrow" => Some(KeyboardInput::LeftArrow),
-            "right-arrow" => Some(KeyboardInput::RightArrow),
-            "page-up" => Some(KeyboardInput::PageUp),
-            "page-down" => Some(KeyboardInput::PageDown),
-            "backspace" => Some(KeyboardInput::Backspace),
-            "delete" => Some(KeyboardInput::Delete),
-            "tab" => Some(KeyboardInput::Tab),
-            "enter" => Some(KeyboardInput::Enter),
-            _ => None,
-        }
-    }
 }
 
 impl KeyboardInput {

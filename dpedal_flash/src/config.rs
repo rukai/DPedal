@@ -8,7 +8,7 @@ use kdl_config::{
 use kdl_config_derive::{KdlConfig, KdlConfigFinalize};
 use miette::{IntoDiagnostic, NamedSource, miette};
 use rkyv::rancor::Error;
-use std::path::PathBuf;
+use std::{path::PathBuf, str::FromStr};
 
 pub fn encode_config(config: &Config) -> miette::Result<Vec<u8>> {
     let bytes = rkyv::to_bytes::<Error>(config).map_err(|e| miette!(e))?;
@@ -182,7 +182,7 @@ impl KdlConfig for MappingKdl {
                 };
 
                 let output = match ty {
-                    "mouse" => match MouseInput::from_string_kebab(sub_ty) {
+                    "mouse" => match MouseInput::from_string(sub_ty, "10") {
                         Some(input) => ComputerInput::Mouse(input),
                         None => {
                             diagnostics.push(ParseDiagnostic {
@@ -201,7 +201,7 @@ impl KdlConfig for MappingKdl {
                             };
                         }
                     },
-                    "keyboard" => match KeyboardInput::from_string_kebab(sub_ty) {
+                    "keyboard" => match keyboard_from_string_kebab(sub_ty) {
                         Some(input) => ComputerInput::Keyboard(input),
                         None => {
                             diagnostics.push(ParseDiagnostic {
@@ -267,6 +267,32 @@ impl KdlConfig for MappingKdl {
     }
 }
 
+pub fn keyboard_from_string_kebab(s: &str) -> Option<KeyboardInput> {
+    let mut pascal_case = String::new();
+
+    let mut upper = true;
+    for char in s.chars() {
+        if upper {
+            pascal_case.push(char.to_ascii_uppercase());
+            upper = false;
+        } else if char == '-' {
+            upper = true;
+        } else {
+            pascal_case.push(char);
+        }
+    }
+    KeyboardInput::from_str(&pascal_case).ok()
+}
+
+#[test]
+fn test_keyboard_from_string_kebab() {
+    assert_eq!(
+        keyboard_from_string_kebab("page-up").unwrap(),
+        KeyboardInput::PageUp
+    );
+    assert_eq!(keyboard_from_string_kebab("a").unwrap(), KeyboardInput::A);
+}
+
 #[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
 #[kdl_config_finalize_into = "dpedal_config::DpedalInput"]
 pub enum DpedalInputKdl {
@@ -277,48 +303,4 @@ pub enum DpedalInputKdl {
     DpadRight,
     ButtonLeft,
     ButtonRight,
-}
-
-#[derive(KdlConfigFinalize, Default, Debug)]
-#[kdl_config_finalize_into = "dpedal_config::ComputerInput"]
-pub enum ComputerInputKdl {
-    #[default]
-    None,
-    Mouse(Parsed<MouseInputKdl>),
-    Keyboard(Parsed<KeyboardInputKdl>),
-}
-
-#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
-#[kdl_config_finalize_into = "dpedal_config::MouseInput"]
-pub enum MouseInputKdl {
-    #[default]
-    ScrollUp,
-    ScrollDown,
-    ScrollRight,
-    ScrollLeft,
-    MoveUp,
-    MoveDown,
-    MoveRight,
-    MoveLeft,
-    ClickLeft,
-    ClickMiddle,
-    ClickRight,
-}
-
-#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
-#[kdl_config_finalize_into = "dpedal_config::KeyboardInput"]
-pub enum KeyboardInputKdl {
-    #[default]
-    A,
-    B,
-    UpArrow,
-    DownArrow,
-    LeftArrow,
-    RightArrow,
-    PageUp,
-    PageDown,
-    Backspace,
-    Delete,
-    Tab,
-    Enter,
 }

@@ -70,27 +70,43 @@ impl Mouse {
             while let Ok(event) = MOUSE_CHANNEL.try_receive() {
                 match event {
                     MouseEvent::Pressed(input) => match input {
-                        MouseInput::ScrollUp => scroll(&mut report, ticks, 0, 1),
-                        MouseInput::ScrollDown => scroll(&mut report, ticks, 0, -1),
-                        MouseInput::ScrollLeft => scroll(&mut report, ticks, -1, 0),
-                        MouseInput::ScrollRight => scroll(&mut report, ticks, 1, 0),
-                        MouseInput::MoveUp => move_cursor(&mut report, ticks, 0, 1),
-                        MouseInput::MoveDown => move_cursor(&mut report, ticks, 0, -1),
-                        MouseInput::MoveLeft => move_cursor(&mut report, ticks, -1, 0),
-                        MouseInput::MoveRight => move_cursor(&mut report, ticks, 1, 0),
+                        MouseInput::ScrollUp(value) => {
+                            scroll(&mut report, ticks, 0, (value / 10) as i8)
+                        }
+                        MouseInput::ScrollDown(value) => {
+                            scroll(&mut report, ticks, 0, (value / -10) as i8)
+                        }
+                        MouseInput::ScrollLeft(value) => {
+                            scroll(&mut report, ticks, (value / -10) as i8, 0)
+                        }
+                        MouseInput::ScrollRight(value) => {
+                            scroll(&mut report, ticks, (value / 10) as i8, 0)
+                        }
+                        MouseInput::MoveUp(value) => {
+                            move_cursor(&mut report, ticks, 0, (value / 10) as i8)
+                        }
+                        MouseInput::MoveDown(value) => {
+                            move_cursor(&mut report, ticks, 0, (value / -10) as i8)
+                        }
+                        MouseInput::MoveLeft(value) => {
+                            move_cursor(&mut report, ticks, (value / -10) as i8, 0)
+                        }
+                        MouseInput::MoveRight(value) => {
+                            move_cursor(&mut report, ticks, (value / 10) as i8, 0)
+                        }
                         MouseInput::ClickLeft => defmt::todo!(),
                         MouseInput::ClickMiddle => defmt::todo!(),
                         MouseInput::ClickRight => defmt::todo!(),
                     },
                     MouseEvent::Released(input) => match input {
-                        MouseInput::ScrollUp
-                        | MouseInput::ScrollDown
-                        | MouseInput::ScrollLeft
-                        | MouseInput::ScrollRight
-                        | MouseInput::MoveUp
-                        | MouseInput::MoveDown
-                        | MouseInput::MoveLeft
-                        | MouseInput::MoveRight => {
+                        MouseInput::ScrollUp(_)
+                        | MouseInput::ScrollDown(_)
+                        | MouseInput::ScrollLeft(_)
+                        | MouseInput::ScrollRight(_)
+                        | MouseInput::MoveUp(_)
+                        | MouseInput::MoveDown(_)
+                        | MouseInput::MoveLeft(_)
+                        | MouseInput::MoveRight(_) => {
                             // Releasing one of these inputs has no effect
                         }
                         MouseInput::ClickLeft => defmt::todo!(),

@@ -13,10 +13,12 @@ use element_iterator::ElementChildIterator;
 use log::Level;
 use rkyv::rancor::Error;
 use std::rc::Rc;
+use std::str::FromStr;
 use strum::IntoEnumIterator;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
+use web_sys::HtmlInputElement;
 use web_sys::HtmlSelectElement;
 use web_sys::{Document, Element};
 
@@ -125,11 +127,7 @@ async fn write_config(
         let input_cell = ElementChildIterator::new(&cells.next().unwrap())
             .next()
             .unwrap();
-        let mut output_cell = ElementChildIterator::new(&cells.next().unwrap());
-        let mut output = ArrayVec::new();
-        while let Some(result) = parse_output(&mut output_cell) {
-            output.push(result);
-        }
+        let output = parse_output_cell(&cells.next().unwrap());
 
         let input = input_cell.inner_html();
         let input = ArrayVec::from_iter([DpedalInput::from_string(&input)
@@ -149,22 +147,39 @@ async fn write_config(
     Ok(())
 }
 
-fn parse_output(output_cell: &mut ElementChildIterator) -> Option<ComputerInput> {
-    let ty_value = output_cell
+fn parse_output_cell(output_cell: &Element) -> ArrayVec<ComputerInput, 20> {
+    ElementChildIterator::new(output_cell)
+        .flat_map(|span| parse_output_span(&span))
+        .collect()
+}
+
+fn parse_output_span(output_span: &Element) -> Option<ComputerInput> {
+    let mut output_span = ElementChildIterator::new(output_span);
+    let ty_value = output_span
         .next()?
         .dyn_ref::<HtmlSelectElement>()
         .unwrap()
         .value();
 
-    let sub_ty_value = output_cell
+    let sub_ty_value = output_span
         .next()?
         .dyn_ref::<HtmlSelectElement>()
         .unwrap()
         .value();
+
+    let sub_ty_fields_span = output_span.next()?;
 
     match ty_value.as_str() {
-        "mouse" => MouseInput::from_string(&sub_ty_value).map(ComputerInput::Mouse),
-        "keyboard" => KeyboardInput::from_string(&sub_ty_value).map(ComputerInput::Keyboard),
+        "mouse" => {
+            let field = ElementChildIterator::new(&sub_ty_fields_span)
+                .next()
+                .map(|x| x.dyn_ref::<HtmlInputElement>().unwrap().value())
+                .unwrap_or("".into());
+            MouseInput::from_string(&sub_ty_value, &field).map(ComputerInput::Mouse)
+        }
+        "keyboard" => KeyboardInput::from_str(&sub_ty_value)
+            .ok()
+            .map(ComputerInput::Keyboard),
         "control" => DPedalControl::from_string(&sub_ty_value).map(ComputerInput::Control),
         _ => None,
     }
@@ -233,65 +248,87 @@ fn create_row_output<const CAP: usize>(
     document: &Document,
     outputs: &ArrayVec<ComputerInput, CAP>,
 ) -> Element {
-    let td2 = document.create_element("td").unwrap();
+    let td = document.create_element("td").unwrap();
+    let span = document.create_element("span").unwrap();
+    td.append_child(&span).unwrap();
+
     for output in outputs {
-        let select_type = document.create_element("select").unwrap();
-        let select_type = select_type.dyn_ref::<HtmlSelectElement>().unwrap();
-        select_type.set_inner_html(
-            "
+        setup_single_output_span(&span, output);
+    }
+
+    td
+}
+
+/// Create or recreate a single output span.
+/// The output cell of the mapping table can contain many of these spans, each corresponding to a distinct output or step in a dpedal macro.
+fn setup_single_output_span(span: &Element, output: &ComputerInput) {
+    let document = web_sys::window().unwrap().document().unwrap();
+
+    // Remove any existing children
+    for child in ElementChildIterator::new(span).collect::<Vec<_>>().iter() {
+        child.remove();
+    }
+
+    // Add new children
+    let select_type = document.create_element("select").unwrap();
+    let select_type = select_type.dyn_ref::<HtmlSelectElement>().unwrap();
+    select_type.set_inner_html(
+        "
 <option value=\"keyboard\">⌨️</option>
 <option value=\"mouse\">🖱️</option>
 <option value=\"control\">⚙️</option>
 ",
-        );
-        select_type.style().set_css_text("font-size:2em;");
-        select_type.set_value(match output {
-            ComputerInput::None => {
-                continue;
-            }
-            ComputerInput::Mouse(_) => "mouse",
-            ComputerInput::Keyboard(_) => "keyboard",
-            ComputerInput::Control(_) => "control",
-        });
-        td2.append_child(select_type).unwrap();
+    );
+    select_type.style().set_css_text("font-size:2em;");
+    select_type.set_value(match output {
+        ComputerInput::None => {
+            return;
+        }
+        ComputerInput::Mouse(_) => "mouse",
+        ComputerInput::Keyboard(_) => "keyboard",
+        ComputerInput::Control(_) => "control",
+    });
+    span.append_child(select_type).unwrap();
 
-        let select_subtype = document.create_element("select").unwrap();
-        let select_subtype = select_subtype.dyn_ref::<HtmlSelectElement>().unwrap();
-        select_subtype.style().set_css_text("font-size:2em;");
-        td2.append_child(select_subtype).unwrap();
+    let select_subtype = document.create_element("select").unwrap();
+    let select_subtype = select_subtype.dyn_ref::<HtmlSelectElement>().unwrap();
+    select_subtype.style().set_css_text("font-size:2em;");
+    span.append_child(select_subtype).unwrap();
 
-        let select_type_clone = select_type.clone();
-        let select_subtype = select_subtype.clone();
-        setup_select_subtype(&select_subtype, output);
-        set_onchange(
-            select_type,
-            Box::new(move || {
-                let output = match select_type_clone.value().as_str() {
-                    "mouse" => ComputerInput::Mouse(Default::default()),
-                    "keyboard" => ComputerInput::Keyboard(Default::default()),
-                    "control" => ComputerInput::Control(Default::default()),
-                    _ => ComputerInput::None,
-                };
-                setup_select_subtype(&select_subtype, &output);
-            }) as Box<dyn FnMut()>,
-        );
-    }
+    let subtype_fields_span = document.create_element("span").unwrap();
 
-    td2
-}
-
-fn setup_select_subtype(select_subtype: &HtmlSelectElement, output: &ComputerInput) {
     match output {
         ComputerInput::None => {}
         ComputerInput::Mouse(mouse_input) => {
             let mut options = String::new();
             for variant in MouseInput::iter() {
+                // bit hacky but extract the variant name from the Debug string
+                // which may include variant fields which need to be stripped off.
+                let variant_string = format!("{variant:?}");
+                let variant_name = variant_string.split('(').next().unwrap();
+
                 options.push_str(&format!(
-                    "<option value=\"{variant:?}\">{variant:?}</option>"
+                    "<option value=\"{variant_name}\">{variant_name}</option>"
                 ));
             }
             select_subtype.set_inner_html(&options);
-            select_subtype.set_value(&format!("{mouse_input:?}"));
+
+            let variant_string = format!("{mouse_input:?}");
+            let variant_name = variant_string.split('(').next().unwrap();
+            select_subtype.set_value(variant_name);
+            setup_subtype_fields(&subtype_fields_span, mouse_input);
+
+            let select_subtype_clone = select_subtype.clone();
+            let subtype_fields_span = subtype_fields_span.clone();
+            set_onchange(
+                select_subtype,
+                Box::new(move || {
+                    // Create a default for the selected MouseInput
+                    let mouse_input =
+                        MouseInput::from_string(&select_subtype_clone.value(), "10").unwrap();
+                    setup_subtype_fields(&subtype_fields_span, &mouse_input);
+                }) as Box<dyn FnMut()>,
+            );
         }
         ComputerInput::Keyboard(keyboard_input) => {
             let mut options = String::new();
@@ -313,6 +350,55 @@ fn setup_select_subtype(select_subtype: &HtmlSelectElement, output: &ComputerInp
             select_subtype.set_inner_html(&options);
             select_subtype.set_value(&format!("{control:?}"));
         }
+    }
+    span.append_child(&subtype_fields_span).unwrap();
+
+    let span = span.clone();
+    set_onchange(
+        select_type,
+        Box::new(move || {
+            let select_type = ElementChildIterator::new(&span).next().unwrap();
+            let select_type = select_type.dyn_ref::<HtmlSelectElement>().unwrap();
+            let output = match select_type.value().as_str() {
+                "mouse" => ComputerInput::Mouse(Default::default()),
+                "keyboard" => ComputerInput::Keyboard(Default::default()),
+                "control" => ComputerInput::Control(Default::default()),
+                _ => ComputerInput::None,
+            };
+            setup_single_output_span(&span, &output);
+        }) as Box<dyn FnMut()>,
+    );
+}
+
+fn setup_subtype_fields(span: &Element, mouse_input: &MouseInput) {
+    let document = web_sys::window().unwrap().document().unwrap();
+
+    // Remove any existing children
+    for child in ElementChildIterator::new(span).collect::<Vec<_>>().iter() {
+        child.remove();
+    }
+
+    // Add new children
+    match mouse_input {
+        MouseInput::ScrollUp(x)
+        | MouseInput::ScrollDown(x)
+        | MouseInput::ScrollRight(x)
+        | MouseInput::ScrollLeft(x)
+        | MouseInput::MoveUp(x)
+        | MouseInput::MoveDown(x)
+        | MouseInput::MoveRight(x)
+        | MouseInput::MoveLeft(x) => {
+            let input_field = document.create_element("input").unwrap();
+            let input_field = input_field.dyn_ref::<HtmlInputElement>().unwrap();
+            input_field.set_type("number");
+            input_field.set_value(&x.to_string());
+            input_field.style().set_css_text("font-size:2em;");
+            input_field.set_min("0");
+            input_field.set_max("1000");
+            input_field.set_required(true);
+            span.append_child(input_field).unwrap();
+        }
+        MouseInput::ClickLeft | MouseInput::ClickMiddle | MouseInput::ClickRight => {}
     }
 }
 
