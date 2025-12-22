@@ -94,9 +94,9 @@ impl Mouse {
                         MouseInput::MoveRight(value) => {
                             move_cursor(&mut report, ticks, (value / 10) as i8, 0)
                         }
-                        MouseInput::ClickLeft => defmt::todo!(),
-                        MouseInput::ClickMiddle => defmt::todo!(),
-                        MouseInput::ClickRight => defmt::todo!(),
+                        MouseInput::ClickLeft => report.buttons |= 0b0000_0001,
+                        MouseInput::ClickRight => report.buttons |= 0b0000_0010,
+                        MouseInput::ClickMiddle => report.buttons |= 0b0000_0100,
                     },
                     MouseEvent::Released(input) => match input {
                         MouseInput::ScrollUp(_)
@@ -109,9 +109,9 @@ impl Mouse {
                         | MouseInput::MoveRight(_) => {
                             // Releasing one of these inputs has no effect
                         }
-                        MouseInput::ClickLeft => defmt::todo!(),
-                        MouseInput::ClickMiddle => defmt::todo!(),
-                        MouseInput::ClickRight => defmt::todo!(),
+                        MouseInput::ClickLeft => report.buttons &= 0b1111_1110,
+                        MouseInput::ClickRight => report.buttons &= 0b1111_1101,
+                        MouseInput::ClickMiddle => report.buttons &= 0b1111_1011,
                     },
                 }
             }
