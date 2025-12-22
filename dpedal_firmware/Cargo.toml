@@ -31,7 +31,7 @@ embassy-sync = { git = "https://github.com/embassy-rs/embassy"}
 usbd-hid = "0.9.0"
 portable-atomic = { version = "1.11.0", features = ["critical-section"] }
 static_cell = "2.1.1"
-rkyv = { version = "0.8.10", default-features = false }
+rkyv = { version = "0.8.10", default-features = false, features = ["arrayvec-0_7", "bytecheck"], git = "https://github.com/rukai/rkyv", branch = "add_support_for_arraystring" }
 dpedal_config = { path = "../dpedal_config"}
 postcard = "1.1.3"
 arrayvec = { version = "0.7.6", default-features = false, features = ["serde"] }

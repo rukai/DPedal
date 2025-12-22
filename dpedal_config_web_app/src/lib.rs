@@ -1,3 +1,4 @@
+use arrayvec::ArrayString;
 use arrayvec::ArrayVec;
 use dpedal_config::ComputerInput;
 use dpedal_config::Config;
@@ -71,6 +72,10 @@ async fn open_device() {
         });
     config_div.set_inner_html(
         r#"
+            <label>Nickname: </label>
+            <input type="text" id="device_name" style="font-size:2em;">
+            <input type="color" id="device_color">
+
             <table id="input-output-table">
                 <tr>
                     <th>Input</th>
@@ -80,10 +85,19 @@ async fn open_device() {
             <button id="flash">Save</button>
             "#,
     );
+
     let config_div = config_div.dyn_ref::<HtmlElement>().unwrap();
 
     let app_div = document.get_element_by_id("config-app").unwrap();
     app_div.append_child(config_div).unwrap();
+
+    let name = document.get_element_by_id("device_name").unwrap();
+    let name = name.dyn_ref::<HtmlInputElement>().unwrap();
+    name.set_value(config.nickname.as_ref());
+
+    let color = document.get_element_by_id("device_color").unwrap();
+    let color = color.dyn_ref::<HtmlInputElement>().unwrap();
+    color.set_value(&format!("#{:x}", config.color));
 
     if let Some(profile) = config.profiles.first() {
         gen_for_profile(&document, profile);
@@ -134,6 +148,19 @@ async fn write_config(
             .ok_or_else(|| format!("{input} is not a valid input"))?]);
         mappings.push(Mapping { input, output });
     }
+
+    let name = document.get_element_by_id("device_name").unwrap();
+    let name = name.dyn_ref::<HtmlInputElement>().unwrap();
+    config.nickname = ArrayString::from(&name.value()).map_err(|_| {
+        format!(
+            "nickname must be <= 50 characters long, but was {} characters long",
+            name.value().len()
+        )
+    })?;
+
+    let color = document.get_element_by_id("device_color").unwrap();
+    let color = color.dyn_ref::<HtmlInputElement>().unwrap();
+    config.color = u32::from_str_radix(color.value().strip_prefix("#").unwrap(), 16).unwrap();
 
     config.profiles = ArrayVec::from_iter([Profile { mappings }]);
 

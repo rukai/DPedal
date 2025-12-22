@@ -11,7 +11,7 @@ pub const FIRMWARE_SIZE: usize = 1024 * 1024 * 15; // 15 MiB
 pub const CONFIG_OFFSET: usize = 1024 * 1024 * 15;
 pub const CONFIG_SIZE: usize = 1024 * 16; // 10 KiB
 
-use arrayvec::ArrayVec;
+use arrayvec::{ArrayString, ArrayVec};
 use defmt::Format;
 use rkyv::{Archive, Deserialize, Serialize};
 use strum::{EnumIter, EnumString};
@@ -35,7 +35,9 @@ const _: () = assert_config_size_fits_into_writable_flash_blocks();
 #[rkyv(derive(Debug))]
 pub struct Config {
     pub version: u32,
-    //pub name: String,
+    // TODO: get arrayvec::ArrayString working with rkyv
+    pub nickname: ArrayString<50>,
+    pub device: Device,
     pub color: u32,
     pub profiles: ArrayVec<Profile, 2>,
     pub pin_remappings: ArrayVec<PinRemapping, 6>,
@@ -45,6 +47,8 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             version: Default::default(),
+            nickname: ArrayString::from("my DPedal").unwrap(),
+            device: Default::default(),
             color: 0x1790e3,
             profiles: ArrayVec::from_iter([Profile {
                 mappings: ArrayVec::from_iter([
@@ -89,6 +93,13 @@ impl Default for Config {
             pin_remappings: Default::default(),
         }
     }
+}
+
+#[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
+#[rkyv(derive(Debug))]
+pub enum Device {
+    #[default]
+    Dpedal,
 }
 
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]

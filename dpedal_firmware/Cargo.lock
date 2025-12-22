@@ -1321,8 +1321,7 @@ checksum = "0c6a884d2998352bb4daf0183589aec883f16a6da1f4dde84d8e2e9a5409a1ce"
 [[package]]
 name = "rkyv"
 version = "0.8.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35a640b26f007713818e9a9b65d34da1cf58538207b052916a83d80e43f3ffa4"
+source = "git+https://github.com/rukai/rkyv?branch=add_support_for_arraystring#075aa221d0eb0a71d7e999e65735d1ca298ecc47"
 dependencies = [
  "arrayvec",
  "bytecheck",
@@ -1336,8 +1335,7 @@ dependencies = [
 [[package]]
 name = "rkyv_derive"
 version = "0.8.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd83f5f173ff41e00337d97f6572e416d022ef8a19f371817259ae960324c482"
+source = "git+https://github.com/rukai/rkyv?branch=add_support_for_arraystring#075aa221d0eb0a71d7e999e65735d1ca298ecc47"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -17,7 +17,7 @@ kdl = "6.3.3"
 kdl_config = { git = "https://github.com/rukai/kdl_config" }
 kdl_config_derive = { git = "https://github.com/rukai/kdl_config" }
 arrayvec = "0.7.6"
-rkyv = "0.8.10"
+rkyv = { workspace = true, features = ["alloc"] }
 
 # workaround https://gitlab.com/robigalia/ssmarshal/-/merge_requests/2
 # TODO: lets just eradicate this unmaintained thing from the dep tree entirely

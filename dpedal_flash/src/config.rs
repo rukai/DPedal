@@ -1,4 +1,4 @@
-use arrayvec::ArrayVec;
+use arrayvec::{ArrayString, ArrayVec};
 use dpedal_config::{ComputerInput, Config, DpedalInput, KeyboardInput, MouseInput};
 use kdl::{KdlDocument, KdlNode};
 use kdl_config::{
@@ -59,7 +59,8 @@ fn load_source(path: Option<PathBuf>) -> miette::Result<NamedSource<String>> {
 #[kdl_config_finalize_into = "dpedal_config::Config"]
 pub struct ConfigKdl {
     pub version: Parsed<u32>,
-    //pub name: Parsed<String>,
+    pub nickname: Parsed<ArrayString<50>>,
+    pub device: Parsed<DeviceKdl>,
     pub color: Parsed<u32>,
     pub profiles: Parsed<ArrayVec<Parsed<ProfileKdl>, 2>>,
     // TODO: add validation: no duplicate pins (including default values), valid pin range
@@ -303,4 +304,11 @@ pub enum DpedalInputKdl {
     DpadRight,
     ButtonLeft,
     ButtonRight,
+}
+
+#[derive(KdlConfig, KdlConfigFinalize, Default, Debug)]
+#[kdl_config_finalize_into = "dpedal_config::Device"]
+pub enum DeviceKdl {
+    #[default]
+    Dpedal,
 }
