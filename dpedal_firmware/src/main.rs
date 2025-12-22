@@ -23,7 +23,7 @@ async fn main(_spawner: Spawner) {
 
     let config_flash = ConfigFlash::new(p.FLASH).await;
 
-    let mut builder = usb::usb_builder(p.USB);
+    let mut builder = usb::usb_builder(p.USB).await;
 
     let mut web_config = WebConfig::new(&mut builder, config_flash);
     let mut keyboard = Keyboard::new(&mut builder);

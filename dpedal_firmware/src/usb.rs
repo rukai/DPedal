@@ -1,3 +1,4 @@
+use arrayvec::ArrayString;
 use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
 use embassy_rp::peripherals::USB;
@@ -8,11 +9,13 @@ use embassy_usb::control::OutResponse;
 use embassy_usb::{Builder, Config, Handler};
 use static_cell::StaticCell;
 
+use crate::config::CONFIG;
+
 bind_interrupts!(struct Irqs {
     USBCTRL_IRQ => InterruptHandler<USB>;
 });
 
-pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, USB>> {
+pub async fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, USB>> {
     let driver = Driver::new(usb, Irqs);
 
     // Create embassy-usb DeviceBuilder using the driver and config.
@@ -22,14 +25,22 @@ pub fn usb_builder(usb: Peri<'static, USB>) -> Builder<'static, Driver<'static, 
     static BOS_DESC: StaticCell<[u8; 256]> = StaticCell::new();
     static MSOS_DESC: StaticCell<[u8; 1024]> = StaticCell::new();
     static CONTROL_BUF: StaticCell<[u8; 128]> = StaticCell::new();
+    static PRODUCT_NAME: StaticCell<ArrayString<70>> = StaticCell::new();
 
     let mut config = Config::new(0xc0de, 0xcafe);
     config.manufacturer = Some("Rukai");
-    config.product = Some(match env!("PROFILE") {
-        "release" => "DPedal",
-        _ => "DPedal (debug build)",
-    });
-    config.serial_number = Some("12345678");
+    let product = PRODUCT_NAME.init(ArrayString::from("DPedal").unwrap());
+    let device_config = CONFIG.lock().await.clone().unwrap();
+    if !device_config.nickname.is_empty() {
+        product.push_str(" - ");
+        product.push_str(&device_config.nickname);
+    }
+    match env!("PROFILE") {
+        "release" => {}
+        _ => product.push_str(" (debug build)"),
+    }
+    config.product = Some(product);
+    config.serial_number = None;
     config.max_power = 100;
     config.max_packet_size_0 = 64;
 
