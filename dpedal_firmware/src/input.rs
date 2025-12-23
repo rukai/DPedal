@@ -1,7 +1,8 @@
 use crate::config::CONFIG;
 use crate::keyboard::{KEYBOARD_CHANNEL, KeyboardEvent};
 use crate::mouse::{MOUSE_CHANNEL, MouseEvent};
-use dpedal_config::{ComputerInput, DpedalInput};
+use arrayvec::ArrayVec;
+use dpedal_config::{ComputerInput, DpedalInput, MAX_MAPPINGS};
 use embassy_rp::gpio::{AnyPin, Input, Pin, Pull};
 use embassy_rp::{Peri, PeripheralType};
 use embassy_time::Timer;
@@ -45,6 +46,7 @@ impl Inputs {
         let dpad_left = input(self.pins[dpad_left_pin].take().unwrap());
         let dpad_right = input(self.pins[dpad_right_pin].take().unwrap());
 
+        let mut mapping_state = ArrayVec::<_, MAX_MAPPINGS>::new();
         loop {
             let config = CONFIG.lock().await.clone().unwrap();
             if let Some(profile) = config.profiles.first() {
@@ -57,21 +59,40 @@ impl Inputs {
                     dpad_right: dpad_right.is_low(),
                 };
 
-                for mapping in &profile.mappings {
+                // synchronize mapping_state length with any config changes.
+                mapping_state.truncate(profile.mappings.len());
+                if profile.mappings.len() > mapping_state.len() {
+                    mapping_state.push(MappingState::Released);
+                }
+
+                for (mapping, mapping_state) in
+                    profile.mappings.iter().zip(mapping_state.iter_mut())
+                {
                     if input_state.is_all_pressed(&mapping.input) {
                         for output in &mapping.output {
                             pressed(*output).await;
                         }
+                        *mapping_state = MappingState::Pressed;
                     } else {
                         for output in &mapping.output {
-                            released(*output).await;
+                            if let MappingState::Pressed = mapping_state {
+                                released(*output).await;
+                            }
                         }
+                        *mapping_state = MappingState::Released;
                     }
                 }
             }
             Timer::after_millis(1).await;
         }
     }
+}
+
+enum MappingState {
+    Pressed,
+    Released,
+    // TODO
+    //MacroStuff,
 }
 
 struct DpedalInputState {

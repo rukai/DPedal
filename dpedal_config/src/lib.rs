@@ -110,10 +110,11 @@ pub struct PinRemapping {
     pub pin: u32,
 }
 
+pub const MAX_MAPPINGS: usize = 20;
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
 #[rkyv(derive(Debug))]
 pub struct Profile {
-    pub mappings: ArrayVec<Mapping, 20>,
+    pub mappings: ArrayVec<Mapping, MAX_MAPPINGS>,
 }
 
 #[derive(Archive, Deserialize, Serialize, Debug, PartialEq, Default, Clone)]
@@ -265,6 +266,9 @@ impl KeyboardInput {
 pub enum DPedalControl {
     #[default]
     DoNothing,
+    // ReleaseAndSleep(u16)
+    // HoldAndSleep(u16)
+    // SetProfile(u8)
 }
 
 impl DPedalControl {
