@@ -135,7 +135,6 @@ pub async fn sleep(millis: i32) {
     JsFuture::from(promise).await.unwrap();
 }
 
-// TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
 async fn write_config_task(device: Rc<Device>, config: Config) {
     let document = web_sys::window().unwrap().document().unwrap();
     let save_result = document.get_element_by_id("save-result").unwrap();

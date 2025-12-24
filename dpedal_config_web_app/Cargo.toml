@@ -22,6 +22,7 @@ arrayvec = "0.7"
 ssmarshal = { version = "1", features = ["std"]}
 strum = { version = "0.27.2", default-features = false }
 js-sys = "0.3.83"
+futures = "0.3.31"
 
 [dependencies.web-sys]
 version = "0.3.4"

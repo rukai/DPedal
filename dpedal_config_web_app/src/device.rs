@@ -1,9 +1,11 @@
 use dpedal_config::web_config_protocol::{Request, Response};
+use futures::lock::Mutex;
 use postcard::accumulator::CobsAccumulator;
 use webusb_web::{OpenUsbDevice, Usb, UsbDeviceFilter};
 
 pub struct Device {
     usb: OpenUsbDevice,
+    lock: Mutex<()>,
 }
 
 impl Device {
@@ -30,10 +32,16 @@ impl Device {
             .await
             .map_err(|e| e.msg().to_string())?;
 
-        Ok(Device { usb: open_usb })
+        Ok(Device {
+            usb: open_usb,
+            lock: Mutex::new(()),
+        })
     }
 
     pub async fn send_request(&self, request: &Request) -> Result<Response, String> {
+        // Need to hold the lock for the duration of request/response pair
+        let _lock = self.lock.lock().await;
+
         let request_bytes = postcard::to_stdvec_cobs(request).unwrap(); // TODO: when can this fail?
         self.usb
             .transfer_out(1, &request_bytes)
