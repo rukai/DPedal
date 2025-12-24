@@ -1,4 +1,5 @@
 use defmt::*;
+use dpedal_config::KeyboardInput;
 use embassy_futures::join::join;
 use embassy_rp::{peripherals::USB, usb::Driver};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
@@ -7,7 +8,7 @@ use embassy_usb::{
     class::hid::{HidBootProtocol, HidReader, HidReaderWriter, HidSubclass, HidWriter, State},
 };
 use static_cell::StaticCell;
-use usbd_hid::descriptor::{KeyboardReport, KeyboardUsage, SerializedDescriptor};
+use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
 use crate::usb::MyRequestHandler;
 
@@ -107,6 +108,6 @@ fn clear_key(report: &mut KeyboardReport, keycode: u8) {
 }
 
 pub enum KeyboardEvent {
-    Pressed(KeyboardUsage),
-    Released(KeyboardUsage),
+    Pressed(KeyboardInput),
+    Released(KeyboardInput),
 }

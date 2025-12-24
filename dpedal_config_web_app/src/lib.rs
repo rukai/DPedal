@@ -393,11 +393,20 @@ fn setup_single_output_span(span: &Element, output: &ComputerInput) {
         }
         ComputerInput::Keyboard(keyboard_input) => {
             let mut options = String::new();
-            for variant in KeyboardInput::iter() {
+            options.push_str("<optgroup label=\"Common Keys\">");
+            for variant in KeyboardInput::common_iter() {
                 options.push_str(&format!(
                     "<option value=\"{variant:?}\">{variant:?}</option>"
                 ));
             }
+            options.push_str("</optgroup>");
+            options.push_str("<optgroup label=\"Obscure Keys\">");
+            for variant in KeyboardInput::obscure_iter() {
+                options.push_str(&format!(
+                    "<option value=\"{variant:?}\">{variant:?}</option>"
+                ));
+            }
+            options.push_str("</optgroup>");
             select_subtype.set_inner_html(&options);
             select_subtype.set_value(&format!("{keyboard_input:?}"));
         }

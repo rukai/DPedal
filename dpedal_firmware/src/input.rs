@@ -133,11 +133,7 @@ impl DpedalInputState {
 async fn pressed(input: ComputerInput) {
     match input {
         ComputerInput::None => {}
-        ComputerInput::Keyboard(key) => {
-            KEYBOARD_CHANNEL
-                .send(KeyboardEvent::Pressed(key.usage()))
-                .await
-        }
+        ComputerInput::Keyboard(key) => KEYBOARD_CHANNEL.send(KeyboardEvent::Pressed(key)).await,
         ComputerInput::Mouse(mouse) => MOUSE_CHANNEL.send(MouseEvent::Pressed(mouse)).await,
         ComputerInput::Control(_) => {}
     }
@@ -146,11 +142,7 @@ async fn pressed(input: ComputerInput) {
 async fn released(input: ComputerInput) {
     match input {
         ComputerInput::None => {}
-        ComputerInput::Keyboard(key) => {
-            KEYBOARD_CHANNEL
-                .send(KeyboardEvent::Released(key.usage()))
-                .await
-        }
+        ComputerInput::Keyboard(key) => KEYBOARD_CHANNEL.send(KeyboardEvent::Released(key)).await,
         ComputerInput::Mouse(mouse) => MOUSE_CHANNEL.send(MouseEvent::Released(mouse)).await,
         ComputerInput::Control(_) => {}
     }
