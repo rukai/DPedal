@@ -18,6 +18,7 @@ use std::str::FromStr;
 use strum::IntoEnumIterator;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_futures::JsFuture;
 use web_sys::HtmlElement;
 use web_sys::HtmlInputElement;
 use web_sys::HtmlSelectElement;
@@ -86,7 +87,8 @@ async fn open_device() {
                     <th>Output</th>
                 </tr>
             </table>
-            <button id="flash">Save</button>
+            <button id="save">Save</button>
+            <span id="save-result" style="font-size:1.5em;"></span>
             "#,
     );
 
@@ -111,7 +113,7 @@ async fn open_device() {
     let device = Rc::new(device);
     set_button_on_click(
         &document,
-        "flash",
+        "save",
         Box::new(move || {
             let device = device.clone();
             let config = config.clone();
@@ -122,12 +124,41 @@ async fn open_device() {
     log::info!("Setup complete");
 }
 
+pub async fn sleep(millis: i32) {
+    let promise = js_sys::Promise::new(&mut |resolve, _| {
+        web_sys::window()
+            .unwrap()
+            .set_timeout_with_callback_and_timeout_and_arguments_0(&resolve, millis)
+            .unwrap();
+    });
+
+    JsFuture::from(promise).await.unwrap();
+}
+
 // TODO: wrap this in a mutex to prevent the user breaking things by clicking flash twice in quick succession.
 async fn write_config_task(device: Rc<Device>, config: Config) {
     let document = web_sys::window().unwrap().document().unwrap();
+    let save_result = document.get_element_by_id("save-result").unwrap();
+    let save_result = save_result.dyn_ref::<HtmlElement>().unwrap();
+    save_result.set_inner_html("🌀");
+
     if let Err(err) = write_config(&document, device, config).await {
+        save_result.set_inner_html("❌");
         set_error(&document, &err);
+        return;
     }
+
+    save_result.set_inner_html("✅");
+    sleep(500).await;
+    for i in (0..100).rev() {
+        save_result
+            .style()
+            .set_property("opacity", &format!("{i}%"))
+            .unwrap();
+        sleep(10).await;
+    }
+    save_result.set_inner_html("");
+    save_result.style().set_property("opacity", "100%").unwrap();
 }
 
 async fn write_config(

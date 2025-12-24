@@ -178,6 +178,7 @@ dependencies = [
  "console_error_panic_hook",
  "console_log",
  "dpedal_config",
+ "js-sys",
  "log",
  "postcard",
  "rkyv",

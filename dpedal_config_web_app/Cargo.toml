@@ -21,6 +21,7 @@ arrayvec = "0.7"
 # TODO: lets just eradicate this unmaintained thing from the dep tree entirely
 ssmarshal = { version = "1", features = ["std"]}
 strum = { version = "0.27.2", default-features = false }
+js-sys = "0.3.83"
 
 [dependencies.web-sys]
 version = "0.3.4"
