@@ -1,6 +1,5 @@
 use dpedal_config::web_config_protocol::{Request, Response};
 use postcard::accumulator::CobsAccumulator;
-use web_sys::Document;
 use webusb_web::{OpenUsbDevice, Usb, UsbDeviceFilter};
 
 pub struct Device {
@@ -8,42 +7,46 @@ pub struct Device {
 }
 
 impl Device {
-    pub async fn new(document: &Document) -> Result<Self, ()> {
-        let usb = match Usb::new() {
-            Ok(x) => x,
-            Err(e) => {
-                crate::set_error(document, e.msg());
-                return Err(());
-            }
-        };
+    pub async fn new() -> Result<Self, String> {
+        let usb = Usb::new().map_err(|e| e.msg().to_string())?;
 
         let mut filter = UsbDeviceFilter::new();
         filter.vendor_id = Some(0xc0de);
         filter.product_id = Some(0xcafe);
-        let usb_device = match usb.request_device([filter]).await {
-            Ok(x) => x,
-            Err(e) => {
-                crate::set_error(document, e.msg());
-                return Err(());
-            }
-        };
+        let usb_device = usb
+            .request_device([filter])
+            .await
+            .map_err(|e| e.msg().to_string())?;
 
-        let open_usb = usb_device.open().await.unwrap();
+        let open_usb = usb_device
+            .open()
+            .await
+            .map_err(|e| format!("Failed to open device: {e}"))?;
 
         log::info!("usb config {:#?}", usb_device.configuration());
 
-        open_usb.claim_interface(1).await.unwrap();
+        open_usb
+            .claim_interface(1)
+            .await
+            .map_err(|e| e.msg().to_string())?;
 
         Ok(Device { usb: open_usb })
     }
 
     pub async fn send_request(&self, request: &Request) -> Result<Response, String> {
-        let request_bytes = postcard::to_stdvec_cobs(request).unwrap();
-        self.usb.transfer_out(1, &request_bytes).await.unwrap();
+        let request_bytes = postcard::to_stdvec_cobs(request).unwrap(); // TODO: when can this fail?
+        self.usb
+            .transfer_out(1, &request_bytes)
+            .await
+            .map_err(|e| format!("Failed to send request to device: {e}"))?;
 
         let mut cobs_buf: CobsAccumulator<1024> = CobsAccumulator::new();
         loop {
-            let out = self.usb.transfer_in(1, 64).await.unwrap();
+            let out = self
+                .usb
+                .transfer_in(1, 64)
+                .await
+                .map_err(|e| format!("Failed to receive response from device: {e}"))?;
             match cobs_buf.feed::<Response>(&out) {
                 postcard::accumulator::FeedResult::Consumed => {}
                 postcard::accumulator::FeedResult::OverFull(_items) => {

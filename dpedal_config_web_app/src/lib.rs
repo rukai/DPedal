@@ -47,8 +47,12 @@ async fn open_device() {
     let document = web_sys::window().unwrap().document().unwrap();
     set_error(&document, "");
 
-    let Ok(device) = Device::new(&document).await else {
-        return;
+    let device = match Device::new().await {
+        Ok(device) => device,
+        Err(e) => {
+            set_error(&document, &e);
+            return;
+        }
     };
 
     let config = match request_get_config(&device).await {
