@@ -83,10 +83,10 @@ impl Mouse {
                             scroll(&mut report, ticks, (value / 10) as i8, 0)
                         }
                         MouseInput::MoveUp(value) => {
-                            move_cursor(&mut report, ticks, 0, (value / 10) as i8)
+                            move_cursor(&mut report, ticks, 0, (value / -10) as i8)
                         }
                         MouseInput::MoveDown(value) => {
-                            move_cursor(&mut report, ticks, 0, (value / -10) as i8)
+                            move_cursor(&mut report, ticks, 0, (value / 10) as i8)
                         }
                         MouseInput::MoveLeft(value) => {
                             move_cursor(&mut report, ticks, (value / -10) as i8, 0)
