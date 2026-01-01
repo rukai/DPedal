@@ -36,7 +36,7 @@ DPedal Build Instructions
     <td>3D printed parts</td>
     <td>1 each</td>
     <td><a href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_3d_printed_parts.zip">Download</a>
-      and print yourself,<br>or upload to a <a href="">printing
+      and print yourself,<br>or upload to a <a href="https://jlc3dp.com/3d-printing-quote">printing
         service</a>
     </td>
   </tr>
@@ -97,17 +97,13 @@ DPedal Build Instructions
   </tr>
   <tr>
     <td>3D printer</td>
-    <td><a href="https://www.amazon.com.au/ORIGINAL-PURSA-Beginner-Friendly-Filament-180X180X180/dp/B0D2HXHNG6">Prusa
-        mini on Amazon</a>
-    </td>
-    <td>The Prusa Mini is the printer I personally use.<br>
-      The mini is outdated but it's reliable, repairable and <br>I can only recommend a printer I've
-      actually used. <br> Getting the kit is a great way to learn more about printers through the assembly process.</td>
+    <td></td>
+    <td>I personally have a Prusa mini, but these days the Bambu Lab P1S is a much better option.</td>
   </tr>
   <tr>
     <td>Soldering iron</td>
     <td></td>
-    <td></td>
+    <td>I personally have a Hakko FX-888D, but a Pinecil or similar is a better budget option.</td>
   </tr>
   <tr>
     <td>3M Hex key</td>
@@ -140,7 +136,8 @@ DPedal Build Instructions
 <p>
   Download the STLs <a
     href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_3d_printed_parts.zip">here</a>.
-  Then slice and print each STL yourself.
+  Then slice and print each STL yourself, or upload to a <a href="https://jlc3dp.com/3d-printing-quote">printing
+    service</a>.
 </p>
 
 <p>Slicing configuration for each part:</p>
@@ -154,30 +151,55 @@ DPedal Build Instructions
 
 <h2>Soldering</h2>
 
-<!--
-TODO: Intro to soldering
--->
+<p>
+  If its your first time soldering, iFixit has a <a href="https://www.youtube.com/watch?v=rK38rpUy568">nice
+    introduction</a>. They stress the importance of flux, and while flux is important, the soldering required for this
+  project is simple enough you can get away with skipping it. You should also learn about <a
+    href="https://www.youtube.com/watch?v=yTcxn773G-4">iron tip maintenance</a>.
+</p>
+<p>For lead-free solder I reccommend setting your iron to 350 degrees.</p>
 <ol>
-  <li>Take the printed jig and Pico</li><img loading="lazy" src="/media/pico_jig1.webp">
-  <li>Connect printed jig into the Pico via the through holes and pins</li><img src="/media/pico_jig2.webp">
+  <li>Take the printed jig and Pico.</li>
+  <img loading="lazy" src="/media/pico_jig1.webp">
+  <li>Connect printed jig into the Pico via the through holes and pins</li>
+  <img loading="lazy" src="/media/pico_jig2.webp">
   <li>Connect Pico to the PCB via the jig, it may need to be pushed until clicking into place. The Pico should sit
-    secure and flatly on the PCB. Make sure the orientation matches the image, the "DPedal V3" text should not be
-    visible on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp">
-  <li>Solder Pico to the PCB, some masking tape can be used to further secure the Pico until the first few solder joints
-    are made. Heat both the pad on the Pico and the pad on the PCB with the tip of the soldering iron, then feed solder
-    into
-    the point where the two pins connect. The solder should not form blobs on top of the Pico or you may have trouble
-    fitting the PCB into the case.</li><img loading="lazy" src="/media/pico_jig5.webp">
-  <li>Solder hotswap sockets to PCB</li>
+    secure and flatly on the PCB. Make sure the orientation matches the image, the "DPedal V3" text should NOT be
+    visible on the PCB.</li>
+  <ul>
+    <li>NOTE: If the Pico is not sitting flat against the PCB, some masking tape can be used to secure it.</li>
+  </ul>
+  <img loading="lazy" src="/media/pico_jig4.webp">
+  <li>Solder Pico to the PCB. For every pad on the PCB, heat both the pad on the Pico and the pad on the PCB with the
+    tip of the soldering iron, while feeding solder into the point where the iron and two pads connect.
+  </li>
+  <ul>
+    <li>WARNING: The solder should not form large blobs on top of the Pico or you may have trouble fitting the PCB into
+      the case.</li>
+    <li>NOTE: Having this many small pads close together may sound tricky with risk of shorting adjacent pads, in
+      reality as long as you use only a minimal amount of solder, its not too bad as solder will want to stick to the
+      hot metal
+      surfaces and avoid the green PCB surface. However if you do manage to join some adjacent pads, you might find <a
+        href="https://www.youtube.com/watch?v=IjOh5ShVX_w">solder wick</a> helpful.</li>
+  </ul>
+  <img loading="lazy" src="/media/pico_jig5.webp">
+  <li>Place hotswap sockets into their holes on the PCB and solder the sockets to the PCB: Heat the ends of the
+    socket and the pad on the PCB with the iron, while feeding solder into the point where the iron, PCB pad and socket
+    end
+    meet.</li>
   <img loading="lazy" src="/media/hotswap_solder.webp">
 </ol>
 
 <h2>Flashing firmware</h2>
 
 <ol>
-  <li>Plug in the Pico/PCB to your PC while holding down the flash button.</li>
-  <!--TODO: image-->
-  <li>Follow the steps below depending on your OS</li>
+  <li>Start holding down the bootsel button. Do not let go.</li>
+  <img loading="lazy" src="/media/flashing1.webp">
+  <li>Connect the Pico/PCB to your computer via USB.</li>
+  <img loading="lazy" src="/media/flashing2.webp">
+  <li>Let go of the bootsel button.</li>
+  <img loading="lazy" src="/media/flashing3.webp">
+  <li>Follow the steps below depending on your OS:</li>
   <ul>
 
     <li>macOS</li>
@@ -219,37 +241,46 @@ TODO: Intro to soldering
   </ul>
 
   <li>Insert a switch into each socket</li>
-  <!--TODO: image-->
   <ul>
     <li>WARNING: the orientation of the pins is different for each socket, make sure the switch is oriented correctly as
-      you insert it. </li>
+      you insert it.</li>
   </ul>
+  <img loading="lazy" src="/media/flashing4.webp">
   <li>Open <a href="scroll_test.html">this page</a> and test each button works, the default button mapping of the DPedal
-    has mouse scroll on the dpad and page up/down on the left/right buttons</li>
-  <li>Disconnect the switches again, to prepare for the next stage.</li>
-  <!--TODO: image-->
+    has mouse scroll on the dpad and page up/down on the left/right buttons.</li>
+  <ul>
+    <li>
+      If the pedal is not working as expected, go back and examine your solder joints for cases where the joint is not
+      sufficient for connectivity or is shorting with an adjacent joint.
+    </li>
+  </ul>
+  <li>Unplug from the computer and disconnect the switches again, to prepare for the next stage.</li>
+  <img loading="lazy" src="/media/flashing5.webp">
 </ol>
 
 <h2>Assembling</h2>
 
 <ol>
-  <li>Place PCB into the base part with the hole for the USB port.</li><img loading="lazy"
-    src="/media/switchplate_and_base1.webp">
-  <li>Place switch plate on top of the PCB</li><img loading="lazy" src="/media/switchplate_and_base2.webp">
-  <li>Place 4 screws through the switch plate and base.</li><img loading="lazy" src="/media/switchplate_and_base3.webp">
-  <li>For each screw, hold a square nut behind it and screw them together.</li><img loading="lazy"
-    src="/media/switchplate_and_base4.webp">
+  <li>Place PCB into the base part with the hole for the USB port.</li>
+  <img loading="lazy" src="/media/switchplate_and_base1.webp">
+  <li>Place switch plate on top of the PCB</li>
+  <img loading="lazy" src="/media/switchplate_and_base2.webp">
+  <li>Place 4 screws through the switch plate and base.</li>
+  <img loading="lazy" src="/media/switchplate_and_base3.webp">
+  <li>For each screw, hold a square nut behind it and screw them together.</li>
+  <img loading="lazy" src="/media/switchplate_and_base4.webp">
   <li>Push all 6 switches into their sockets until they click into place.</li>
   <ul>
     <li>WARNING: the orientation of the pins is different for each socket, make sure the switch is oriented correctly as
       you insert it. </li>
   </ul>
   <img loading="lazy" src="/media/insert_switches.webp">
-  <li>Put the dpad between the two base pieces and push the pieces together.</li><img loading="lazy"
-    src="/media/connect_other_base.webp">
-  <li>Screw the remaining base part to the switch plate, using 4 screws and 4 nuts.</li><img loading="lazy"
-    src="/media/screw_other_base.webp">
-  <li>Push the 2 buttons into the 2 empty switches</li><img loading="lazy" src="/media/insert_buttons.webp">
+  <li>Put the dpad between the two base pieces and push the pieces together.</li>
+  <img loading="lazy" src="/media/connect_other_base.webp">
+  <li>Screw the remaining base part to the switch plate, using 4 screws and 4 nuts.</li>
+  <img loading="lazy" src="/media/screw_other_base.webp">
+  <li>Push the 2 buttons into the 2 empty switches</li>
+  <img loading="lazy" src="/media/insert_buttons.webp">
 </ol>
 <!--
     1. cut wires and strip ends, strip about ~2-3mm
