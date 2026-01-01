@@ -9,6 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
+    <meta name="description"
+        content="A USB foot pedal with controls for up, down, left and right plus some extra buttons.">
+
+    <meta property="og:title" content="{% block title %} {% endblock %}">
+    <meta property="og:image" content="/media/dpedal_embed.webp">
+    <meta property="og:type" content="article">
+    <title>{% block title %} {% endblock %}</title>
+    {% block head %}{% endblock %}
     <style>
         body {
             margin: 0;
@@ -178,8 +186,6 @@
             }
         }
     </style>
-    <title>{% block title %} {{ title }} {% endblock %}</title>
-    {% block head %}{% endblock %}
 </head>
 
 <body>
