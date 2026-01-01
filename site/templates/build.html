@@ -7,6 +7,7 @@ DPedal Build Instructions
 {% block content %}
 <h1>DPedal Build Instructions</h1>
 <h2>Parts</h2>
+
 <table>
   <tr>
     <th>Part</th>
@@ -21,7 +22,7 @@ DPedal Build Instructions
     </td>
   </tr>
   <tr>
-    <td>Raspberry Pi pico 1 USB C variant (headerless)</td>
+    <td>Raspberry Pi Pico 1 USB C clone (headerless)</td>
     <td>1</td>
     <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
   </tr>
@@ -30,7 +31,7 @@ DPedal Build Instructions
     <td>1</td>
     <td><a href="">Amazon</a></td>
   </tr>
-  <tr><!--split into own section and list each part individually-->
+  <tr><!--TODO: split into own section and list each part individually-->
     <td>3D printed parts</td>
     <td>1 each</td>
     <td><a href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_3d_printed_parts.zip">Download</a>
@@ -70,8 +71,9 @@ DPedal Build Instructions
   </tr>
 </table>
 
-<p>Note: The official micro usb version of the Pico will also work fine, but I recommend the unofficial usb C version,
-  since USB C is a nicer connector.</p>
+<p>Note: The official micro USB version of the Pico will also work fine, but I recommend the unofficial USB C clone,
+  since USB C is a nicer connector. Just make sure to get one that matches the dimensions of the official Pico,
+  including the components on the pico which can be placed differently in some clones.</p>
 <!--
     * wire lengths (including stripped ends):
     * button left: 70mm
@@ -83,7 +85,6 @@ DPedal Build Instructions
     -->
 
 <img src="/media/all_parts.webp">
-
 
 <h2>Tools</h2>
 
@@ -99,7 +100,7 @@ DPedal Build Instructions
         mini on Amazon</a>
     </td>
     <td>The Prusa Mini is the printer I personally use.<br>
-      The mini is a bit outdated but it's reliable, repairable and <br>I can only recommend a printer I've
+      The mini is outdated but it's reliable, repairable and <br>I can only recommend a printer I've
       actually used. <br> Getting the kit is a great way to learn more about printers through the assembly process.</td>
   </tr>
   <tr>
@@ -117,6 +118,7 @@ DPedal Build Instructions
 <!--<p>TODO: image of everything laid out</p>-->
 
 <h2 id="orderpcb">Ordering PCB</h2>
+
 <ol>
   <li>Download <a
       href="https://github.com/rukai/DPedal/releases/latest/download/dpedal_gerber_files.zip">dpedal_gerber_files.zip</a>.
@@ -131,7 +133,6 @@ DPedal Build Instructions
   </ul>
   <li>Complete order. You probably want "Global Standard Direct Line" for shipping.</li>
 </ol>
-
 
 <h2>Printing</h2>
 
@@ -151,21 +152,22 @@ DPedal Build Instructions
 </ul>
 
 <h2>Soldering</h2>
+
 <!--
 TODO: Intro to soldering
 -->
 <ol>
-  <li>Take the printed jig and pico</li><img loading="lazy" src="/media/pico_jig1.webp" height="287">
-  <li>Connect printed jig into the pico via the through holes and pins</li><img src="/media/pico_jig2.webp"
-    height="287">
-  <li>Connect Pico to the PCB via the jig, it may need to be pushed until clicking into place. The pico should sit
+  <li>Take the printed jig and Pico</li><img loading="lazy" src="/media/pico_jig1.webp">
+  <li>Connect printed jig into the Pico via the through holes and pins</li><img src="/media/pico_jig2.webp">
+  <li>Connect Pico to the PCB via the jig, it may need to be pushed until clicking into place. The Pico should sit
     secure and flatly on the PCB. Make sure the orientation matches the image, the "DPedal V3" text should not be
-    visible on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp" height="287">
-  <li>Solder Pico to the PCB, some masking tape can be used to further secure the pico until the first few solder joints
-    are made. Heat both the pad on the pico and the pad on the PCB with the tip of the soldering iron, then solder into
-    the point where the two pins connect. The solder should not form blobs on top of the pico or you may have trouble
-    fitting into the case.</li><img loading="lazy" src="/media/pico_jig5.webp" height="287">
+    visible on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp">
+  <li>Solder Pico to the PCB, some masking tape can be used to further secure the Pico until the first few solder joints
+    are made. Heat both the pad on the Pico and the pad on the PCB with the tip of the soldering iron, then solder into
+    the point where the two pins connect. The solder should not form blobs on top of the Pico or you may have trouble
+    fitting into the case.</li><img loading="lazy" src="/media/pico_jig5.webp">
   <li>Solder hotswap sockets to PCB</li>
+  <img loading="lazy" src="/media/hotswap_solder.webp">
 </ol>
 
 <h2>Flashing firmware</h2>
@@ -218,23 +220,23 @@ TODO: Intro to soldering
   <li>Disconnect the switches again, to prepare for the next stage.</li>
 </ol>
 
-
 <h2>Assembling</h2>
+
 <ol>
-  <li>Place PCB into the base part with the hole for the USB port</li><img loading="lazy"
-    src="/media/switchplate_and_base1.webp" height="287">
-  <li>Place switch plate on top of the PCB</li><img loading="lazy" src="/media/switchplate_and_base2.webp" height="287">
-  <li>Place 4 screws through the switch plate and base.</li><img loading="lazy" src="/media/switchplate_and_base3.webp"
-    height="287">
-  <li>For each screw, hold a square nut behind it and screw them together</li><img loading="lazy"
-    src="/media/switchplate_and_base4.webp" height="287">
-  <li>Clip the switches into their sockets</li><img loading="lazy" src="/media/insert_switches.webp" height="287">
+  <li>Place PCB into the base part with the hole for the USB port.</li><img loading="lazy"
+    src="/media/switchplate_and_base1.webp">
+  <li>Place switch plate on top of the PCB</li><img loading="lazy" src="/media/switchplate_and_base2.webp">
+  <li>Place 4 screws through the switch plate and base.</li><img loading="lazy" src="/media/switchplate_and_base3.webp">
+  <li>For each screw, hold a square nut behind it and screw them together.</li><img loading="lazy"
+    src="/media/switchplate_and_base4.webp">
+  <li>Push all 6 switches into their sockets until they click into place. Make sure to align the pins with the sockets
+    in the PCB.
+  </li><img loading="lazy" src="/media/insert_switches.webp">
   <li>Put the dpad between the two base pieces and push the pieces together.</li><img loading="lazy"
-    src="/media/connect_other_base.webp" height="287">
-  <li>Screw the remaining base part to the switch plate</li><img loading="lazy" src="/media/screw_other_base.webp"
-    height="287">
-  <li>Push the 2 buttons into the 2 empty switches</li><img loading="lazy" src="/media/insert_buttons.webp"
-    height="287">
+    src="/media/connect_other_base.webp">
+  <li>Screw the remaining base part to the switch plate, using 4 screws and 4 nuts.</li><img loading="lazy"
+    src="/media/screw_other_base.webp">
+  <li>Push the 2 buttons into the 2 empty switches</li><img loading="lazy" src="/media/insert_buttons.webp">
 </ol>
 <!--
     1. cut wires and strip ends, strip about ~2-3mm
@@ -258,7 +260,7 @@ TODO: Intro to soldering
 <img src="/media/finished.webp" loading="lazy">
 
 <p>Slot in the footrest when using it.</p>
-<img src="/media/attach_footrest.webp" loading="lazy" height="287">
+<img src="/media/attach_footrest.webp" loading="lazy">
 
 <p>If you want to change the keyboard/mouse mapping you can use the <a href="/config.html">web configurator</a>.</p>
 
