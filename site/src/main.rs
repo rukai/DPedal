@@ -44,6 +44,10 @@ fn main() {
     out.create_compressed_file("index.html", Landing {}.render().unwrap().as_bytes());
     out.create_compressed_file("build.html", Build {}.render().unwrap().as_bytes());
     out.create_compressed_file("config.html", Config {}.render().unwrap().as_bytes());
+    out.create_compressed_file(
+        "scroll_test.html",
+        ScrollTest {}.render().unwrap().as_bytes(),
+    );
 
     app::generate_config_app_wasm(dest_assets);
 
@@ -70,3 +74,7 @@ struct Build {}
 #[derive(Template)]
 #[template(path = "config.html")]
 struct Config {}
+
+#[derive(Template)]
+#[template(path = "scroll_test.html")]
+struct ScrollTest {}
