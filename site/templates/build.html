@@ -24,7 +24,8 @@ DPedal Build Instructions
   <tr>
     <td>Raspberry Pi Pico 1 USB C clone (headerless)</td>
     <td>1</td>
-    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a></td>
+    <td><a href="https://www.amazon.com.au/DIGISHUO-Raspberry-Pi-Pico-Dual-Core/dp/B0C3BWBL2F">Amazon</a>, <a
+        href="https://www.aliexpress.com/item/1005009937863506.html">AliExpress</a></td>
   </tr>
   <tr>
     <td>2m USB C&lt;-&gt;A cable</td>
@@ -163,9 +164,10 @@ TODO: Intro to soldering
     secure and flatly on the PCB. Make sure the orientation matches the image, the "DPedal V3" text should not be
     visible on the PCB.</li><img loading="lazy" src="/media/pico_jig4.webp">
   <li>Solder Pico to the PCB, some masking tape can be used to further secure the Pico until the first few solder joints
-    are made. Heat both the pad on the Pico and the pad on the PCB with the tip of the soldering iron, then solder into
+    are made. Heat both the pad on the Pico and the pad on the PCB with the tip of the soldering iron, then feed solder
+    into
     the point where the two pins connect. The solder should not form blobs on top of the Pico or you may have trouble
-    fitting into the case.</li><img loading="lazy" src="/media/pico_jig5.webp">
+    fitting the PCB into the case.</li><img loading="lazy" src="/media/pico_jig5.webp">
   <li>Solder hotswap sockets to PCB</li>
   <img loading="lazy" src="/media/hotswap_solder.webp">
 </ol>
@@ -174,6 +176,7 @@ TODO: Intro to soldering
 
 <ol>
   <li>Plug in the Pico/PCB to your PC while holding down the flash button.</li>
+  <!--TODO: image-->
   <li>Follow the steps below depending on your OS</li>
   <ul>
 
@@ -211,13 +214,20 @@ TODO: Intro to soldering
       <li>open a terminal to the directory containing the firmware and run
         <span style="color:red;font-family:mono;">./dpedalflash</span>
       </li>
+      <img loading="lazy" src="/media/linux_flash.webp">
     </ol>
   </ul>
 
   <li>Insert a switch into each socket</li>
+  <!--TODO: image-->
+  <ul>
+    <li>WARNING: the orientation of the pins is different for each socket, make sure the switch is oriented correctly as
+      you insert it. </li>
+  </ul>
   <li>Open <a href="scroll_test.html">this page</a> and test each button works, the default button mapping of the DPedal
     has mouse scroll on the dpad and page up/down on the left/right buttons</li>
   <li>Disconnect the switches again, to prepare for the next stage.</li>
+  <!--TODO: image-->
 </ol>
 
 <h2>Assembling</h2>
@@ -229,9 +239,12 @@ TODO: Intro to soldering
   <li>Place 4 screws through the switch plate and base.</li><img loading="lazy" src="/media/switchplate_and_base3.webp">
   <li>For each screw, hold a square nut behind it and screw them together.</li><img loading="lazy"
     src="/media/switchplate_and_base4.webp">
-  <li>Push all 6 switches into their sockets until they click into place. Make sure to align the pins with the sockets
-    in the PCB.
-  </li><img loading="lazy" src="/media/insert_switches.webp">
+  <li>Push all 6 switches into their sockets until they click into place.</li>
+  <ul>
+    <li>WARNING: the orientation of the pins is different for each socket, make sure the switch is oriented correctly as
+      you insert it. </li>
+  </ul>
+  <img loading="lazy" src="/media/insert_switches.webp">
   <li>Put the dpad between the two base pieces and push the pieces together.</li><img loading="lazy"
     src="/media/connect_other_base.webp">
   <li>Screw the remaining base part to the switch plate, using 4 screws and 4 nuts.</li><img loading="lazy"
