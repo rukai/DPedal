@@ -25,3 +25,4 @@ The 3D printed parts are not in this repo, instead they are in [onshape](https:/
 * make buttons recessed into shell, protect them from snapping off
 * 2 buttons instead of 4, I rarely use the buttons, I think having less buttons will make it easier to hit the right one.
 * web-based flashing tool
+* RP2040 instead of an STM32 chip
